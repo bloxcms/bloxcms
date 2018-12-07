@@ -1,2 +1,2 @@
-# bloxcms-14
-Blox CMS v14
+# bloxcms
+Система Blox CMS
