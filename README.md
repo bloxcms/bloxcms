@@ -17,6 +17,7 @@ Despite the simplicity of Blox CMS, you can develop websites of any complexity, 
 
 - [Home page](http://bloxcms.net/)
 - [Documentation](http://bloxcms.net/documentation/)
+- [Installation](http://bloxcms.net/documentation/installation-of-system.htm)
 
 ## License
 
