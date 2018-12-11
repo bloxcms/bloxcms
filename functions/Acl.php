@@ -203,12 +203,10 @@ class Acl
 
 
     /**
-    # $group - ID or name
-    # If there's no param, then return all user of the group
+    $group - ID or name
+    If there's no param, then return all user of the group
     public static function getUsers($group)
     {
-        ;
-
     }
     */
  

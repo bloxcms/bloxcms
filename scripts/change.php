@@ -1,5 +1,5 @@
 <?php
-    # TODO: Do not output $blockOutput=outputBlock(), as the whole page will be it displayd
+    # TODO: Do not output $blockOutput=outputBlock(), as this will display the whole page
     
     if (!Blox::info('user','user-is-admin')) 
         Blox::execute('?error-document&code=403');
