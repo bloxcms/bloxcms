@@ -1,0 +1,40 @@
+# Example
+
+    # Settings
+    $sortable_tableId ="sortable"; 
+    $sortable_formId ="ok";
+    $sortable_inputId = 'sorted-rows-list';
+
+    # Init
+    include Blox::info('cms','dir').'/includes/make-sortable.php';
+
+    # Table to sort
+    echo'
+    <table id="$sortable_tableId">
+        <tbody>';
+        foreach ($tab as $row => $dat)
+        echo'
+            <tr id="$row">
+                <td><label class="handle">dragMe</label></td>
+                <td>$dat[1]</td>
+                <td>$dat[2]</td>
+                <td>$dat[3]</td>
+            </tr>
+        ';
+        echo'
+        </tbody>
+    </table>
+    ';
+
+    # Button to send sorted rows
+    echo'
+    <form  id="$sortable_formId" action="..." method="post" enctype="multipart/form-data">
+    <input type="hidden" name="$sortable_inputId" id="$sortable_inputId" />
+    </form>
+    ';
+
+    if ($_POST[$sortable_inputId])
+    {
+        $sortedRows = explode(',', $_POST[$sortable_inputId]);
+        //.............................................
+    }

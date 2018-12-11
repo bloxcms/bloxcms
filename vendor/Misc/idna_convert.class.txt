@@ -1,0 +1,7 @@
+
+
+    // Конвертуем адрес сайта, закодированный в punycode, в родной код (кириллицу)
+    require_once('idna_convert.class.php');
+    $puny = new idna_convert();
+    $unicode = $puny->decode($punycode); // $punycode - желательно домен, но можно и URL
+    

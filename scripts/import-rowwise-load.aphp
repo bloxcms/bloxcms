@@ -1,0 +1,110 @@
+<?php
+# NOT DEBUGGED
+, 
+/* This script presents very fast import of data in csv format
+ * But it uses the mysql's LOAD DATA LOCAL INFILE operation that requires special privileges
+ * So this script ceased to be used.
+ * 
+ * Do not rename to .php. It is necessary to deactivate
+ * NEW http://www.securitylab.ru/analytics/407323.php
+ */
+    $tbl = Blox::getTbl(Sql::sanitizeTpl($_GET['tpl']));
+    # LOAD DATA LOCAL INFILE
+    $sql = "LOAD DATA LOCAL INFILE '".base64_decode($_GET['renamed-file'])."' IGNORE INTO TABLE ".$tbl;
+    /**
+        ============= To run LOAD DATA INFILE =========================================
+        Error: The used command is not allowed with this MySQL version
+        
+        Go to phpmyadmin as root user
+        Check one user, for example, blox_eskulap
+        SHOW GRANTS FOR 'blox_eskulap'@'localhost'  
+        displays:
+        	GRANT USAGE ON *.* TO 'blox_eskulap'@'localhost' IDENTIFIED BY PASSWORD '*C472EB1C476B308FAF606C90D4525097F8524F2A'
+        	GRANT ALL PRIVILEGES ON `blox\_eskulap`.* TO 'blox_eskulap'@'localhost'
+
+        Give permission to load DATA INFILE queries:
+        GRANT FILE ON *.* TO 'blox_eskulap'@'localhost'
+
+        Check:
+        SHOW GRANTS FOR 'blox_eskulap'@'localhost' 
+        displays:
+        	GRANT FILE ON *.* TO 'blox_eskulap'@'localhost' IDENTIFIED BY PASSWORD '*C472EB1C476B308FAF606C90D4525097F8524F2A'
+        	GRANT ALL PRIVILEGES ON `blox\_eskulap`.* TO 'blox_eskulap'@'localhost'
+
+
+
+        ============== To run LOAD DATA LOCAL INFILE ========================================
+        
+        Since the MySQL of version 4.0.2 (4.0.13 on Windows) is off by default
+
+        my.cnf
+        	[mysqld]
+        	local-infile 
+
+        	[mysql]
+        	local-infile 
+
+        v.5.6
+        	[client]
+        	loose-local-infile=1
+
+        ==============================================
+        http://dev.mysql.com/doc/refman/5.6/en/load-data.html
+        Also, to use LOAD DATA INFILE on server files, you must have the FILE privilege.
+        Using LOCAL you do not need the FILE privilege to load local files.
+    */
+
+
+
+
+
+    /* For LOCAL doesn't work
+    if ($_GET['charset-of-file'])
+        $sql .= " CHARACTER SET ".$_GET['charset-of-file'];
+    */
+    $sql .= " FIELDS TERMINATED BY '{$_GET['csv-terminated']}'";
+    if ($_GET['csv-enclosed'])
+        $sql .= " ENCLOSED BY '{$_GET['csv-enclosed']}'";
+
+
+    if ($_GET['csv-escaped'])
+    {
+        $sql .= " ESCAPED BY '";
+        if ($_GET['csv-escaped'] == '\\')
+            $sql .= '\\';
+        $sql .= $_GET['csv-escaped']."'";
+    }
+
+    if ($_GET['csv-new-line'])
+        $sql .= " LINES TERMINATED BY '{$_GET['csv-new-line']}'";
+
+    if ($_GET['csv-ignore-lines'])
+    {
+        if ($aa = Sql::sanitizeInteger($_GET['csv-ignore-lines']))
+            $sql .= " IGNORE $aa LINES";
+    }
+
+    if ($sortedFields = explode(',', $_GET['sorted-fields-list']))
+    {
+        foreach ($sortedFields as $field)
+            $cols .= ",dat$field";
+        $cols = substr($cols, 1);  # remove initial ','
+        
+        # prepare initial 'rec-id' and sort
+        $maxRecId = Sql::sanitizeInteger($_GET['max-rec-id']) ?: 0;
+        $maxSortNum = Sql::sanitizeInteger($_GET['max-sort-num']) ?: 0;
+        Sql::query('SELECT @recCounter := '.$maxRecId.', @sortCounter := '.$maxSortNum); # TODO: SET @recCounter := 
+        
+        # The expression in parentheses is a sequence of column names that matches the data in a csv table. That is, the correspondence can be changed
+        $sql .= " (";
+        if (empty($_GET['add-recid-column']))
+            $sql .= "`rec-id`,";
+        $sql .= "$cols)";
+        $sql .= ' SET `block-id`='.(int)$_GET['src-block-id'];
+        if ($_GET['add-recid-column'])
+            $sql .= ", `rec-id`= (@recCounter := @recCounter + 1)";
+        $sql .= ", sort= (@sortCounter := @sortCounter + 1)";
+        Sql::query($sql);
+    	echo 'dataAreLoaded';
+    }
+

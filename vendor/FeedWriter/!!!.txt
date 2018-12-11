@@ -1,0 +1,18 @@
+
+
+Переделанный 2012  http://www.crowdedplace.com/?s=rss&x=0&y=0
+Оригинал 2008  http://ajaxray.com/blog/php-universal-feed-generator-supports-rss-10-rss-20-and-atom
+	Исправления для русского http://xdan.ru/PHP-Universalnij-RSS-Generator.html
+
+Также см. D:\Web\Sites\php-Samples\XML\FeedWriters
+
+
+------------- Это надо? --------------------
+http://www.xul.fr/en-xml-rss.html
+
+<head>
+	<link rel="alternate" type="application/rss+xml"  href="http://www.xul.fr/rss.xml" title="Your title">
+</head>
+<body>
+	<a href="http://www.xul.fr/rss.xml"><img src="rss.gif"></a>
+</body>

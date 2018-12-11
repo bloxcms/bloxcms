@@ -1,0 +1,64 @@
+AddDefaultCharset UTF-8
+Options All -Indexes
+# Deny execution of all files except index.php
+<Files  ~ "\.log$">
+  Order allow,deny
+  Deny from all
+</Files>
+<Files "*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+<Files "index.php">
+    Order Deny,Allow
+    Allow from all
+</Files>
+ErrorDocument 400 /?error-document&code=400
+ErrorDocument 401 /?error-document&code=401
+#ErrorDocument 403 /?error-document&code=403
+ErrorDocument 404 /?error-document&code=404
+ErrorDocument 500 /?error-document&code=500
+<IfModule mod_php5.c>
+	php_flag magic_quotes_gpc  off
+	php_flag magic_quotes_sybase off
+	php_flag register_globals off
+</IfModule>
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	
+	# Redirect from 'www.' to '' for both http and https 
+	RewriteCond %{HTTP_HOST} ^www\.
+	RewriteCond %{HTTPS}s ^on(s)|off 
+	RewriteCond http%1://%{HTTP_HOST} ^(https?://)(www\.)?(.+)$
+	RewriteRule ^ %1%3%{REQUEST_URI} [R=301,L]
+
+	# Redirect from HTTP to HTTPS
+	#RewriteCond %{HTTP:HTTPS} !=on [NC]
+	#RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+		
+	# Hide index.php and Human readable URLs
+	#RewriteRule ^index\.php$ - [L]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_URI} !(\.ico|\.ICO)$
+	RewriteCond %{REQUEST_URI} !(\.jpg|\.JPG)$
+	RewriteCond %{REQUEST_URI} !(\.jpeg|\.JPEG)$
+	RewriteCond %{REQUEST_URI} !(\.png|\.PNG)$
+	RewriteCond %{REQUEST_URI} !(\.gif|\.GIF)$
+	RewriteCond %{REQUEST_URI} !(\.css|\.CSS)$
+	RewriteCond %{REQUEST_URI} !(\.js|\.JS)$
+	RewriteCond %{REQUEST_URI} !(\.zip)$
+	RewriteCond %{REQUEST_URI} !(\.rar)$
+	RewriteCond %{REQUEST_URI} !(\.xls)$
+	RewriteCond %{REQUEST_URI} !(\.xlsx)$
+	RewriteCond %{REQUEST_URI} !(\.doc)$
+	RewriteCond %{REQUEST_URI} !(\.docx)$
+	#RewriteCond %{REQUEST_URI} !^undefined$  # Dont work
+	RewriteRule . index.php [L]
+	#RewriteRule . subsite/index.php [L] # Site in subfolder
+</IfModule>
+<ifModule mod_headers.c>
+	<filesMatch "\.(css|js|ico|pdf|flv|svg|jpg|jpeg|png|gif|swf)$">
+		Header set Cache-Control "max-age=2628000, public"
+	</filesMatch>
+</ifModule>

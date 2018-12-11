@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /?*&limit=
+Disallow: /?*&pick[
+Disallow: /?*&search
+Disallow: /?*&sort=
+Disallow: /?block=
+Disallow: /?login
+Disallow: /?password
+Disallow: /?user-info
+Disallow: /?edit
+Disallow: /assigned/
+Disallow: /cached/
+Disallow: /temp/
+Crawl-delay: 2
+Clean-param: PHPSESSID
+#Host: bloxcms.net
+#Sitemap: http://bloxcms.net/sitemap.xml
+

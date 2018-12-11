@@ -1,0 +1,5 @@
+/* Loading icon by $(...).bloxLoader() */
+.blox-load-icon {position:relative; opacity:.3}
+.blox-load-icon div {position:absolute; width:66px; height:66px; left:0; right:0; top:0; bottom:0; margin:auto; -webkit-animation:blox-load-icon-rotate .8s infinite linear; animation:blox-load-icon-rotate .8s infinite linear; border-left:9px solid rgba(255,255,255,1); border-right:9px solid rgba(255,255,255,1); border-bottom:9px solid rgba(255,255,255,1); border-top:9px solid rgba(0,0,0,1); border-radius:100%}
+@-webkit-keyframes blox-load-icon-rotate {0 {-webkit-transform:rotate(0deg)} 100% {-webkit-transform:rotate(360deg)}}
+@keyframes blox-load-icon-rotate {0 {transform:rotate(0deg)} 100% {transform:rotate(360deg)}}

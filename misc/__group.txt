@@ -1,0 +1,39 @@
+
+# TODO
+
+errorMessage2 в lang нужно?
+
+При удалении пользов. группы происходит цикл. ссылка
+
+Убрать
+	Blox::info('user','id')
+	$isAlreadyRegistered
+
+Blox::info('user']  -->  $GLOBALS['Blox', 'info','group')
+проверить 
+	Blox::info('group'] 
+	$GLOBALS['Blox', 'info')['user'] в groups
+	- скорее всего удалить 
+
+groups.tpl: href="?group-users&selected-group-id...
+	сделать окно group-users
+users.tpl
+	сделать окно groups-of-user
+
+
+-----------------------------------
+
+
+login		alias
+users	groups
+User	Group
+
+на user-info.php должно приходить selected-user-id
+ $_SESSION['Blox']['info']['user']['selected-id']		$_GET['selected-user-id']
+
+
+# Док
+
+Управлять правами пользователей может только админ
+
+Пользователь может быть членом нескольких групп

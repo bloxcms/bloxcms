@@ -1,0 +1,14 @@
+Move
+	textEditorOutput
+	textEditorLink
+ to script/ or include/
+
+
+
+DONE: 
+	config.allowedContent = true;
+# TODO:
+	http://docs.ckeditor.com/#!/guide/dev_acf
+	http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter
+	http://docs.ckeditor.com/#!/guide/dev_allowed_content_rules
+	

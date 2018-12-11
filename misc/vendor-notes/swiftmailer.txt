@@ -1,0 +1,21 @@
+
+documentation	http://swiftmailer.org/docs/introduction.html
+
+
+# Bug fixing
+VERSION = '4.1.7';
+	File: \classes\Swift\ByteStream\FileByteStream.php
+		Method _getReadHandle()
+			Before first usage of "$this->_path", add this code (line 137)
+			/**
+			 * Bug fix.
+			 * When you send HTML letters with embedded images, the images have absolute URL.
+			 * But this is often not accepted by hostings (due to the settings of fopen).
+			 * So convert absolute URL to file path.
+			 * When attaching files, there is no such problem, since in this case files have not absolute URL
+			 */
+			$aa = str_replace("http://".$_SERVER['HTTP_HOST'], "", $this->_path, $counter);
+			if ($counter)
+				$this->_path = $_SERVER['DOCUMENT_ROOT'].$aa;
+
+

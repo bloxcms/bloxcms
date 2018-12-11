@@ -1,0 +1,59 @@
+/* 
+ * Based on http://www.stunicholls.com/menu/pro_drop_1.html
+ * @todo like blox.select-menu.css
+ */
+
+.blox-menubar #blox-dropdown-menu li {padding:0px !important; margin:0px !important; list-style: none outside none !important; text-indent:0px !important;}
+.blox-menubar #blox-dropdown-menu {padding:0; margin:0; list-style:none; position:relative; z-index:900; font:normal normal 11px Tahoma, Arial, Verdana !important;}
+.blox-menubar #blox-dropdown-menu li.blox-menu-item {display:block; float:left;}
+
+/* Top level */
+.blox-menubar #blox-dropdown-menu li .blox-menu-link{display:block; float:left; line-height:13px; color:#000; text-decoration:none; padding:0 1px 0 1px; cursor:pointer; font-weight:bold}
+.blox-menubar #blox-dropdown-menu li .blox-menu-link span {float:left; display:block; padding: 2px 7px 4px 7px; border:1px solid #D4D0C8; font-weight:bold}
+.blox-menubar #blox-dropdown-menu li a.blox-menu-link:hover {color:#000; font-weight:bold}
+.blox-menubar #blox-dropdown-menu li a.blox-menu-link:hover span { border:1px solid #D4D0C8; border-color:#fff #808080 #808080 #fff; font-weight:bold}
+.blox-menubar #blox-dropdown-menu li:hover > a.blox-menu-link{color:#000; font-weight:bold} /* not IE6 */
+.blox-menubar #blox-dropdown-menu li:hover > a.blox-menu-link span {border:1px solid #D4D0C8; border-color:#fff #808080 #808080 #fff; font-weight:bold}
+.blox-menubar #blox-dropdown-menu li:hover {position:relative; z-index:600;}
+/* Invisibility of sublevels is achieved by the offset for the screen */
+.blox-menubar #blox-dropdown-menu ul,
+.blox-menubar #blox-dropdown-menu li:hover ul ul,
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover ul ul,
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover ul li:hover ul ul,
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover ul li:hover ul li:hover ul ul
+{position:absolute; left:-9999px; top:-9999px; width:0; height:0; margin:0; padding:0; list-style:none;}
+
+/* Level 2 */
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu {left:3px; top:19px; padding: 2px 1px 2px 1px; white-space:nowrap; width:231px; height:auto; z-index:700; border: solid; border-width:1px 2px 2px 1px; border-color:#fff #808080 #808080 #FFF; background:#D4D0C8; font:normal normal 11px Tahoma, Arial, Verdana; }
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li {display:block; position:relative; float:left; width:231px; font-weight:normal;}
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li a {display:block; width:231px; text-indent:9px; color:#000; text-decoration:none; padding: 3px 0px 4px 0px;}
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-checking li a {text-indent:18px;}
+.blox-menubar #blox-dropdown-menu li ul.blox-submenu li a.blox-fly {background: url(arrow.gif) right 5px no-repeat;}
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li a:hover {background:#0A246A; color:#eee; }
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li a.blox-fly:hover {color:#eee; background:#0A246A url(arrowOver.gif) right 5px no-repeat; }
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover > a.blox-fly {color:#eee; background:#0A246A url(arrowOver.gif) right 5px no-repeat;} /* not IE6 */
+.blox-menubar #blox-dropdown-menu li ul.blox-submenu li a.blox-checked {background-image: url(checkMark.gif); background-position: 6px 5px; background-repeat: no-repeat;}
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li a.blox-checked:hover {color:#eee; background:#0A246A url(checkMarkOver.gif) 6px 5px no-repeat !important; }
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover > a.blox-checked {color:#eee; background:#0A246A url(checkMarkOver.gif) 6px 5px no-repeat;} /* not IE6 */
+
+/* Level 3, ...*/
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover ul,
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover ul li:hover ul,
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover ul li:hover ul li:hover ul,
+.blox-menubar #blox-dropdown-menu li:hover ul li:hover ul li:hover ul li:hover ul li:hover ul
+{left:231px; top:-4px; background:#D4D0C8; padding: 2px 1px 2px 1px; white-space:nowrap; width:231px; z-index:800; height:auto; border: solid; border-width:1px 2px 2px 1px; border-color:#fff #808080 #808080 #FFF}
+
+.blox-menubar #blox-dropdown-menu li.blox-separator { background:url(sep.gif) 4px repeat-x; height:7px; font:1px;}
+.blox-menubar #blox-dropdown-menu li span.blox-menu-link{color:#6c6c6c; }
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li span {display:block; width:231px; text-indent:9px; color:#6c6c6c; text-decoration:none; height:17px; padding-top:1px; text-shadow:1px 1px 0px #fff}
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-checking li span {text-indent:18px;}
+/*hotkey*/
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li span.blox-shortcut {float:right; width:12px; text-indent:0; height:11px}
+.blox-menubar #blox-dropdown-menu li:hover ul.blox-submenu li:hover > a > span.blox-shortcut {text-shadow:-1px -1px -0px #000; color:#999794}
+
+ul#blox-dropdown-menu {position:relative; z-index:2}
+ul#blox-dropdown-menu li {position:relative;}
+ul#blox-dropdown-menu ul.blox-submenu {display:none; position:absolute; border: 1px solid #ccc; top: 0px; left: 1px; z-index: 3;}
+ul#blox-dropdown-menu li:hover ul.blox-submenu,
+ul#blox-dropdown-menu li.over ul.blox-submenu {display:block}
+ul#blox-dropdown-menu ul.blox-submenu li {position:relative; float:none; _width:150px}

@@ -1,0 +1,105 @@
+/** 
+ * @todo Reset classes of CMS and site: .blox-bar, .edit-button
+ *
+ * Colors
+ *     board:D4D0C8
+ *     blick:ede9e0
+ *     shadow:aca9a4
+ *     bottom-most-shadow:404040
+ *     Relief deeper
+ *         hr-blick: fff
+ *         hr-shadow: 808080
+ *     navy:0A246A
+ *     gray    6c6c6c (inactivated)
+ */
+html {height:100%; } /* For Opera*/
+body {margin: 0px; padding: 0px} /*; height:100%*/
+table {position:relative}
+
+/* Common */
+.blox-bar * {font:normal 12px Tahoma, Arial, Verdana; text-align:left; -webkit-box-sizing:content-box; -moz-box-sizing:content-box; box-sizing:content-box}
+.blox-bar * strong, .blox-bar * b {font-weight:bold}
+.blox-bar {border-top:#D4D0C8 5px solid; border-bottom: #404040 1px solid; z-index:100; background:#D4D0C8 url(sandstoneBg.gif)}
+.blox-prompt-bar {font:normal normal 11px Tahoma, Arial, Verdana; text-decoration:none; padding:1px; margin:0px;color:#000; background-color:#ffffe1; border-bottom:1px solid #808080}
+.blox-prompt-bar > div {padding:3px 6px 6px 3px}
+
+.blox-prompt-bar ol {list-style: decimal outside; margin: 0px 0px 0px 20px; padding: 0px 0px 0px 0px; font:normal 11px Tahoma, Verdana;}
+.blox-prompt-bar li {margin: 2px 0px 2px 0px;  font:normal 12px Tahoma, Verdana; text-align:left}
+.blox-prompt-bar p {margin:5px 0}
+.blox-prompt-bar a,
+.blox-prompt-bar a:link,
+.blox-prompt-bar a:visited,
+.blox-prompt-bar a:hover,
+.blox-prompt-bar a:active {color:#00a; text-decoration:none !important;}
+
+.blox-bar .blox-menubar {min-height:23px; color:#000; line-height:23px; text-decoration:none; border:1px solid; border-color:#fff #808080 #808080 #fff;  padding:0 12px 0 12px}
+.blox-bar .blox-menubar:first-child {white-space:nowrap; overflow:hidden}
+.blox-bar .blox-menubar .blox-favicon {display:block;  text-indent:0px; line-height:0px; margin: 4px 6px 0 0; float:left;  width:16px; height:16px}
+.blox-bar .blox-menubar strong, .blox-bar .blox-menubar b {font-weight:bold}
+/* Change bar */
+.blox-bar .blox-menubar form {display:inline-block; vertical-align:middle}
+.blox-bar .blox-menubar label {vertical-align:middle}
+
+.blox-bar .blox-menubar .blox-vert-sep {background:url(vert-sep.gif) repeat-y center !important; width:26px} 
+
+#blox-bar-fixed {top: 0; left:0; position:fixed; border: 1px solid #808080; border-color:#fff #808080  #808080 #fff; background:#e2e0da url(draggableBg.gif) top right; padding-right:21px; z-index:10000; cursor: move; box-shadow:4px 4px 0px rgba(0,0,0,0.2); max-width:95%}
+#blox-bar-fixed .blox-prompt-bar {border-left:1px solid #fff}
+#blox-bar-fixed .blox-prompt-bar > div {border-left:1px solid #b0b0b0}
+#blox-bar-fixed .blox-prompt-bar .blox-bar-descripton {max-height:100px;overflow-y:auto; border:1px solid #808080; padding:0 7px; margin-bottom:3px; background:rgba(255,255,255,.5)}
+/* Form */
+.blox-bar label {display: inline;margin:0;}
+.blox-bar form {margin:0}
+.blox-bar select, 
+.blox-bar input, 
+.blox-bar button {font-size:11px; font-weight:normal; width:auto; margin:0; background-color: #fff; border: 1px solid #999; display: inline-block; height: 20px!important; padding: 0px 3px 1px; margin: 0px; vertical-align: middle; border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px; color:#000;}
+.blox-bar input[type="radio"], 
+.blox-bar input[type="checkbox"] {height: auto!important; margin:0}
+.blox-bar input[type="submit"] {background-color: red}/*input elements can't be styled completely, Instead, use a button element.*/
+.blox-bar input[disabled], 
+.blox-bar select[disabled], 
+.blox-bar textarea[disabled] {cursor:not-allowed; background: transparent url(px-fff-50.png);}
+.blox-bar button, 
+.blox-bar button:link, 
+.blox-bar button:visited {color:#000000; display:inline-block; text-decoration: none; border: 1px solid #c4bfb4; text-shadow:0px 1px 0px #ffffff; border-radius:5px; -webkit-border-radius:5px; -moz-border-radius:5px; -khtml-border-radius: 5px; background: #eeeeee; background: -moz-linear-gradient(top, #ffffff, #c4bfb4); zoom: 1; background: -ms-linear-gradient(top, #ffffff, #c4bfb4); background: -o-linear-gradient(top, #ffffff, #c4bfb4); background: -webkit-gradient(linear, left top, bottom top, from(#c4bfb4), to(#ffffff)); background: -webkit-linear-gradient(top, #ffffff, #c4bfb4); _background: #eeeeee; box-shadow: 0 1px 1px rgba(0,0,0,0.2);margin:0; background-color: #fff; border: 1px solid #999; display: inline-block; height: 23px!important; margin: 0px; vertical-align: middle; border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px; padding: 0px 8px 3px;}
+.blox-bar button:hover, 
+.blox-bar button:active {color:#000000; background: #ffffff; background: -moz-linear-gradient(top, #ffffff, #eeeeee); zoom: 1; background: -ms-linear-gradient(top, #ffffff, #eeeeee); background: -o-linear-gradient(top, #ffffff, #eeeeee); background: -webkit-gradient(linear, left top, bottom top, from(#eeeeee), to(#ffffff)); background: -webkit-linear-gradient(top, #ffffff, #eeeeee); _background: #ffffff; cursor: pointer;}
+.blox-bar button:active {box-shadow: inset 0 3px 3px rgba(0,0,0,0.11)}
+
+/* Edit button */
+.blox-edit-button, .blox-edit-button:link, .blox-edit-button:visited {position:relative; color:#fff !important; border:1px solid; border-color:#0ee #055 #055 #0ee; padding: 0px 1px !important; font:normal 9px/9px Verdana, Tahoma !important; line-height:0px !important; text-decoration:none !important; background:#0aa url(px.gif) no-repeat !important; display:inline !important; width:13px!important; height:13px!important; text-indent:0px !important; white-space:nowrap; border-radius:3px !important; -webkit-border-radius:3px !important; -moz-border-radius:3px !important; -khtml-border-radius: 3px !important; text-align:left!important; vertical-align:middle!important; float:none !important}
+.blox-edit-button:hover {color:#fff; background:#0dd url(px.gif) no-repeat !important; font:normal 9px/9px Verdana, Tahoma !important; line-height:0px !important; border-color:#fff #000 #000 #fff !important}
+.blox-edit-button:active {border-color:#000 #fff #fff #000 !important}
+
+.blox-edit-button-img {border:none !important; display:inline !important; ; float: none; margin: 0 !important; padding: 0 !important; vertical-align: -1px !important; width:9px !important; min-width:9px !important; max-width:9px !important; height:9px !important; min-height:9px !important; max-height:9px !important; margin:0 !important; float:none !important}
+
+.blox-hidden, .blox-hidden:link, .blox-hidden:visited {border-color:#cf0 #450 #450 #cf0 !important; background:#9a0 url(px.gif) no-repeat !important}
+.blox-hidden:hover {background:#cd0 url(px.gif) no-repeat !important}
+.blox-no-edit-buttons, .blox-no-edit-buttons:link, .blox-no-edit-buttons:visited {border-color:#777777 #2a2a2a #2a2a2a #777777 !important; background:#555555 url(px.gif) no-repeat !important}
+.blox-no-edit-buttons:hover {background:#6e6e6e url(px.gif) no-repeat !important}
+.blox-no-tpl, .blox-no-tpl:link, .blox-no-tpl:visited {border-color:#b78fff #2b0079 #2b0079 #b78fff !important; background:#5a00ff url(px.gif) no-repeat !important}
+.blox-no-tpl:hover {background:#945afd url(px.gif) no-repeat !important}
+.blox-wait:link, .blox-wait:visited, .blox-wait:hover, .blox-wait:active {background-image:url(edit-button-wait.gif) !important}
+.blox-last-edited, .blox-last-edited:link, .blox-last-edited:visited {border-color:#ff0000 !important}
+.blox-delete-rec {background:#f55 url(px.gif) no-repeat !important}
+.blox-delete-rec:link, .blox-delete-rec:visited {border-color:#fcc #900 #900 #fcc !important; background:#f55 url(px.gif) no-repeat !important}
+.blox-delete-rec:hover {background:#f96 url(px.gif) no-repeat !important}
+
+.blox-bar label {color:#000}
+td.blox-vert-sep {background:url(vert-sep.gif) repeat-y center !important; width:14px; padding:0 !important; font-size:1px !important}
+
+.blox-tooltip {position:relative; display:inline-block}
+.blox-tooltip img {opacity:0.5; border:none}
+#blox-tooltip-content {position:absolute; top:28px; left:5px; z-index:9999; padding:4px 4px 7px 7px; background:#ffffe1; border:1px solid #000; color:#000; text-align:left;  font:normal normal 11px Tahoma, Arial, Verdana; border-radius:5px 5px; -moz-border-radius:5px; -webkit-border-radius:5px; box-shadow:3px 3px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow:3px 3px rgba(0, 0, 0, 0.1); -moz-box-shadow:3px 3px rgba(0, 0, 0, 0.1); }
+.blox-edit .heading .blox-tooltip {top:-4px}		
+
+/* Mark the button View*/
+.blox-marked-yellow {background-color:#ffff66; border:solid 1px #a4a4a4 !important} 
+.blox-marked-magenta {background-color:#ff66ff; border:solid 1px #a4a4a4 !important}
+.blox-marked-cyan {background-color:#66ffff; border:solid 1px #a4a4a4 !important}
+
+/* Overlay loading icon on submit */
+.blox-overlay-load-icon {opacity:.3}/*; background:#fff*/
+.blox-overlay-load-icon:after {content:''; position:absolute; width:66px; height:66px; left:0; right:0; top:0; bottom:0; margin:auto; -webkit-animation:blox-overlay-load-icon-rotate .8s infinite linear; animation:blox-overlay-load-icon-rotate .8s infinite linear; border-left:9px solid rgba(255,255,255,1); border-right:9px solid rgba(255,255,255,1); border-bottom:9px solid rgba(255,255,255,1); border-top:9px solid rgba(0,0,0,1); border-radius:100%}
+@-webkit-keyframes blox-overlay-load-icon-rotate {0 {-webkit-transform:rotate(0deg)} 100% {-webkit-transform:rotate(360deg)}}
+@keyframes blox-overlay-load-icon-rotate {0 {transform:rotate(0deg)} 100% {transform:rotate(360deg)}}
+

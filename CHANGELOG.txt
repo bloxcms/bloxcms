@@ -1,0 +1,68 @@
+14.1.3
+		Локализованы все файлы
+14.1.2	2018-11-15
+		В настройки сайта введены игнорируемые URL-параметры #ignored-url-params
+		Добавлен метод Url::exists().
+		В метод Email::send() добавлен параметр 'reply-to'.
+14.1.1
+		Admin::authenticate() --> Auth::get()
+		Переделан класс Captcha
+		Смещение кнопок редактирования перенесено из ?edit-button-setting в ?block-settings. Таблицу editbuttonsetting желательно удалить: DROP TABLE IF EXISTS editbuttonsetting
+14.1.0
+		В таблицу blocks добавлен столбец "settings".
+		В метод getBlockInfo() добавлен ключ "settings".
+		В фунционал системы добавлено кэширование блоков.
+		checked="checked" заменен на checked
+14.0.19
+		Произведена замена camelcase-to-hyphen всех ключей языковых терминов.
+14.0.18	2018-10-02 21:55
+		Произведена замена camelcase-to-hyphen ключей языковых терминов.
+		В Nav::init() добавлена опция 'target-page-id'.
+14.0.17	2018-09-21
+		Исправлен метод Router::convert(), чтобы титул страницы не обновлялся.
+		Изменился файл change-bar.tpl.
+14.0.16
+		$params['absolute-edit-button'] переименован в $params['edit-button-style'].
+		Переделан механизм кеширования страниц. Создан класс Cache.
+		Создан метод Files::uniquizeFilename().
+		Метод Upload::updateDataFiles() переименован в Upload::updateFiles().
+		Метод Upload::uploadFiles(...) переделан в Upload::uploadFiles(Upload::format($_FILES), ...).
+		Метод Upload::normalizePostFiles() переделан в Upload::format($_FILES).
+		Исправлена ошибка при добавление ключей таблицы ($keys) в tdd.
+		Исправлена ошибка при генерации блока в экстраданных.
+		Переделан раздел  "Настройки сайта" (scripts/site-settings.php). Добавлен подраздел "Код наверху после <HEAD>" 
+14.0.15
+		В окне редактирования переделан вид кнопок для быстрого доступа.
+		Файлы READAME.md, READAME.htm из папки templates переименованы в description.md
+14.0.14
+		Переделано "Смещение кнопки редактирования".
+		В методе Data::reduceValue() учтено поле null для int, real когда поступает пустая строка.
+		Редактировался scripts/page-info.tpl
+		Добавлен параметр $fields['secret']. Изменен смысл параметра $fields['hidden'].
+		Доработан метод Tdd::replaceTddFile().
+		Анонимные функции сделаны самовызывающимися.
+		Исправлен файл includes/display-page.php (переведен на Permission::ask('page', [$pageId])).
+14.0.13
+		Исправлен метод Url::redirectToReferrer().
+		Исправлены файлы functions/Request.php, scripts/selectlist-block.php.
+14.0.12
+		Исправлена функция $updateDatAndFile() в scripts/update.php.
+		Исправлен метод Admin::redelegate().
+		Исправлен файл BLOX/includes/make-sortable.php
+		Data::reduceValue(). Отменен $value = (string)$value; чтобы можно было вставлять пустые данные.
+		Исправлен Tdd::bind()
+14.0.11
+		Исправлена ошибка в Blox::getPageHref()
+		Файл _main.css переименован в !main.css
+		Файл _main.js переименован в !main.js
+		Исправлен Tdd.php
+		Исправлен файл edit.tpl.form.single.inc
+		Исправлен файл BLOX/functions/Admin.php > $createFirstRec = function ($srcBlockId, $tpl, $tdd, $xprefix='')
+		Исправлен класс Permission > public static function ask($type, $keys=null, $data=[])
+14.0.10
+		Исправлена ошибка в Blox::getPageHref()
+14.0.0
+		Все имена (файлы, таблицы, колонки, параметры и т.п.) теперь в нижнем регистре с дефисом.
+		Хеширование пароля.
+		Кардинально переделан метод Router::convert() - теперь ключи не двойные целые, а строковые.
+		Разрешения переделаны с Permission::get() на Permission::ask().

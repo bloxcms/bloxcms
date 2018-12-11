@@ -1,0 +1,40 @@
+/*
+ * Pure CSS menu based on https://jsfiddle.net/h2rqr8z1/2/
+ */
+
+/* blox-menu */
+.blox-select-menu {position:relative; float:left}
+.blox-select-menu ul {list-style:none; margin:0; padding:0; padding-left:15px; padding-right:15px; line-height:45px; position:relative} /* */
+.blox-select-menu ul li {display:block; float:left; position:relative; background-color:transparent; border:1px solid transparent;}
+.blox-select-menu ul li a {display:block; color:#000; text-decoration:none; padding:5px 15px}
+.blox-select-menu ul li b {background-color:#fff; border:1px solid #808080; padding:3px 5px; border-radius:4px; font-weight:normal!important}
+.blox-select-menu ul li:hover > ul {visibility:visible; transition-delay:0s}
+.blox-select-menu ul li:first-of-type i {font-size:22px}
+.blox-select-menu ul:after {content:""; display:block; clear:both}
+
+.blox-select-menu > ul > li:hover {background-color:#ffd; border-color:#808080; transition-delay:0s}
+.blox-select-menu > ul > li:hover ul {background-color:#ffd}
+
+.blox-select-menu > ul > li[disabled]:hover {background-color:transparent; border-color:#transparent}
+.blox-select-menu > ul > li[disabled] > a {cursor:default; color:rgba(0,0,0,.6)}
+.blox-select-menu > ul > li:hover b {background-color:transparent; border-color:transparent}
+/* Level 2 */
+.blox-select-menu ul ul {padding:0; background-color:white; z-index:10; visibility:hidden; position:absolute; left:-1px; border:1px solid #808080; border-top:1px solid transparent; min-width:67px; line-height:initial} /*; width:100%*/
+.blox-select-menu ul ul li {float:none}
+.blox-select-menu ul ul li a {display:block; background-color:#fff; padding:4px 12px; color:black; text-decoration:none; border:1px solid transparent}
+.blox-select-menu ul ul li a:hover {background-color:rgba(0,0,0,.1)}
+.blox-select-menu ul ul li.active a {background-color:rgba(0,0,0,.1); border-color:rgba(0,0,0,.2)}
+.blox-select-menu ul ul {max-height:600px; overflow-y:auto;}
+/* mouse out */
+.blox-select-menu:not(:hover) ul {transition:visibility 0.1s,background-color 0.1s; transition-delay:0.5s}
+.blox-select-menu:not(:hover) > ul > li {transition-delay:0.5s}
+.blox-select-menu:hover > ul:not(:hover) {transition:all 0s !important; transition-delay:0s !important; display:none !important}
+/**/
+.blox-select-menu [class^="icon-"] a {background: url('icon-transparent.png') no-repeat 4px center; padding-left:20px;}
+.blox-select-menu .icon-txt a {background-image: url('icon-txt.png')}
+.blox-select-menu .icon-folder a {background-image: url('icon-folder.png')}
+.blox-select-menu .icon-folder-up a {background-image: url('icon-folder-up.png')}
+.blox-select-menu .icon-block a {background-image: url('icon-block.png')}
+.blox-select-menu .icon-tpl a {background-image: url('icon-tpl.png')}
+
+.blox-select-menu a {white-space:nowrap}

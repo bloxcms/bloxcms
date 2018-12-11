@@ -1,0 +1,164 @@
+body {background-color:#D4D0C8} /*text-align:left; Removed because of  Bootstrap*/
+.bold {font-weight:bold;}
+.blox-edit .red {color:red;}
+.blox-edit .red a,
+.blox-edit .red a:link,
+.blox-edit .red a:visited,
+.blox-edit .red a:hover,
+.blox-edit .red a:active {color:red; text-decoration:underline;}
+.blox-edit p {margin: 5px 0px 5px 0px}
+.blox-edit p.small, .blox-edit .small p {margin: 3px 0px 3px 0px}
+.blox-edit .center {text-align:center}
+/* nav button */
+.blox-edit .button {display: inline-block;text-align: center;vertical-align: middle;cursor: pointer;white-space: nowrap; border:1px solid transparent; background-color:#f3dcaf; border-color:rgba(255,255,255,.8) rgba(0,0,0,.4) rgba(0,0,0,.4) rgba(255,255,255,.8); padding:5px 9px; font-family:Tahoma, Verdana; font-weight: normal; font-size:13px; line-height:15px; text-decoration:none; border-radius:5px; -webkit-border-radius:5px; -moz-border-radius:5px; -khtml-border-radius: 5px}
+.blox-edit a.button, .blox-edit a.button:link, .blox-edit a.button:visited, .blox-edit a.button:hover, .blox-edit a.button:active    {color:#000}
+.blox-edit .button-xsmall {font-size:11px; line-height:12px; padding:2px 4px; border-radius:2px; -webkit-border-radius:2px; -moz-border-radius:2px; -khtml-border-radius:2px}
+.blox-edit .button-small {font-size:12px; line-height:14px; padding:3px 6px; border-radius:3px; -webkit-border-radius:3px; -moz-border-radius:3px; -khtml-border-radius:3px}
+.blox-edit .button-large {font-size:15px; line-height:18px; padding:7px 12px; border-radius:6px; -webkit-border-radius:6px; -moz-border-radius:6px; -khtml-border-radius:6px}
+.blox-edit .button:hover {background-color:#ffda8f}
+.blox-edit .button-delete {background-color:#f3afaf}
+.blox-edit .button-delete:hover {background-color:#ff9191}
+
+.blox-edit span.button, 
+.blox-edit .button.active {background-color:#ffd06f; border-color:rgba(0,0,0,.4) rgba(255,255,255,.8) rgba(255,255,255,.8) rgba(0,0,0,.4)}
+.blox-edit .button.disabled {pointer-events:none;cursor:default;opacity:.5; background-color:transparent }
+/* standard button */
+.blox-edit button {float:left; padding:7px 12px; font:13px Tahoma, Verdana }
+
+/* edit form */
+.blox-edit {padding:20px 10px 10px 20px; background-color:#d4d0c8; height:100%; font:12px Verdana, Tahoma, Arial; display:table-cell}
+.blox-edit input {font:12px Verdana, Tahoma, Arial; padding:1px 3px}
+.blox-edit input:disabled + span, 
+.blox-edit input:disabled + label {opacity:0.5}
+.blox-edit select {font:12px Verdana, Tahoma, Arial; padding:0px 0px 2px 3px}
+.blox-edit input[readonly], 
+.blox-edit input[disabled], 
+.blox-edit select[disabled] {background-color:rgb(235, 235, 228)}
+.blox-edit .small input {font:11px Tahoma, Verdana; }
+.blox-edit textarea {font:12px Verdana, Tahoma, Arial}
+.blox-edit .field  {width:22px; color:#999; font-weight:bold; text-align:right; vertical-align:top; text-shadow:1px 1px 1px #fff}
+.blox-edit .name   {color:#000; font-weight:normal;  vertical-align:top;}
+.blox-edit .explanation {font-size:11px; color:#666;}
+.blox-edit .explanation ul {list-style-type: disc;margin-left: 15px}
+.blox-edit .explanation li {padding: 0px 0px;}
+.blox-edit span.explanation {padding:0px 1px 0px 10px;}
+.blox-edit .multi-rec .explanation {font-size:9px; color:#666; padding:0}
+.blox-edit .multi-rec #multi-edit td {white-space:nowrap}
+.blox-edit .red {color:red}
+.blox-edit .green {color:green}
+.blox-edit .alert {padding:10px; color:#fff; font-weight:bold; border-radius:5px; border:1px solid #fff; text-align:center}
+.blox-edit .alert.red {background:red} /*danger*/
+.blox-edit .alert.green {background:green} /*success*/
+.blox-edit .alert.orange {background:orange} /*warning*/
+.blox-edit .note {font:normal 11px Tahoma, Verdana; color:#666; padding:0px;}
+.blox-edit td.note p:first-child {margin-top:0}
+.blox-edit .wide-fields input[type="text"], .wide-fields textarea {width:100%; min-width:100px}
+.blox-edit .wide-fields input[data-stamp] {width:20px}
+.blox-edit td {font: normal normal 12px Verdana, Tahoma, Arial; padding: 2px 5px 2px 5px; }
+.blox-edit table.standoff td {padding:0 10 0 10; }
+.blox-edit table.center td {text-align:center}
+.blox-edit th {text-align:center}
+.blox-edit tr.center td, .blox-edit tr.center th {text-align:center}
+.blox-edit tr.right td, .blox-edit tr.right th {text-align:right}
+.blox-edit table.middle td, tr.middle td, .blox-edit tr.middle th {vertical-align:middle}
+.blox-edit table.top td, tr.top td, .blox-edit tr.top th {vertical-align:top}
+.blox-edit table caption {font-size:12px; font-weight:bold; padding:4px}
+.blox-edit table.form td {padding:6px 5px 6px 0px}
+.blox-edit table.chart td {padding:0 5 0 5; margin:0; border:0px; white-space:nowrap; border-top:1px solid #fff; border-bottom:1px solid #808080; font:11px Tahoma, Verdana;}
+.blox-edit table.chart td.noborders {border:0}
+.blox-edit table.hor-separators {border-bottom:1px solid #ede9e0; border-top:1px solid #aca9a4; position:relative; border-collapse:separate; border-spacing: 0px;}
+.blox-edit table.hor-separators table,
+.blox-edit table.hor-separators table td,
+.blox-edit table.hor-separators table th {border:0px; white-space:nowrap; position:relative}
+.blox-edit table.hor-separators td, 
+.blox-edit table.hor-separators th {border-top:1px solid #ede9e0; border-bottom:1px solid #aca9a4; padding:4px 5px 4px 5px; position:relative}
+.blox-edit table.hor-separators td.inputs {position:relative; vertical-align:top}
+.blox-edit table.hor-separators .selected {background:rgba(255,255,255,0.4)}
+.blox-edit div.hor-separator {border:solid 1px; border-color:#aca9a4 #ede9e0 #ede9e0 #aca9a4; margin: 5px 0px 5px 0px; font:1px; position:relative}
+.blox-edit div.submit-separator {border:solid 1px; border-color: #fff #808080 #808080 #fff; margin: 7px 0px 7px 0px; height:1px; font:1px; margin-top:20px}
+/* Stamp */
+.blox-edit .stamp {border-top:1px dashed #aca9a4; padding-top:3px; margin-top:3px; display:none}
+.blox-edit .stamp table div.placement{float:left;  margin-top:5px; padding:2px 2px 0px 2px; border:solid 1px; border-color:#ffffff #808080 #808080 #ffffff;}
+.blox-edit .stamp table div.placement input {margin:0px;}
+.blox-edit .stamp table td.title {padding: 0px 0px 0px 10px;}
+.blox-edit .stamp div.stamp-img-wrap {height:28px; }/*border:solid 1px; border-color:  #ffffff #000000 #000000 #ffffff;*/
+.blox-edit .stamp div.stamp-img-wrap img.stamp-img {height:28px; }
+
+.blox-edit table.small td {font: normal normal 11px Tahoma, Verdana; padding: 0px 2px 0px 2px}
+.blox-edit .heading {font:normal 19px Tahoma, Verdana; margin-bottom:25px; margin-top:10px; white-space:nowrap}
+.blox-edit .subheading {margin-top:10px}
+.blox-edit .notes {margin-top:5px; font:normal 11px Tahoma, Verdana; color:#666;}
+
+
+.blox-edit .small, .blox-edit tr.small td, .blox-edit tr.small th {font-size:11px; font-family:Tahoma, Verdana}
+.blox-edit .smaller, .blox-edit tr.smaller td, .blox-edit tr.smaller th {font-size:9px; font-family:Verdana, Tahoma, Arial;}
+.blox-edit .gray {color: #6c6c6c; text-shadow:1px 1px 1px #fff}
+.blox-edit .grayer {color: #999}
+.blox-edit .bold {font-weight:bold;}
+.blox-edit .small li {margin: 2px 0px 2px 0px;}
+
+.blox-edit a,
+.blox-edit a:link,
+.blox-edit a:visited,
+.blox-edit a:hover,
+.blox-edit a:active {color:#00a; text-decoration:none !important;}
+
+.blox-edit ul {list-style-type:none; margin-top:0; margin-left:50px; padding-left:0px}
+.blox-edit > ul {margin-left:0; padding-left:0; margin-top:7px}
+.blox-edit li {padding: 5px 0px}
+.blox-edit ul a,
+.blox-edit ul a:link,
+.blox-edit ul a:visited,
+.blox-edit ul a:hover,
+.blox-edit ul a:active {color:#00a; text-decoration:none;}
+
+.blox-edit td.warnings {font:11px Tahoma, Verdana;  width:500px}
+.blox-edit td.warnings ul {list-style: disc outside; margin:0px; padding:20px}
+.blox-edit td.warnings ul li {padding-bottom:7px}
+.blox-edit td.warnings p {margin:10px 0}
+.blox-edit div.warning {color:red}
+
+.blox-edit table .bevel {margin:2px; border:solid 1px #fff; border-color: #fff #808080 #808080 #fff}
+.blox-edit table td {background-color:#D4D0C8;} /* for drag in sort-manualy.tpl */
+.blox-edit div.drag-handle {background: #D4D0C8 url(dragHandle.gif) no-repeat; width:32px; height:16px; cursor:move}
+
+.blox-edit .section {display: table-cell; border: solid 1px; border-color:#ede9e0 #aca9a4 #aca9a4 #ede9e0; border-radius:7px; -webkit-border-radius:7px; -moz-border-radius:7px; -khtml-border-radius: 5px; padding:9px;}
+.blox-edit .section .section-header {position:relative; top:-5px; left:5px; padding-bottom:3px; font:bold 12px Verdana, Tahoma; }
+
+/* tree */
+.blox-edit .treemenu ul {list-style-type: none; margin: 0px 0px 0px 44px; padding:0px 0px 0px 0px; background: url(tree-dots.gif) left center repeat-y;} /* The rest is in js*/
+.blox-edit .treemenu span.list-item,
+.blox-edit .treemenu a.treeopen,
+.blox-edit .treemenu a.treeclosed {background: no-repeat left center;text-decoration: none; display:inline-block; width:42px}
+.blox-edit .treemenu a.treeopen {background-image: url(tree-open-list.gif)}
+.blox-edit .treemenu a.treeclosed {background-image: url(tree-closed-list.gif)}
+.blox-edit .treemenu span.list-item {background-image: url(tree-list-item.gif)}
+.blox-edit .treemenu li {line-height:15px; padding: 3px 0px 0px 0px; white-space:nowrap}
+.blox-edit .treemenu li:last-child {background:#D4D0C8 url(tree-last-dots.gif) no-repeat top left;}
+.blox-edit .treemenu > ul {background-image:none; margin-left:0}
+.blox-edit .treemenu > ul > li,
+.blox-edit .treemenu > ul > li:last-child {background-image:none}
+    
+    
+.blox-edit table {border-collapse:separate; border-spacing:0 0px;}
+.blox-edit .preview {max-height:44px; max-width:99px;border:solid 1px; border-color: #fff #808080 #808080 #fff}
+.blox-edit .caption {font-size:13px; font-weight:bold; padding-top:9px!important;} /**/ /*padding-left:17px!important;  removed for site-settings.tpl */
+.blox-searchword {background:rgba(255,255,0,0.4)}
+
+.description {margin:50px 0px; padding:0px 30px; font: normal normal 12px Verdana, Tahoma, Arial; }
+.description h1, .description h2, .description h3, .description h4    {font-weight:normal}
+.description h1 {font-size:19px}
+.description h2 {font-size:17px}
+.description h3 {font-size:15px}
+.description ul, .description ol {padding-left:18px; margin-left:0; margin-top:-4px}
+.description li {padding:4px 0; line-height:1.4}
+.description li li:first-child {padding-top:10px}
+
+
+
+/********************* Anti Bootstrap **********************************************/
+label {font-weight: normal}
+
+
+
+
