@@ -9,14 +9,14 @@ Even there is no admin panel in its usual sense.
 
 Due to block structure of the site, it is easy to use Ajax.
 
-To start the creation of sites, you need to learn how to code templates, learn how to assign templates and how to assemble pages with blocks. 
+To start the creation of sites, you need to learn how to code templates, learn how to assign templates to the blocks and how to assemble pages with blocks. 
 Despite the simplicity of Blox CMS, you can develop websites of any complexity, even online stores.
 
 
 ## Links
 
-[Home page](http://bloxcms.net/)
-[Documentation](http://bloxcms.net/documentation/)
+- [Home page](http://bloxcms.net/)
+- [Documentation](http://bloxcms.net/documentation/)
 
 ## License
 
