@@ -1,0 +1,7 @@
+AddDefaultCharset UTF-8
+Options All -Indexes
+# Deny execution of all files except index.php
+<Files "*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>

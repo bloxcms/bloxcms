@@ -350,7 +350,7 @@ class Admin
             return false;
 
         $sql = "CREATE TABLE IF NOT EXISTS $tbl (
-            `rec-id` ".self::reduceToSqlType('rec-id')." NOT NULL";        
+            `rec-id` ".self::reduceToSqlType('rec-id');        
             $aa = array_keys($tdd[$xprefix.'types']);
             $maxKey = max($aa);
             for ($field = 1; $field <= $maxKey; $field++) {
@@ -361,8 +361,8 @@ class Admin
                     $sqlType = "TINYINT(1) UNSIGNED NOT NULL DEFAULT 0";
                 $sql .= ", dat{$field} {$sqlType}";
             }
-            $sql .= ", `block-id` ".self::reduceToSqlType('block')." NOT NULL";
-            $sql .= ", sort ".self::reduceToSqlType('rec-id')." NOT NULL";
+            $sql .= ", `block-id` ".self::reduceToSqlType('block');
+            $sql .= ", sort ".self::reduceToSqlType('rec-id');
             $sql .= ", PRIMARY KEY (`block-id`, `rec-id`)"; 
             # keys
             if ($tdd[$xprefix.'keys'])
@@ -701,7 +701,7 @@ class Admin
         } elseif ('file' == mb_strtolower(substr($type, 0, 4))) {
     		$type = "VARCHAR(332) NOT NULL DEFAULT ''";
         } elseif ('block' == mb_strtolower(substr($type, 0, 5))) {
-            $type = 'MEDIUMINT UNSIGNED'; # NOT NULL in instal.php 
+            $type = 'MEDIUMINT UNSIGNED NOT NULL'; # NOT NULL in install.php 
             if ($isTab)
                 $type .= ' NOT NULL DEFAULT 0';
         } elseif ('select' == mb_strtolower(substr($type, 0, 6))) {
@@ -757,10 +757,12 @@ class Admin
         return true;
     }
     #
-    public static function removeRec($tpl, $recId, $srcBlockId, $tbl, $xprefix=null)
+    public static function deleteRec($tpl, $recId, $srcBlockId, $tbl=null, $xprefix=null)
     {
         if (!self::deleteChilds($tpl, $recId, 'all', $srcBlockId, $xprefix))
             return false;
+        if (!$tbl)
+            $tbl = Blox::getTbl($tpl, $xprefix);
         $sql = 'DELETE FROM '.$tbl.' WHERE `block-id`=? AND `rec-id`=?';
     	if (isEmpty(Sql::query($sql, [$srcBlockId, $recId])))
             return false;
@@ -989,7 +991,8 @@ class Admin
             if ($options['rec'])
                 $href.= '&rec='.$options['rec'];
             if (isset($_GET['edit']))
-                $href .= urldecode(Request::convertToQuery(Request::get($blockId)));
+                $href .= Request::convertToQuery(Request::get($blockId));
+                //$href .= urldecode(Request::convertToQuery(Request::get($blockId)));  #497436375
             $href .= $options['pagehref-query'] ?: '&pagehref='.Blox::getPageHref(true);
             #
             if ($options['return-href']) 
@@ -1133,10 +1136,9 @@ class Admin
     }
     
     /**
-     * Get description of a template or folder with templates
+     * Get description of a template or folder with templates. Accepts .md files
      * @param string $path Normal (full) tpl name or path to a folder
-     * @param bool $isFolder
-     * Accepts .md files
+     * @param bool $isFolder If true we search for the file "description.md"
      */
     public static function getDescription($path, $isFolder=false) 
     {
@@ -1157,6 +1159,7 @@ class Admin
                     require_once Blox::info('cms','dir').'/vendor/erusev/parsedown/Parsedown.php';
                     $p = new Parsedown();
                     $text .= $p->text($zz);
+                    break; # Output only one of two files
                 }
             }
 		}

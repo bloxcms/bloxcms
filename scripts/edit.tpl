@@ -3,14 +3,10 @@
 /**
  * @uses fancybox 2
  */
- 
 Blox::addToFoot(Blox::info('cms','url').'/assets/jquery.mousewheel.js');
 $pagehrefQuery = '&pagehref='.Blox::getPageHref(true);
-//qq($_GET);
 if (!isset($_GET['add-new-rec'])) {
     echo'<div class="blox-edit">';
-    
-    //if (!isset($_GET['rec']))
     include Blox::info('cms','dir').'/includes/output-multirec-buttons.php';
     echo'      
     <div class="heading" style="margin-bottom:5px">';
@@ -78,6 +74,22 @@ if (!isset($_GET['add-new-rec'])) {
         	        	echo $terms['editor-of-rec'].': <b>'.$editorOfRecordInfo['login'].'</b> '.$bb;
                         echo'
                     </div>';
+                }
+                if ($blockSettings) {
+                    echo'<div><b>'.$terms['block-settings'].'</b>: ';
+                        if ($blockSettings['block-caching']['cache'])
+                            echo'<span class="red">'.$terms['block-cached'].'. </span>';
+                        #
+                        $z = false;
+                        foreach ($blockSettings['edit-button-style'] as $v) {
+                            if ($v) {
+                                $z = true;
+                                break;
+                            }
+                        }
+                        if ($z)
+                            echo $terms['edit-button-styled'];
+                    echo'</div>';
                 }
                 echo'
             </div>

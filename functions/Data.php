@@ -51,6 +51,8 @@ class Data
 
     private static function treat($method, $table, $data, $wdata=null)
     {
+        if (!($method && $table))
+            return;
         $table = Sql::sanitizeName($table);
         if ($method == 'update' || $method == 'get' || $method == 'delete' || $method == 'getRow') {
             /* Produces garbage reports foe extradata with $wdata=[]
@@ -149,7 +151,6 @@ class Data
                 return;
             }
         }
-//qq($sql);
         /** For INSERT, REPLACE, UPDATE, DELETE */
         if (isEmpty(Sql::query($sql, $sqlValues))) {
             Blox::error('Error 002 in method: Data::'.__FUNCTION__.'()');

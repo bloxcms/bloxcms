@@ -28,7 +28,7 @@ echo'
     }
     echo'
     '.$arrow.'
-    <a class="button" style="font-size:11px" href="?sort&block='.$blockInfo['id'].'&sort'.$pagehrefQuery.'" title="'.$title.'">&#160;'.$name.'&#160;</a>';
+    <a class="button" style="font-size:11px" href="?sort&block='.$blockInfo['id'].'&sort'.$pagehrefQuery.'" title="'.$title.'">&nbsp;'.$name.'&nbsp;</a>';
 
     # Reverse
     if ($_GET['reverse']) {
@@ -42,7 +42,7 @@ echo'
     }
     echo'
     '.$arrow.'
-    <a class="button" style="font-size:11px" href="?sort&block='.$blockInfo['id'].'&reverse=1'.$pagehrefQuery.'" title="'.$title.'">&#160;'.$name.'&#160;</a>
+    <a class="button" style="font-size:11px" href="?sort&block='.$blockInfo['id'].'&reverse=1'.$pagehrefQuery.'" title="'.$title.'">&nbsp;'.$name.'&nbsp;</a>
     <div class="heading" style="margin-bottom:5px">'.$terms['heading2'].'</div>
     <div class="small">
         '.$terms['heading1'].': <b>'.$blockInfo['src-block-id'].'</b>';if ($blockInfo['id'] != $blockInfo['src-block-id']) echo' ('.$terms['delegated-from-block'].' '.$blockInfo['id'].')';
@@ -59,7 +59,7 @@ echo'
             <td align="center">'.$terms['rec-id'].'</td>';
             foreach ($editingFields as $field)
             echo'
-            <td class="blox-vert-sep">&#160;</td>
+            <td class="blox-vert-sep">&nbsp;</td>
             <td>'.$field.'.<br />'.Text::truncate(Text::stripTags($dataTitles[$field],'strip-quotes'), 40, 'plain').'</td>';
             echo'
             </tr>';
@@ -80,7 +80,7 @@ echo'
             }
             echo'
             <tr>
-                <td style="text-align:center; height:28px; padding-top:5px; font:bold 13px Verdana; white-space:nowrap;">'.$arrow.'&#160;<a class="button" href="?sort&block='.$blockInfo['id'].'&sort[rec]='.$newOrder.$pagehrefQuery.'" title="'.$title.'">'.$terms['sort'].'</a></td>';
+                <td style="text-align:center; height:28px; padding-top:5px; font:bold 13px Verdana; white-space:nowrap;">'.$arrow.'&nbsp;<a class="button" href="?sort&block='.$blockInfo['id'].'&sort[rec]='.$newOrder.$pagehrefQuery.'" title="'.$title.'">'.$terms['sort'].'</a></td>';
                 foreach ($editingFields as $field) {
                     $order = Request::get($blockInfo['id'],'sort', $field); 
                     if ($order == 'asc') {
@@ -97,8 +97,8 @@ echo'
                         $title = $terms['sort_asc'];
                     }
                     echo'
-                    <td>&#160;</td>
-                    <td style="text-align:center; height:28px; padding-top:5px; font:bold 13px Verdana; white-space:nowrap;">'.$arrow.'&#160;<a class="button" href="?sort&block='.$blockInfo['id'].'&sort['.$field.']='.$newOrder.$pagehrefQuery.'" title="'.$title.'">'.$terms['sort'].'</a></td>';
+                    <td>&nbsp;</td>
+                    <td style="text-align:center; height:28px; padding-top:5px; font:bold 13px Verdana; white-space:nowrap;">'.$arrow.'&nbsp;<a class="button" href="?sort&block='.$blockInfo['id'].'&sort['.$field.']='.$newOrder.$pagehrefQuery.'" title="'.$title.'">'.$terms['sort'].'</a></td>';
                 }
                 echo'
             </tr>';
@@ -107,7 +107,7 @@ echo'
                     for ($i=0; $i<3; $i++){
                         echo'<tr><td align="center">. . .</td>';
                         foreach ($editingFields as $field)
-                            echo'<td>&#160;</td><td>. . .</td>';
+                            echo'<td>&nbsp;</td><td>. . .</td>';
                         echo'</tr>';}
                 } elseif ($startSkipKey &&  $startSkipKey < $row && $row < $finishSkipKey) {
                     ;
@@ -117,14 +117,14 @@ echo'
                         <td align="center"'; if (Request::get($blockInfo['id'],'sort','rec')) echo' bgcolor="#ede9e0"'; echo'>'.$dat['rec'].'</td>';
                         foreach ($editingFields as $field) {
                             echo'
-                            <td>&#160;</td>
+                            <td>&nbsp;</td>
                             <td'; if (Request::get($blockInfo['id'],'sort', $field)) echo' bgcolor="#ede9e0"'; echo'>';
                             if (substr($dataTypes[$field], 0, 9) == 'timestamp')
                                 echo date('Y-m-d ', strtotime(substr_replace($dat[2], '', 8)));
                             else
                                 echo Text::truncate(Text::stripTags($dat[$field],'strip-quotes'), 40, 'plain');
                             echo'
-                            &#160;
+                            &nbsp;
                             </td>';
                         }
                         echo'

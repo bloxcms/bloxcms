@@ -2,7 +2,7 @@
 /**
  * Class Query2 is not used in API (only in admin scripts)
  * Copy of Query
- * This does not usefull: "class Query2 extends Query {}"
+ * "class Query2 extends Query" - this does not usefull
  */
 class Query2 
 {
@@ -72,7 +72,7 @@ class Query2
             return self::$queries;
         else {
             if (is_array($param))                     
-                $param = Url::arrayToQuery($param);
+                $param = substr(Url::arrayToQuery($param), 1);
             $param = preg_replace('~[=].*~u', '', $param); # Remove all after the sign '='                
             $param = preg_replace( '~([^\[]+)(.*$)~u', '[$1]$2', $param); # dress the name of the parameter in square brackets
             if ($param)
@@ -165,13 +165,20 @@ class Query2
                 $query .= '&block='.$block_;
             if ($queries) {
                 Arr::orderByKey($queries); # sort     
-                Arr::walk($queries, 'urlencode'); # The function "urlencode()" replaces spaces " " by "+" in values
+                ##Arr::walk($queries, 'urlencode'); #497436375 # The function "urlencode()" replaces spaces " " by "+" in values
+                $query.= Url::arrayToQuery($queries);
+                /* #497436375
                 if ($aa = urldecode(http_build_query($queries))) # The function "urlencode()" replaces spaces "+" by "%2B", [ by %5B, ] by %5D in a whole query 
                     $query .= '&'.$aa;
+                */
+                    
             }
             if ($sort_)
+                $query.= Url::arrayToQuery(['sort'=>$sort_]);
+                /* #497436375
                 if ($aa = urldecode(http_build_query(['sort'=>$sort_])))
                     $query .= '&'.$aa;
+                */
             if ($part_)
                 $query .= '&part='.$part_;
             if ($single_)

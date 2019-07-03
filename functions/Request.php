@@ -84,7 +84,9 @@ class Request
     private static function formatUrlParams($urlParams)
     {
         # Part 1
-        $filters = ['block'=>true,'backward'=>true,'limit'=>true,'part'=>true,'p'=>true,'pick'=>true,'s'=>true,'search'=>true,'single'=>true, 'sort'=>true, 'script'=>true,'src'=>true]; # The order is important for: 'p', 'pick', 's', 'search'
+        $filters = ['block'=>true,'backward'=>true,'limit'=>true,'part'=>true,'p'=>true,'pick'=>true,'charfield'=>true, 'charblock'=>true,'char'=>true, 's'=>true,'search'=>true,'single'=>true, 'sort'=>true, 'script'=>true,'src'=>true]; # The order is important for: 'p', 'pick', 's', 'search'
+            
+            
         foreach ($urlParams as $k=>$v) {
             if ($filters[$k])
                 $queries[$k] = $urlParams[$k];
@@ -213,7 +215,6 @@ class Request
             $pickRequests = [];
             $partRequests = [];
             $searchRequests = [];
-//qq($params);
             foreach ($params as $pKey=>$pVal) {
                 if ('s'===$pKey) {
                     if (is_array($pVal)) {
@@ -362,17 +363,18 @@ class Request
                         $queries[$filter] = $rqst;
                 }
             }
-
             Arr::orderByKey($queries);
             $query = '';
-            if ($query1 = http_build_query($queries))
-                $query = '&'.$query1;
+            if ($query1 = Url::arrayToQuery($queries)) #497436375
+                $query = $query1;
             if ($sorts)
-                if ($query2 = http_build_query($sorts))
-                    $query .= '&'.$query2;               
+                if ($query2 = Url::arrayToQuery($sorts)) #497436375
+                    $query .= $query2;
             return $query;         
         }
     }
+
+
 
 
 
@@ -438,7 +440,7 @@ class Request
             if (self::get($regularId,'sort'))
                 self::add([$regularId=>['backward'=>false]]); # Don't unset backward at search request (for faq.tpl at esperto.su)
             # limit
-            if ($tdd['params']['part']['limit'] && !self::get($regularId,'part','limit'))
+            if (!isEmpty($tdd['params']['part']['limit']) && isEmpty(self::get($regularId,'part','limit'))) # Use limit=0
                 self::add([$regularId=>['part'=>['limit'=>$tdd['params']['part']['limit']]]]);
             # hidingCol
             $whereSqls = [];
@@ -746,6 +748,7 @@ class Request
                                 # Replace initial key '0' with associative key 'rec' and put it at the beginning of the array
                                 if ($fetchFunc == 'fetch_row') {
                                     array_pop($row); # remove dat associated with positionjj 
+                                    $blockId = array_pop($row);
                                     $sortNum = array_pop($row);
                                     # Replace initial key '0' with assoc. 'rec' and put it in the beginning
                                     $row = ['rec'=>$row[0]] + $row;
@@ -760,11 +763,10 @@ class Request
                                         $row['selects'] = $aa;
                                     }
                                     $row['sort'] = $sortNum;
+                                    $row['block'] = $blockId;
                                 }
-
                                 if (self::get($regularId, 'search','highlight'))
                                     $row = self::highlightSearchWords($regularId, $row);
-                                
                                 $backward = self::get($regularId,'backward');
                                 
                                 if ($row['rec'] == $singleId) {
@@ -862,7 +864,7 @@ class Request
 
             ### NOT DEPRECATED:
             ############# For Borrowed Recs (redistribution = -1) ############
-            if (self::get($regularId,'part','limit') && self::get($regularId,'backward') && $tdd[$xprefix.'params']['part']['redistribution'] == -1 && !$xprefix)
+            if (!isEmpty(self::get($regularId,'part','limit')) && self::get($regularId,'backward') && $tdd[$xprefix.'params']['part']['redistribution'] == -1 && !$xprefix)
             {
                 # part we entered 
                 if (!self::get($regularId,'part','priorPart')) {
@@ -896,6 +898,7 @@ class Request
                 {
                     while ($row = $result->fetch_row())
                     {
+                        $blockId = array_pop($row);
                         $sortNum = array_pop($row);
                         # Replace initial key '0' with assoc. 'rec' and put it in the beginning
                         $row = ['rec'=>$row[0]] + $row;
@@ -910,7 +913,8 @@ class Request
                             $row['selects'] = $aa;
                         }
                         $row['sort'] = $sortNum;
-    
+                        $row['block'] = $blockId;
+
                         # SIMILAR: Convert date-time format 
                         if ($typesDetails_datetime) {
                             foreach($typesDetails_datetime as $field => $aa) {
@@ -1005,6 +1009,11 @@ class Request
                 if ($aa = self::getPickSqls($regularId, $tbl, $tddParams, $isTab, $selectDataParams))
                     $whereSqls = ($whereSqls) ? array_merge($whereSqls, $aa) : $aa;
             }
+            # char (AND IN())
+            if ($_GET['block']==$regularId && $_GET['char'] && $_GET['charblock'] && $_GET['charfield']) {
+                if ($aa = self::getCharSqls($tbl, $tddParams))
+                    $whereSqls = ($whereSqls) ? array_merge($whereSqls, $aa) : $aa;
+            }
             /** #SETS POSTPONED 2017-08-11
             # Sets of request (OR)
             if ($set = self::get($regularId,'sets')) {
@@ -1024,10 +1033,10 @@ class Request
             # sort request (ORDER BY) ###
             $sql .= self::getSortSql($regularId, $tbl, $tddParams, $isTab, $selectDataParams);
             # part request (LIMIT)
-            if (self::get($regularId,'part','limit') && !self::get($regularId,'single')) # for savings: !self::get($regularId,'single')
+            if (!isEmpty(self::get($regularId,'part','limit')) && !self::get($regularId,'single')) # for savings: !self::get($regularId,'single')
                 $sql .= self::getPartSql($regularId, $tbl, $tddParams, $selectFromSqls);
         }
-//if (375==$regularId)
+//if (143==$regularId)
 //qq($sql);
         return $sql;
     }
@@ -1221,7 +1230,7 @@ class Request
                             } else
                                 $columnsList .= ', '.$tbl.'.dat'.$field;
                         }
-                        return $columnsList.$selectColumnsList.', '.$tbl.'.sort';
+                        return $columnsList.$selectColumnsList.', '.$tbl.'.sort, '.$tbl.'.`block-id`';
                     } else
                         Blox::error('No tdd types in $columnsList');
                 })($tbl, $tddTypes, $selectDataParams);
@@ -1299,6 +1308,7 @@ class Request
             $selectFromSqls['count']  = "SELECT COUNT(*) FROM $tbl";
             $selectFromSqls['columns'] = "SELECT * FROM $tbl";
         }
+//qq($selectFromSqls);
     	return $selectFromSqls;
     }
 
@@ -1456,6 +1466,7 @@ class Request
                 $result->free();
                 # Replace initial key '0' with associative key 'rec' and put it at the beginning of the array
                 if ('fetch_row' == $fetchFunc) {
+                    $blockId = array_pop($row);
                     $sortNum = array_pop($row);
                     # Replace initial key '0' with assoc. 'rec' and put it in the beginning
                     $row = ['rec'=>$row[0]] + $row;
@@ -1470,6 +1481,7 @@ class Request
                         $row['selects'] = $aa;
                     }
                     $row['sort'] = $sortNum;
+                    $row['block'] = $blockId;
                 }
                 if (self::get($regularId, 'search','highlight'))
                     $row = self::highlightSearchWords($regularId, $row);
@@ -1484,7 +1496,6 @@ class Request
      */
     private static function getPickSqls($regularId, $tbl, $tddParams, $isTab, $selectDataParams)
     {
-//qq(self::get($regularId,'pick'));
         # SIMILAR in recs-delete.php
         $signs = ['lt'=>'<', 'le'=>'<=', 'eq'=>'=', 'ge'=>'>=', 'gt'=>'>', 'ne'=>'!='];
         foreach (self::get($regularId,'pick') as $field => $aa) {
@@ -1517,8 +1528,29 @@ class Request
         }
         return $whereSqls;
     }
-    
 
+
+    private static function getCharSqls($tbl, $tddParams)
+    {   
+        $charBlockInfo = Blox::getBlockInfo($_GET['charblock']);
+        $charTbl = Blox::getTbl($charBlockInfo['tpl']);
+        $signs = ['lt'=>'<', 'le'=>'<=', 'eq'=>'=', 'ge'=>'>=', 'gt'=>'>', 'ne'=>'!=']; # SIMILAR to self::getPickSqls()
+        foreach ($_GET['char'] as $field => $aa) {
+            $col = $charTbl.'.dat'.(int)$field;
+            foreach ($aa as $k=>$val) {
+                if ($k && $signs[$k]) {
+                    $insql.= ' AND '.$col.' '.$signs[$k].' '.Sql::parameterize($val);
+                    if ($tddParams['pick']['case-sensitive']) # Case sensitive comparision
+                        $insql.= ' COLLATE utf8_bin';
+                }
+            }
+        }
+        if ($insql) {
+            $whereSqls[] = $tbl.'.dat'.$_GET['charfield'].' IN (SELECT '.$charTbl.'.`rec-id` FROM '.$charTbl.' WHERE 1 '.$insql.')';  # TODO JOIN ?
+            return $whereSqls;
+        }
+    }
+    
 
     private static function getSearchSqls($regularId, $tbl, $tddParams, $isTab, $selectDataParams)
     {

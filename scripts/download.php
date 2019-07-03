@@ -4,7 +4,8 @@
  * @todo Rename script from "download" to "count-url" and provide additional custom scripts
  */
 if ($_GET['url']) {
-    if ($rUrl = Url::convertToRelative($_GET['url'])) {
+//qq(Url::convertToAbsolute(urldecode($_GET['url'])));
+    if ($rUrl = urldecode(Url::convertToRelative($_GET['url']))) {
         # Downloads counting
         if (Blox::info('user','user-is-admin') || Blox::info('user','user-is-editor'))
             ;

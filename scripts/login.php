@@ -2,13 +2,11 @@
 /**
  * @todo github monolog/monolog
  */
-#qq($_POST['data']);
 if (!isset($_SESSION)) {
     Blox::execute('?error-document&code=403&note=no-session');
     exit;
 }
 #
-//qq($_SERVER);
 if (isset($_POST['data'])) {
     # check the password   
     $data['login'] = trim($_POST['data']['login']);
@@ -39,7 +37,7 @@ if (isset($_POST['data'])) {
             exit;
         } elseif (Blox::getScriptName() == 'page') { # This is custom login page
             if ($_GET['pagehref'])
-                Url::redirect(Url::decode($_GET['pagehref']));
+                Url::redirect(Url::decode($_GET['pagehref']), 'exit'); # Do 'exit' otherwise returns to login page
         } elseif ($pagehref = Blox::getPageHref())
             Url::redirect($pagehref);
         else

@@ -46,6 +46,20 @@ class Dat
     }
     
   
+    /** Error - infinite loop 
+    public static function insert($blockInfo, $dat=null, $xprefix=null, $tdd=null)
+    {
+        return self::insert2('insert', $blockInfo, $dat, $xprefix, $tdd);
+    }
+    public static function replace($blockInfo, $dat=null, $xprefix=null, $tdd=null)
+    {
+        return self::insert2('replace', $blockInfo, $dat, $xprefix, $tdd);
+    }
+    */
+    
+    
+    
+    
     /**
      * Method for new record creation. 
      * 
@@ -57,7 +71,7 @@ class Dat
      *
      * @todo Parameterize this method, check type inside
      */
-    public static function insert($blockInfo, $dat=null, $xprefix=null, $tdd=null)
+    public static function insert($blockInfo, $dat=null, $xprefix=null, $tdd=null)  //private static function insert2($method, $blockInfo, $dat=null, $xprefix=null, $tdd=null)
     {
         $terms = Blox::getTerms();
         $tbl = Blox::getTbl($blockInfo['tpl'], $xprefix);
@@ -68,6 +82,7 @@ class Dat
                 $counter = 0;
                 while ($row = $result->fetch_assoc()) {
                     if ($counter) { # More than one block
+                        //Blox::prompt(sprintf($terms['no-src-block-id'], $method), true); //
                         Blox::prompt($terms['no-src-block-id'],true);
                         return false;
                     }
@@ -163,6 +178,9 @@ class Dat
 
                 $data['block-id'] = $blockInfo['src-block-id'];
                 $data['rec-id']   = $newRecId;
+                //if ($method == 'replace')
+                    //Data::replace($tbl, $data);
+                //elseif ($method == 'insert')
                 Data::insert($tbl, $data);
                 # Retrive all data again since there can be defaults
                 $dat2 = self::get($blockInfo, ['rec'=>$newRecId], $xprefix);
@@ -241,8 +259,8 @@ class Dat
                     $sortNum = array_pop($row);
                     $blockId = array_pop($row);
                     $row = ['rec'=>$recId] + $row;
-                    $row['block'] = $blockId; # array_push - does not support associative arrays
                     $row['sort'] = $sortNum;
+                    $row['block'] = $blockId; # array_push - does not support associative arrays
                 } else # is it necessary?
                     $row['rec'] = $recId;
                 return $row;

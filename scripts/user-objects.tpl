@@ -18,8 +18,8 @@ echo'
         <table  class="hor-separators">
             <tr class="small center middle">
             <td>'.$terms['block'].'</td>
-            <td>&#160; '.$terms['tpl'].'</td>
-            <td>&#160; '.$terms['on-pages'].'</td>
+            <td>&nbsp; '.$terms['tpl'].'</td>
+            <td>&nbsp; '.$terms['on-pages'].'</td>
             </tr>';
             if ($userObjects) {
                 foreach ($userObjects as $objectOfUser) {
@@ -34,10 +34,10 @@ echo'
                     echo'
                     <span'; if ($objectOfUser['delegated-id']) echo' style="color:#900"'; echo'>'.$objectOfUser['object-id'].'</span>
                     </td>
-                    <td style="font-weight: normal; white-space: nowrap">&#160;
+                    <td style="font-weight: normal; white-space: nowrap">&nbsp;
                         '.$objectOfUser['tpl'].'
                     </td>
-                    <td style="font-weight: normal">&#160;
+                    <td style="font-weight: normal">&nbsp;
                         <a href="?page='.$objectOfUser['container-page']['id'].'&bound-block='.$objectOfUser['object-id'].'#bound-block'.$objectOfUser['object-id'].'" class="small" target=_blank>'.$objectOfUser['container-page']['id'].'. '.$objectOfUser['container-page']['title'].'</a>
                     </td>
                     </tr>';
@@ -56,7 +56,7 @@ echo'
         <table  class="hor-separators">
             <tr class="small center middle">
             <td>'.$terms['page'].'</td>
-            <td>&#160; '.$terms['page-title'].'</td>
+            <td>&nbsp; '.$terms['page-title'].'</td>
             </tr>';
             if ($userObjects) {
                 foreach ($userObjects as $objectOfUser) {
@@ -71,7 +71,7 @@ echo'
                             echo'
                             <a href="?page='.$objectOfUser['object-id'].'" target=_blank>'.$objectOfUser['object-id'].'</a>
                         </td>
-                        <td style="font-weight: normal">&#160;
+                        <td style="font-weight: normal">&nbsp;
                             '.$objectOfUser['title'].'
                         </td>
                         </tr>';

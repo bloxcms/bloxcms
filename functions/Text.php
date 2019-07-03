@@ -171,20 +171,24 @@ class Text
         # Replace all mnemonics, including quotes, by symbols.
         # ENT_QUOTES	Will convert both double and single quotes.
         # $text = html_entity_decode($text, ENT_QUOTES, 'utf-8'); 
-        ##$text = str_replace("&nbsp;", ' ',  $text);   #  replace no-break spaces
+        $text = str_replace('&nbsp;', ' ', $text);   #  replace no-break spaces
+        $text = str_replace("\xc2\xa0",' ', $text);   #  replace no-break spaces as UTF-8
+            
         # New lines to breaks
+        $r = ($options['nl2br']) ? '<br />' : '';
         if ($options['nl2br']) {
             $text = str_replace(
                 ["\r\n", "\r", "\n"], # Do not remove "\r\n" otherwise double breakes appear!   # $text = nl2br($text); this function does NOT replace newlines! 
-                '<br />', 
+                $r, 
                 $text
             );
         }
-
+        #
+        $r = ($options['tab2nbsp']) ? '&nbsp;&nbsp;&nbsp;&nbsp;' : ' ';
         if ($options['tab2nbsp']) {
             $text = str_replace(
                 "\t", 
-                '&nbsp;&nbsp;&nbsp;&nbsp;', 
+                $r, 
                 $text
             );  
         }

@@ -65,11 +65,11 @@ echo'
                         if (Blox::info('user','user-is-admin'))
                             echo'<input type="text" '.$aa.' />';                
                         elseif ($selectedUserId == 'new') {# A new external user
-                        	if (!Blox::info('user','id'))
-                        		echo'<input type="text" '.$aa.' />';
-                        	else { # If the user is already registered then do not give him to register again
+                        	if (Blox::info('user','id')) { # If the user is already registered then do not give him to register again
                         		echo Blox::info('user','login');
                         		$isAlreadyRegistered = true;
+                            } else { 
+                                echo'<input type="text" '.$aa.' />';
                             }
                         } else {
                             echo'
@@ -148,12 +148,11 @@ echo'
         <td class="blox-vert-sep">&nbsp;</td>
         <td class="warnings">';
         if ($selectedUserId == 'new') {
-            echo'<p><a class="button" rel="nofollow" href="'.Blox::info('site','url').'/?password&login='.Blox::info('user','login').$pagehrefQuery.'">'.$terms['forgot-password'].'</a></p>';
+            echo'<p><a class="button" rel="nofollow" href="'.Blox::info('site','url').'/?password-restore&login='.Blox::info('user','login').$pagehrefQuery.'">'.$terms['forgot-password'].'</a></p>';
             if (Blox::info('user'))
                 echo'<p><a class="button" rel="nofollow" href="'.Blox::info('site','url').'/?logout'.$pagehrefQuery.'">'.$terms['logout'].'</a></p>';
         } elseif ($passwordUpdateUrl) {
-            echo'
-            <p><a class="button" rel="nofollow" href="'.$passwordUpdateUrl.'">'.$terms['update-password'].'</a></p>';
+            echo'<p><a class="button" rel="nofollow" href="'.$passwordUpdateUrl.'">'.$terms['update-password'].'</a></p>';
         }
         echo'
         </td>

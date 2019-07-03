@@ -2,7 +2,7 @@
 $pagehrefQuery = '&pagehref='.Blox::getPageHref(true);
 echo'
 <div class="blox-edit">
-    <a class="button" href="?statistics'.$pagehrefQuery.'" title=""><img src="'.Blox::info('cms','url').'/assets/x-button-arrow-left.png" alt="&lt;" /></a>&#160;
+    <a class="button" href="?statistics'.$pagehrefQuery.'" title=""><img src="'.Blox::info('cms','url').'/assets/x-button-arrow-left.png" alt="&lt;" /></a>&nbsp;
     <a class="button" href="?events-show'.$pagehrefQuery.'" title="">'.$terms['list'].'</a></td>
     <div class="heading">'.$terms['heading'].'</div>
     <div class="explanation"><br />'.$terms['represent'].'</div>

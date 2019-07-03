@@ -41,10 +41,10 @@ echo'
                     echo'
                     <tr>
                 	<td class="field" align="center">'.$field.'.</td>
-                	<td>'.$dataTitles[$field].'&#160;</td>
+                	<td>'.$dataTitles[$field].'&nbsp;</td>
                     <td>';
                     if ($typeName == 'block' || $typeName == 'page' || $typeName == 'select')
-                        echo'&#160;';
+                        echo'&nbsp;';
                     else
                         echo'<input name="batch['.$field.']" type="file"  size="20" />';
                     echo'

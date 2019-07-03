@@ -100,7 +100,7 @@ echo'
                     } else 
                         echo $dataTitles[$field];
                     echo'
-                        &#160;
+                        &nbsp;
                 </td>';
                 
                 if(
@@ -334,7 +334,7 @@ echo'
                         if ($dat[$field]) {
                             echo'<a href="?page='.$dat[$field].'">'.$dat[$field];
                             $aa = Router::getPageInfoById($dat[$field]);                            
-                            if (!(empty($aa['title']) || $aa['title'] == "&nbsp;" || $aa['title'] == "&#160;"))
+                            if (!(empty($aa['title']) || $aa['title'] == "&nbsp;" || $aa['title'] == "&nbsp;"))
                                 echo' <span class="small">('.Text::truncate(Text::stripTags($aa['name'],'strip-quotes'), 40, 'plain').')</span>';                                            
                             echo'</a>';
                         }
@@ -364,24 +364,24 @@ echo'
 
                         if (empty($readonly))
                         {
-                            echo' &#160; ';
+                            echo' &nbsp; ';
                             if (Permission::ask('record', [$blockInfo['src-block-id'], $recId])['edit']) {//get
                                 /*edit-rec*/  
                                 if (in_array('edit', $_SESSION['Blox']['select-lists'][$recId][$field]['controls']) && $dat['selects'][$field]) 
-                                    echo' &#160;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$dat['selects'][$field].'&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].$pagehrefQuery.'" title="'.$terms['edit-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-edit-rec.png" alt="&equiv;" /></a>';
+                                    echo' &nbsp;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$dat['selects'][$field].'&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].$pagehrefQuery.'" title="'.$terms['edit-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-edit-rec.png" alt="&equiv;" /></a>';
                                 /*newRec*/   
                                 if (in_array('add', $_SESSION['Blox']['select-lists'][$recId][$field]['controls']) && isset($selects[$recId][$field])) 
-                                    echo' &#160;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec=new&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].'&edit-field='.$field.$pagehrefQuery.'" title="'.$terms['add-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-new-rec.png" alt="+" /></a>';
+                                    echo' &nbsp;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec=new&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].'&edit-field='.$field.$pagehrefQuery.'" title="'.$terms['add-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-new-rec.png" alt="+" /></a>';
                             }
 
                             if (Blox::info('user','user-is-admin') || Blox::info('user','user-is-editor')) {
                                 /*deleteRec*/
                                 if (in_array('delete', $_SESSION['Blox']['select-lists'][$recId][$field]['controls'])  && $dat['selects'][$field]) 
-                                    echo' &#160;<a class="button button-small" href="?recs-delete&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$recId.'&which='.$dat['selects'][$field].'&edit-field=$field&is-pick-values-field='.$pickValuesFields[$field].$pagehrefQuery.'" title="'.$terms['delete-the-item'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-delete-rec.png" alt="&times;" /></a>';
+                                    echo' &nbsp;<a class="button button-small" href="?recs-delete&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$recId.'&which='.$dat['selects'][$field].'&edit-field=$field&is-pick-values-field='.$pickValuesFields[$field].$pagehrefQuery.'" title="'.$terms['delete-the-item'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-delete-rec.png" alt="&times;" /></a>';
                             }
                             if (Blox::info('user','user-is-admin')) {
                                 /*change*/   
-                                echo' &#160;<a class="button button-small" href="?selectlist-block&edit-block='.$blockInfo['id'].'&edit-rec='.$recId.'&edit-tpl='.urlencode($blockInfo['tpl']).'&edit-field='.$field.'&edit-field-title='.urlencode($dataTitles[$field]); 
+                                echo' &nbsp;<a class="button button-small" href="?selectlist-block&edit-block='.$blockInfo['id'].'&edit-rec='.$recId.'&edit-tpl='.urlencode($blockInfo['tpl']).'&edit-field='.$field.'&edit-field-title='.urlencode($dataTitles[$field]); 
                                 if ($parentField) 
                                     echo'&parent-field='.$parentField.'&parent-list-rec-id='.$dat['selects'][$parentField].'&parent-list-item='.$selects[$recId][$parentField][$dat[$parentField]].'&parent-list-block-id='.$_SESSION['Blox']['select-lists'][$recId][$field]['parent-list-block-id']; 
                                 echo'&direction=right'.$pagehrefQuery.'" title="'.$terms['change-selectlist-block'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-no-tpl.png" alt="?" /></a>';
@@ -405,24 +405,17 @@ echo'
                         # A list of items stored in the database
                         $setDataElements = explode(",", $dat[$field]);  # @todo Solve the register problem for "set". Here comes the original case
                         foreach ($typeParams['set'] as $i => $item) {
-                            echo'
-                            <input type="hidden" name="dat['.$field.']['.$item.']" value="0" title="dat['.$field.']['.$item.']" />
-                            <span style="white-space: nowrap">        
-                                <input type="checkbox" name="dat['.$field.']['.$item.']" value="1" id="set'.$field.'"'.$readonly.$style.' title="dat['.$field.']['.$item.']"'; 
-                                if (in_array($item, $setDataElements)) 
-                                    echo'checked'; 
-                                echo' />
-                                <label for="set'.$field.'">'.$item.'</label>
-                            </span>&#160;';
+                            echo'<input type="hidden" name="dat['.$field.']['.$item.']" value="0" />';
+                            echo'<label style="white-space: nowrap" title="'.$tooltips[$field][$item].'"><input type="checkbox" name="dat['.$field.']['.$item.']" value="1"'.$readonly.$style.' title="dat['.$field.']['.$item.']"'.(in_array($item, $setDataElements) ? ' checked' : '').' />'.$item.'</label>&nbsp; ';
                         }
                     }
                     elseif ($typeName == 'enum') {
                         $quotes = "'\" ";
-                        echo'<select  name="dat['.$field.']" size="1"'.($readonly ? ' disabled' : '').$style.'>';
+                        echo'<select  name="dat['.$field.']" size="1"'.($readonly ? ' disabled' : '').$style.' title="'.$terms['stored-value'].' '.$dat[$field].' '.$tooltips[$field][$dat[$field]].'">';
                         foreach ($typeParams['enum'] as $item) {
                             $item = trim($item, $quotes);
                             echo'
-                            <option ';
+                            <option title="'.$tooltips[$field][$item].'" ';
                                 if ($item==$dat[$field]) 
                                     echo'selected="selected" ';
                                 echo'value="'.$item.'">'.$item.'

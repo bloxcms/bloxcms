@@ -116,6 +116,7 @@
 
     unset($_SESSION['Blox']['udat']); # If tdd works as form i.e. without tpl.
     unset($_SESSION['Blox']['dpdat']);
+    unset($_SESSION['Blox']['drdat']);
     $aa = $_SESSION['Blox']['update']['submit-mode'];
     unset($_SESSION['Blox']['update']['submit-mode']);
     
@@ -202,7 +203,6 @@
         Blox::prompt(sprintf($terms['access-to-page-denied'], $pageInfo['id']), true);
         Blox::execute('?error-document&code=403&note=page-is-hidden-and-denied');
     }
-//qq($pageInfo);
     $template->assign('pageInfo', $pageInfo); # for ?change it is not necessary
     $template->assign('outerBlockHtm', $outerBlockHtm);
 

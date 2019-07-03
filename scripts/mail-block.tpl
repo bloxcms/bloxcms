@@ -12,7 +12,7 @@ echo'
     <table  class="hor-separators middle">
         <tr class="small center">
             <td>'.$terms['recipient-status'].'</td>
-            <td class="blox-vert-sep">&#160;</td>
+            <td class="blox-vert-sep">&nbsp;</td>
         	<td>'.$terms['include'].'</td>
             <td>'.$terms['exclude'].'</td>
             <td>'.$terms['dont-use'].'</td>
@@ -48,7 +48,7 @@ echo'
     echo'
     <tr>
         <td>'.$terms['registered'].'</td>
-        <td>&#160;</td>
+        <td>&nbsp;</td>
         <td align="center"><input type="radio" name="recipients[registered]" value="inc" onClick="setRadioChecks(1,1)" /></td>
         <td align="center"><input type="radio" name="recipients[registered]" value="exc" onClick="setRadioChecks(1,0)" /></td>
         <td align="center"><input type="radio" name="recipients[registered]" value="" onClick="setRadioChecks(0,0)" checked /></td>
@@ -58,7 +58,7 @@ echo'
         echo'
         <tr>
             <td>'.$terms[$status].'</td>
-            <td>&#160;</td>
+            <td>&nbsp;</td>
             <td align="center"><input type="radio" name="recipients['.$status.']" value="inc" /></td>
             <td align="center"><input type="radio" name="recipients['.$status.']" value="exc" /></td>
             <td align="center"><input type="radio" name="recipients['.$status.']" value="" checked /></td>
@@ -68,14 +68,14 @@ echo'
         echo'
         <tr>
             <td>'.$terms['upload-list'].' 1<br /><input name="uploaded1" type="file"  size="10" class="smaller" /></td>
-            <td>&#160;</td>
+            <td>&nbsp;</td>
             <td align="center"><input type="radio" name="recipients[uploaded1]" value="inc" /></td>
             <td align="center"><input type="radio" name="recipients[uploaded1]" value="exc" /></td>
             <td align="center"><input type="radio" name="recipients[uploaded1]" value="" checked /></td>
         </tr>
         <tr>
             <td>'.$terms['upload-list'].' 2<br /><input name="uploaded2" type="file"  size="10" class="smaller" /></td>
-            <td>&#160;</td>
+            <td>&nbsp;</td>
             <td align="center"><input type="radio" name="recipients[uploaded2]" value="inc" /></td>
             <td align="center"><input type="radio" name="recipients[uploaded2]" value="exc" /></td>
             <td align="center"><input type="radio" name="recipients[uploaded2]" value="" checked /></td>
@@ -87,13 +87,13 @@ echo'
     <div class="section">
         <div class="section-header">'.$terms['letter-params'].'</div>
         <table class="small" style="border-collapse:separate; border-spacing:4px;">
-        	<tr><td>'.$terms['letter-subject'].'</td><td><input type="text" name="blockletter-params[subject]" value="'.$blockletterParams['subject'].'" size="40" /></td><td>&#160;</td></tr>
+        	<tr><td>'.$terms['letter-subject'].'</td><td><input type="text" name="blockletter-params[subject]" value="'.$blockletterParams['subject'].'" size="40" /></td><td>&nbsp;</td></tr>
             <tr><td>'.$terms['from_email'].'<span class="red">*</span></td><td><input type="text" name="blockletter-params[email-from]" value="'.$blockletterParams['email-from'].'" id="blockletter-params[email-from]" size="40" /></td><td><span class="smaller">'.$terms['from_note'].'</span></td></tr>
-            <tr><td>'.$terms['from_name'].'</td><td><input type="text" name="blockletter-params[name_from]" value="'.$blockletterParams['name_from'].'" size="40" /></td><td>&#160;</td></tr>
+            <tr><td>'.$terms['from_name'].'</td><td><input type="text" name="blockletter-params[name_from]" value="'.$blockletterParams['name_from'].'" size="40" /></td><td>&nbsp;</td></tr>
             <tr><td>'.$terms['host'].'</td><td><input type="text" name="blockletter-params[mail-server-host]" value="'.$blockletterParams['mail-server-host'].'" size="40" /></td><td><span class="smaller">'.$terms['host-note'].'</span></td></tr>
         </table>
     </div>
-    &#160;
+    &nbsp;
     <input type="hidden" name="blockletter-params[block-id]" value="'.$blockInfo['id'].'" />
     <input type="hidden" name="blockletter-params[parent-block-id]" value="'.$blockInfo['parent-block-id'].'" />
     <input type="hidden" name="blockletter-params[tpl]" value="'.$blockInfo['tpl'].'" />

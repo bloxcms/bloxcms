@@ -23,22 +23,24 @@ return [
 ],
 'emails' => [
     'caption' => 'Почта',
-    'note' => '<a target="_blank" href="http://bloxcms.net/documentation/class-email.htm#email-setup">Как правильно настроить отправку почты с сайта?</a>',
     'note-2' => 'Желательно, чтобы оба адреса (to и from) имели вид:',
     'to' => [
-        'name' => 'Электронные адреса для получения писем с сайта (to)',
-        'note' => 'Примеры:<br>
-                        <div style="border:solid 1px rgba(0,0,0,0.2); padding:3px; display:table-cell">john@doe.com, bill@smith.com<br>John Doe &lt;john@doe.com&gt;, Bill Smith &lt;bill@smith.com&gt;<br></div>ПРИ ТЕСТИРОВАНИИ ДОСТАВКИ ПИСЕМ ВСЕГДА ПРОВЕРЯЙТЕ РАЗДЕЛ СПАМ, И ОТМЕЧАЙТЕ ПИСЬМА КАК НЕ СПАМ.',
+        'name' => 'Ящики для получения писем с сайта (to)',
+        'note' => 'Примеры:<br><div style="border:solid 1px rgba(0,0,0,0.2); padding:3px; display:table-cell">john@doe.com, bill@smith.com<br>John Doe &lt;john@doe.com&gt;, Bill Smith &lt;bill@smith.com&gt;<br></div>ПРИ ТЕСТИРОВАНИИ ДОСТАВКИ ПИСЕМ ВСЕГДА ПРОВЕРЯЙТЕ РАЗДЕЛ СПАМ, И ОТМЕЧАЙТЕ ПИСЬМА КАК НЕ СПАМ.',
     ],
     'from' => [
-        'name' => 'Электронный адрес для отправки писем с сайта (from)',
-        'note' => '
-            Формат записи такой же, как для адресов получателей (см. выше).',
+        'name' => 'Ящик для отправки писем с сайта (from)',
+        'note' => 'Формат записи такой же, как для адресов получателей (см. выше). <a target="_blank" href="http://bloxcms.net/documentation/class-email.htm#email-setup">Как правильно настроить отправку почты с сайта?</a>',
     ],
     'transport' => [
         'name' => 'Транспорт',
         'note' => 'JSON-код с настройками отправки почты (подробности см. описании параметра transport <a target="_blank" href="http://bloxcms.net/documentation/class-email.htm#transport">метода Email::send()</a>).<br>Пример: {"type":"smtp", "host":"smtp.yandex.ru","port":"65","user":"...","password":"..."}',
-    ],/*
+    ],
+    'webmail' => [
+        'name' => 'Веб-интерфейс почты сайта',
+        'note' => 'Имееется в виду URL для перехода в почту ящика, указанного в поле "to", например: https://mail.yandex.ru/. В панели управления появится кнопка для перехода на почту.',
+    ],
+    /*
     'domain-configured' => [
         'name' => 'Домен сконфигурирован',
         'note' => '
@@ -49,7 +51,7 @@ return [
         </p>',
     ],*/
     'errors' => [
-        'incorrect-email' => 'Некорректный электронный адрес!',
+        'incorrect-email' => 'Некорректный почтовый ящик!',
         'incorrect-json' => 'Некорректный JSON-код!',
         'no-function' => 'PHP-функция json_decode() не существует!',
     ]
@@ -75,14 +77,14 @@ return [
 
 'extra-codes' => [
     'caption' => 'Дополнительный код на всех страницах сайта',
-    'note' => 'Используется, например, для быстрого размещения кода Яндекс-метрики. В режиме администратора и редактора, этот код не подключается',
+    'note' => 'Используется, например, для быстрого размещения кода Яндекс-метрики. <span style="color:red">В режиме администратора и редактора, этот код не подключается</span>',
     'head' => [
         'name' => 'Код наверху',
-        'note' => 'После тега &lt;head&gt;',
+        'note' => 'Код будет размещен после открывающего тега &lt;head&gt;',
     ],
     'foot' => [
         'name' => 'Код внизу',
-        'note' => 'Перед тегом &lt;/body&gt;',
+        'note' => 'Код будет размещен перед закрывающим тегом &lt;/body&gt;',
     ],  
 ],   
 'other' => [

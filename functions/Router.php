@@ -55,6 +55,7 @@ class Router
             if (!$infos) #KLUDGE
                 return '';
         }
+        //$phref = urldecode($phref);
         
         # Other data to find a code
         if ($conversionError) {
@@ -81,7 +82,6 @@ class Router
             $infos['alias'] = $aa;
         
         $specParams = self::getPhrefParams($phref, $afterHash); # Resort URL params in standard order
-
         $basePhref = '';
         if ($specParams['page']['value']) {
             /** #temp
@@ -153,7 +153,7 @@ class Router
                  */
                 $unAllowedParamExist = false;
                 if ($specParams['rest']['value']) {
-                    $stdRestParams = ['backward', 'limit', 'p', 'pick', 's', 'search', 'sort','highlight','fields','what','where'];
+                    $stdRestParams = ['backward','charfield','charblock','char','limit','p','pick','s','search','sort','highlight','fields','what','where'];
                     if ($infos['url-params'])//allowed-params
                         $stdRestParams = array_merge($stdRestParams, $infos['url-params']);
                     foreach ($specParams['rest']['names'] as $p) {
@@ -188,21 +188,21 @@ class Router
                     if (empty($pseudopageOldInfos)) {
                         $setSql = "`phref`=?";
                         $sqlValues[] = $partfreePhref;
-                        if ($infos) {
+                        if ($infos['key'] && isset($infos['parent-key'])) { #497436375
                             foreach (['key', 'parent-key', 'name', 'title', 'alias'] as $k) {
-                                if ($v = $infos[$k]) {
+                                $v = $infos[$k];
+                                if ($v && in_array($k, ['name', 'title', 'alias'])) {
+                                    $v = Text::truncate(Text::stripTags($v, 'strip-quotes'), 332, 'plain');
                                     if ($k == 'alias') {  
                                         $v = Str::sanitizeAlias($v, Blox::info('site', 'transliterate'));
-                                        $v = self::makeUniqueAlias($v, true, $infos['key'], $infos['parent-key']);
+                                        $v = self::makeUniqueAlias($v, true, $infos['parent-key']);//, $infos['key']
                                     }
-                                    if ($k == 'title') {
-                                        $v = Text::stripTags($v);
-                                    }
-                                    $setSql .= ", `$k`=?";
-                                    $sqlValues[] = $v;
                                 }
+                                $setSql .= ", `$k`=?";
+                                $sqlValues[] = $v;
                             }
                         }
+
                         $sql = 'INSERT INTO '.Blox::info('db','prefix').'pseudopages SET '.$setSql;
                         if (Sql::query($sql, $sqlValues)===false)
                             Blox::prompt(Blox::getTerms('pseudopages-insert-error'),  true);
@@ -222,7 +222,7 @@ class Router
                                 if ($v !== null && $pseudopageOldInfos[$k] !== $v) {
                                     if ($k == 'alias') {
                                         $v = Str::sanitizeAlias($v, Blox::info('site', 'transliterate'));
-                                        $v = self::makeUniqueAlias($v, true, $infos['key'], $infos['parent-key']);
+                                        $v = self::makeUniqueAlias($v, true, $infos['parent-key']);//, $infos['key']
                                     }
                                     #
                                     $setSql .= ", `$k`=?";
@@ -242,7 +242,7 @@ class Router
                                         if ($pseudopageOldInfos[$k] !== $v) {
                                             $update = true;
                                             $v = Str::sanitizeAlias($v, Blox::info('site', 'transliterate'));
-                                            $v = self::makeUniqueAlias($v, true, $infos['key'], $infos['parent-key']);                                        
+                                            $v = self::makeUniqueAlias($v, true, $infos['parent-key']); //, $infos['key']
                                         }
                                     } elseif ($k == 'name') {
                                         if (!$pseudopageOldInfos[$k])
@@ -293,7 +293,7 @@ class Router
                             if (empty($pseudopageOldInfos[$k])) { # once recorded, no longer necessary
                                 if ($k == 'alias') {
                                     $v = Str::sanitizeAlias($v, Blox::info('site', 'transliterate'));
-                                    $v = self::makeUniqueAlias($v, false, $infos['key'], $pseudopageOldInfos['parent-page-id']);
+                                    $v = self::makeUniqueAlias($v, false, $pseudopageOldInfos['parent-page-id']);//, $infos['key']
                                 }
                                 $setSql .= ", `$k`=?";
                                 $sqlValues[] = $v;
@@ -332,7 +332,6 @@ class Router
         # Return href (human or parametric)
         if (Blox::info('site','human-urls','convert')) {
             if ($breadcrumbs = self::getBreadcrumbs($partfreePhref, $specParams, $notConvertedToHhref)) {
-//qq($breadcrumbs);
                 $lastBreadcrumb = end($breadcrumbs); # The last element of the chain is our link
                 $href = $lastBreadcrumb['href'];
                 if ($specParams['part']['value']) { # No part in request
@@ -350,7 +349,7 @@ class Router
                 $notConvertedToHhref = true; # parametric mode # failed attempt - not enough data
         } else { # parametric mode
             $notConvertedToHhref = true;
-        }        
+        }      
         #
         if ($notConvertedToHhref) { # parametric mode
             if ($onlyBlockIsRequested) 
@@ -360,10 +359,8 @@ class Router
             
             if ($infos['xhref']) 
                 $href .= ($href ? '&' : '?').$infos['xhref'];
-            
-            //$href = urlencode($href);  
         }
-        
+        #
         if ($afterHash && mb_strpos($infos['xhref'], '#')===false) # If there is hash in xhref, use it but not "afterHash"
             $href .= '#'.urlencode($afterHash);
         elseif ($conversionError)
@@ -382,12 +379,13 @@ class Router
     *
     * @param string $alias
     * @param bool $isPseudoPage
-    * @param string $key Do not remove. Added because parents can not exist
     * @param string $pk - parent-key (if isPseudoPage) OR $parentPageId
+    * ---@param string $key Do not remove. Added because parents may not exist. But it causes not unique aleases!
     */
-    private static function makeUniqueAlias($alias, $isPseudoPage, $key, $pk)
+    private static function makeUniqueAlias($alias, $isPseudoPage, $pk)//, $key
     {
-        $parentId = $key.'-'.$pk; # arbitrary parent id
+        //$parentId = $key.'-'.$pk; # arbitrary parent id
+        $parentId = $pk; # arbitrary parent id
 
         # There is no parent or another parent is taken
         if (empty(self::$uniqueAliasParentId) || self::$uniqueAliasParentId != $parentId) { 
@@ -396,8 +394,8 @@ class Router
             # get Aliases From Db once per parent
             if ($isPseudoPage) {
                 if ($pk !== null) {
-                    $sql = 'SELECT `alias` FROM '.Blox::info('db','prefix').'pseudopages WHERE `parent-key`=? AND `key`=?';
-                    if ($result = Sql::query($sql, [$pk, $key])) {
+                    $sql = 'SELECT `alias` FROM '.Blox::info('db','prefix').'pseudopages WHERE `parent-key`=?';// AND `key`=?
+                    if ($result = Sql::query($sql, [$pk])) { //, $key
                         while ($row = $result->fetch_row())
                             $aliases[$row[0]] = true;
                         $result->free();
@@ -433,8 +431,7 @@ class Router
         
         self::$truncateAliasCounter = 0;
         $tAlias = self::truncateAlias($alias);
-        if (self::$uniqueAliases[$tAlias]) # Such an alias already exists in the list of aliases
-        {
+        if (self::$uniqueAliases[$tAlias]) { # Such an alias already exists in the list of aliases
             # Append a postfix '-1' or increase the number. The length of the alias will increas at least two signs
             $parts = Str::splitByMark($tAlias, '-', true);
             if ($parts[1]) {                        
@@ -469,7 +466,7 @@ class Router
             $parts = Str::splitByMark($alias, '-', true);
             if ($parts[1]) {                        
                 if (Str::isInteger($parts[1])) # digit one or more times in the end  
-                    $tAlias = truncateAlias($parts[0]); # It is better to throw out digits, because there may be an infinite loop. The case when $parts[0] is empty is impossible, because margin hyphens are removed
+                    $tAlias = self::truncateAlias($parts[0]); # It is better to throw out digits, because there may be an infinite loop. The case when $parts[0] is empty is impossible, because margin hyphens are removed
                 else
                     $tAlias = $parts[0];
             } else
@@ -498,62 +495,65 @@ class Router
         if ($phref===null) { # Current page
             if (self::$currPageBreadcrumbs)
                 return self::$currPageBreadcrumbs;
-            $phref = self::convertUrlToPartFreePhref(Blox::getPageHref(), $specParams);
-        }
-
-        if ($phref)
-        {
+            $phref2 = self::convertUrlToPartFreePhref(Blox::getPageHref(), $specParams);
+        } else
+            $phref2 = $phref;
+        if ($phref2) {
+            $notDetermined = false;
             if ($specParams === null) # get $specParams if $_SERVER['REQUEST_URI'] was human
-                $specParams = self::getPhrefParams($phref);
+                $specParams = self::getPhrefParams($phref2);
             # pageId
             if ($pageId = $specParams['page']['value'])
                 ;
-            elseif (preg_match('~\Wpage=(\d+)~', $phref, $matches))
+            elseif (preg_match('~\Wpage=(\d+)~', $phref2, $matches))
                 $pageId = $matches[1];
-            /* 2017-09-09
-            # `block-id`
-            if ($blockId = $specParams['block']['value'])
-                ;
-            elseif (preg_match('~\Wblock=(\d+)~', $phref, $matches))
-                $blockId = $matches[1];
-            */
-
-            if ($pageId && $breadcrumbs = self::getRegularBreadcrumbs($pageId))
-            {
-                # If pseudopage
-                if ($specParams['single'] || $specParams['rest']) {
-                    if ($breadcrumbs2 = self::getPseudoBreadcrumbs($phref))
-                        $breadcrumbs = array_merge($breadcrumbs, $breadcrumbs2);
-                    else
-                        return false; # In the url there are params, but this url is not registered.
-                }
-                
-
-                if (Blox::info('site','human-urls','convert'))
-                {
-                    $hhref = '';
-                    foreach ($breadcrumbs as $k => $breadcrumb) {
-                        if ($k==0) # first item (home) has empty alias
-                            continue;
-                        # Build a hhref from breadcrumb
-                        if ($breadcrumb['alias'] && !$notConvertedToHhref) {
-                            $hhref .= $breadcrumb['alias'].'/';  # human href
-                            $breadcrumbs[$k]['href'] = $hhref;
-                        } else {
-                            $breadcrumbs[$k]['href'] = $breadcrumb['phref'];
-                            if (!$notConvertedToHhref) {
-                                $notConvertedToHhref = true;
-                                Blox::prompt(sprintf(Blox::getTerms('no-alias-for-page'), '<a target="_blank" href="'.$breadcrumb['phref'].'">'.$breadcrumb['phref'].'</a>'));
+            #   
+            if ($pageId) {
+                $breadcrumbs = self::getRegularBreadcrumbs($pageId);
+                if ($breadcrumbs) {
+                    if ($specParams['single'] || $specParams['rest']) { # If pseudopage
+                        if ($breadcrumbs2 = self::getPseudoBreadcrumbs($phref2)) {
+                            $breadcrumbs = array_merge($breadcrumbs, $breadcrumbs2);
+                        } else
+                            $notDetermined = true; # In the url there are params, but this url is not registered.
+                    }
+                    #
+                    if (!$notDetermined) {
+                        if ($breadcrumbs) {
+                            if (Blox::info('site','human-urls','convert')) {
+                                $hhref = '';
+                                foreach ($breadcrumbs as $k => $breadcrumb) {
+                                    if ($k==0) # first item (home) has empty alias
+                                        continue;
+                                    # Build a hhref from breadcrumb
+                                    if ($breadcrumb['alias'] && !$notConvertedToHhref) {
+                                        $hhref .= $breadcrumb['alias'].'/';  # human href
+                                        $breadcrumbs[$k]['href'] = $hhref;
+                                    } else {
+                                        $breadcrumbs[$k]['href'] = $breadcrumb['phref'];
+                                        if (!$notConvertedToHhref) {
+                                            $notConvertedToHhref = true;
+                                            Blox::prompt(sprintf(Blox::getTerms('no-alias-for-page'), '<a target="_blank" href="'.$breadcrumb['phref'].'">'.$breadcrumb['phref'].'</a>'));
+                                        }
+                                    }
+                                }
                             }
-                        }
+                            if ($phref===null) # Current page
+                                self::$currPageBreadcrumbs = $breadcrumbs; # For optimization
+                        } else
+                            $notDetermined = true;
                     }
                 }
-                # For optimization
-                if ($phref===null) # Current page
-                    self::$currPageBreadcrumbs = $breadcrumbs;
-                        
+            } else
+                $notDetermined = true;
+            /** Annoying
+            if ($phref===null && $phref2 && $notDetermined) # Current page
+                Blox::prompt(Blox::getTerms('breadcrumbs-not-determined'),  true);
+            */
+            if ($notDetermined)
+                return false;
+            else
                 return $breadcrumbs;
-            }
         }
     }
 
@@ -916,7 +916,6 @@ class Router
             else { # phref
                 $specParams = self::getPhrefParams($href); # Resort URL params in standard order
                 $partFreePhref = '?page='.$specParams['page']['value'];
-                
                 $query = '';
                 if ($specParams['rest']['value'])
                     $query .= $specParams['rest']['value']; # ampersand already presented
@@ -991,7 +990,7 @@ class Router
                 if (substr($parts[0], 0, 4) == 'sort') # Do not sort "sort" params because the original order is important
                     $sortparams[$k] = $parts[1];
                 else
-                    $params[$k] = urldecode($parts[1]);
+                    $params[$k] = $parts[1]; #497436375 # urldecode() at the final stage in the tpl.   //$params[$k] = urldecode($parts[1]);
             }
             $ampersands['page'] = ''; # Page goes first 
         }       
@@ -1349,9 +1348,12 @@ class Router
 
     private static function addErrorPrompt($type, $phref)
     {
-        if (self::$errorCounters[$type] <= 9 && $type!='page') { # $type=='page' is too annoying
+        # Disabled because $type=='page' and 'block' are too annoying
+        return;
+        ##########################################
+        if (self::$errorCounters[$type] <= 3 && ($type!='page' || $type!='block')) { 
             $aa = sprintf(Blox::getTerms('no-request-value'), $type, $phref);
-            if (self::$errorCounters[$type] == 9)
+            if (self::$errorCounters[$type] == 3)
                 $aa .= ' ...';
             Blox::prompt($aa, true);
             self::$errorCounters[$type]++;

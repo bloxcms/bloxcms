@@ -44,7 +44,7 @@ echo'
                 <td style="padding-right:0;'.($yearColor > 0 ? 'color:#888' : '').'">'.$row['year'].'</td>
                 <td'.($monthColor > 0 ? ' style="color:#888"' : '').'>'.$row['month'].'</td>
                 <td style="padding-left:0;'.($row['is-sunday'] ? 'color:red' : '').'">'.$row['day'].'</td>
-            	<td align="right">&#160; &#160; '.$row['value'].'</td>
+            	<td align="right">&nbsp; &nbsp; '.$row['value'].'</td>
                 <td align="left" style="border-left: 1px solid #a44; border-right: 1px dotted #a44; padding:0; vertical-align:middle">';
                     if ($maxValue) 
                         $width = round($row['value']/$maxValue*150); 
@@ -53,7 +53,7 @@ echo'
                     echo'
                     <div style="width:'.$width.'px; height:7px; background: #a44;"></div>
                 </td>
-                <td>&#160;'.$row['event'].'</td>
+                <td>&nbsp;'.$row['event'].'</td>
             </tr>';
         }
         echo'

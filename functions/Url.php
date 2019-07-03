@@ -13,21 +13,6 @@ class Url
 */
 
 
-
-
-
-    # Convert the array into a parameter query. The dimension of arrays is unlimited
-    public static function arrayToQuery($arr)
-    {
-        return urldecode(http_build_query($arr));
-        /* See also            
-            function append_params($array, $parent='')
-            in http://php.net/parse_str
-        */
-    }
-
-
-
     /**
      * @return string Absolute URL
      * @param string $url URL in any form
@@ -324,45 +309,78 @@ class Url
     }
     
 
+
+
+    /**
+     * Convert an array recursively into a parametric query. The dimension of arrays is unlimited
+     * @param array $arr Associative array
+     * @param mixed $options['encode'] Values will be url-encoded 
+     * @param string $prefix is used only within the method
+     * @return string Url-query
+     */
+    public static function arrayToQuery($arr, $options=[], $prefix='')
+    {
+        if ($options)
+            Arr::formatOptions($options);
+        $options += ['encode'=>false];
+        foreach ($arr as $k => $v) {
+            if ($prefix)
+                $prefix2 = $prefix.'['.$k.']';
+            else
+                $prefix2 = $k;
+            #
+            if (is_array($v))
+                $htm.= self::arrayToQuery($v, $options, $prefix2);
+            else {
+                $htm.= '&'.$prefix2.'=';
+                $htm.= $options['encode'] ? urlencode($v) : $v;  #497436375
+            }
+        }
+        return $htm;
+    }
     
-    /** 
-    * REMAKE with
-    *   http://php.net/parse_str
-    *   OR
-    *   function parse_query_string($url, $qmark=true) in http://php.net/parse_str    
-    */
+    
+
+    /**
+     * Convert a string with url-params to the array.
+     * @param string $query Url-query
+     * @param  $options['decode'] Values will be url-decoded 
+     * @param mixed $options {
+     *   @var bool $decode  Values will be url-decoded 
+     *   @var bool $remove-lost  Remove elements with lost values — there is "=" after param's name but value is empty "")
+     * }
+     * @param string $prefix is used only within the method
+     * @return array Associative array
+     *
+     * @todo REMAKE with http://php.net/parse_str OR function parse_query_string($url, $qmark=true) in http://php.net/parse_str    
+     * @todo $options['decode'] as in Url::arrayToQuery()
+     */
     public static function queryToArray($query, $options=[])
     {
         if ($options)
             Arr::formatOptions($options);
-        
-        # NOT USED YET, NOT DOCUMENTED
-        $options += ['remove-lost'=>false]; # Remove params where there is "=" but no value. Remove Elements with lost values
-         
+        $options += ['decode'=>false, 'remove-lost'=>false];
         if ($query[0] == '?')
             $query = substr($query, 1);
-        
         $arr = [];
-        if ($params = explode('&', $query))
-        {
-            foreach ($params as $param) //page=2&block=14&p[1]=1&p[2]=0
-            {
+        if ($params = explode('&', $query)) {
+            foreach ($params as $param) { //page=2&block=14&p[1]=1&p[2]=0
                 if ($param) {
                     $pair = explode('=', $param);
-                    if ($pieces = explode('[', $pair[0])) {
-                        if ($pair[1]===null)                                 # p
+                    $pname = $pair[0];
+                    $pval = $pair[1];
+                    if ($pieces = explode('[', $pname)) {
+                        if ($pval===null) # p
                             $value = '';
-                        elseif ($pair[1]==='' && $options['remove-lost'])     # p=       
+                        elseif ($pval==='' && $options['remove-lost']) # p=       
                             continue;
-                        else                                                 # p=0   p=1
-                            $value = $pair[1];
+                        else # p=0   p=1
+                            $value = $options['decode'] ? urldecode($pval) : $pval;  #497436375
                         $pieces = array_reverse($pieces); # The last element is the parameter name
-                        foreach ($pieces as $k)
-                        {
+                        foreach ($pieces as $k) {
                             $ar = [];
                             $k = str_replace(']', '', $k);
-                             # The separator may not be '&', but '&amp;.'. Remove 'amp;'
-                            if (substr($k, 0, 4) == 'amp;')                        
+                            if (substr($k, 0, 4) == 'amp;') # The separator may not be '&', but '&amp;.'. Remove 'amp;'
                                 $k = substr($k, 4);
                             $ar[$k] = $value;
                             $value = $ar;
@@ -437,7 +455,7 @@ class Url
 
 
     # DEPRECATE?
-    # Prepare the URL entered by the user for storage in the database. To remove the schema(the Protocol) if it is http
+    # Use Str::getStringAfterMark($str, '//')
     public static function removeHttpFromUrl($str)
     {
         $str = trim($str);
@@ -446,7 +464,8 @@ class Url
             $str = preg_replace('#^https?://#iu', '', $str);# remove non-directory element from path
         return $str;
     }
-    # Prepare the URL extracted from the database to the output in the anchor. Add http schema if the schema was not
+
+    # Add http schema if there's no schema
     public static function addHttpToUrl($str)
     {
         $scheme = parse_url($str, PHP_URL_SCHEME);

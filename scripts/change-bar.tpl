@@ -96,24 +96,32 @@ echo'
                             
         </nav>';
 
+        
+            
         # KLUDGE When assigning tpl via modify button in edit window appears unwanted param 'change' in URL  Query2::build('','change') 
-        $attr = '';
+        $chngAttr = ' checked';
+        $dlgtAttr = '';
         if (empty($instances))
-            $attr.= ' disabled';
-        else {
-            if (empty($instance) || $_GET['instance-option']=='change')
-                $attr.= ' disabled';
-            elseif ($_GET['instance-option']=='delegate')
-                $attr.= ' checked';
+            $dlgtAttr.= ' disabled';
+        else { # NOTTESTED
+            if ($instance) {
+                $dlgtAttr.= ' checked'; 
+                $chngAttr = '';
+            } elseif (empty($instance) || $_GET['instance-option']=='change')
+                $dlgtAttr.= ' disabled';
+            elseif ($_GET['instance-option']=='delegate') {
+                $dlgtAttr.= ' checked';
+                $chngAttr = '';
+            }
         }
-        //<label><input name="instance-option" value="cache" type="radio"'.$attr.' /> '.$terms['cache'].'</label> &#160;
+        //<label><input name="instance-option" value="cache" type="radio"'.$dlgtAttr.' /> '.$terms['cache'].'</label> &nbsp;
         echo'
 	    <form action="?check&block='.$regularId.'&what=before-assign&'.Query2::build('','change&pagehref').'" method="post" id="blox-check" data-blox-method="get">
 	        <!-- Assign -->
-            <label><input name="instance-option" value="change" type="radio" checked /> '.$terms['change'].'</label> &#160;
-            <label><input name="instance-option" value="delegate" type="radio"'.$attr.' /> '.$terms['delegate'].'</label> &#160;
+            <label><input name="instance-option" value="change" type="radio"'.$chngAttr.' /> '.$terms['change'].'</label> &nbsp;
+            <label><input name="instance-option" value="delegate" type="radio"'.$dlgtAttr.' /> '.$terms['delegate'].'</label> &nbsp;
             <input type="hidden" name="pagehref" value="'.Url::encode($pagehref).'" />
-            <button type="submit"';if (isEmpty($tpl) && empty($instance)) echo' disabled';echo' />'.$terms['assign'].'</button> &#160;
+            <button type="submit"';if (isEmpty($tpl) && empty($instance)) echo' disabled';echo' />'.$terms['assign'].'</button> &nbsp;
     	</form>
         <form action="'.$pageurl.'" method="post" id="cancel-form">
 	        <button type="submit" data-blox-shortcut-key="27" data-blox-shortcut-url="'.$pageurl.'" />'.$terms['cancel'].'</button>

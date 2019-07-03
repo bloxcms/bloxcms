@@ -1,12 +1,20 @@
 <?php
-  
 /*
-check the user login
-do not pass code and take directly from Blox:: info('user')
-No need: $_SESSION ['Blox'] ['password-update-codes']
-*/
-    
-$userInfo = unserialize(Url::decode($_GET['code'] ?: $_POST['data']['code']));
+ * We need $_SESSION['Blox']['password-update-codes'] for limit the time of password restore for non authenticated users.
+ * $_GET['code'] - comes from a restore letter or from ?user-info. Outer password restore
+ * $_POST['data']['code'] - comes from this form
+ * @todo Do not create a url-request "&code=" and an array $_SESSION['Blox']['password-update-codes'] in other files if it is an authed user and &code is generated not for himself
+ */
+if ($u = Blox::info('user')) { # Emulate outer password restore for an authenticated user
+    $z = $_SESSION['Blox']['password-update-codes'][$u['id']] = Str::genRandomString(8); 
+    $userInfo = ['id'=>$u['id'], 'login'=>$u['login'], 'u-code'=>$z];
+    #KLUDGE
+    $data['code'] = Url::encode(serialize($userInfo));
+    $template->assign('data', $data);
+    $authed = true;
+} elseif ($_GET['code'] || $_POST['data']['code'])
+    $userInfo = unserialize(Url::decode($_GET['code'] ?: $_POST['data']['code'])); 
+#
 if (!$userInfo) {
     $errors[] = $terms['error'];
 } elseif (!isset($_SESSION['Blox']['password-update-codes'][$userInfo['id']])) {
@@ -46,8 +54,12 @@ if (!$userInfo) {
             Url::redirect(Blox::getPageHref());
         }
     }
-} else
-    Blox::execute('?error-document&code=404');
+} elseif ($authed) { #KLUDGE
+    ;
+} else {
+    #$errors[] = $terms['error'];
+    Blox::execute('?error-document&code=403');
+}
 #
 $template->assign('errors', $errors);
 $template->assign('userInfo', $userInfo);

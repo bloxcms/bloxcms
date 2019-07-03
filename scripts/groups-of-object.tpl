@@ -19,9 +19,9 @@ else {
 	    echo'
 	    <table class="hor-separators">
             <tr class="small center middle">
-            <td>&#160;</td>
-            <td>&#160;'.$terms['name-of-group'].'</td>
-        	<td>&#160;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;'.$terms['name-of-group'].'</td>
+        	<td>&nbsp;</td>
             </tr>';
     	    foreach ($groups as $group) {
     	        echo'<tr><td>';
@@ -43,8 +43,8 @@ else {
     	        }
     	        echo'
 	            </td>
-	            <td><label for="'.$group['id'].'"'; if (!$group['activated'] && !$group['group-is-editor']) echo' class="gray"'; echo'>'.$group['name'].'</label>&#160;</td>
-	            <td class="smaller gray">&#160;'.$terms['higher-right_'.$higherRight].'</td>
+	            <td><label for="'.$group['id'].'"'; if (!$group['activated'] && !$group['group-is-editor']) echo' class="gray"'; echo'>'.$group['name'].'</label>&nbsp;</td>
+	            <td class="smaller gray">&nbsp;'.$terms['higher-right_'.$higherRight].'</td>
 	            </tr>';
     	    }
     	    echo'

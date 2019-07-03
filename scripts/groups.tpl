@@ -32,7 +32,7 @@ echo'
                     if (Request::get('groups','search','words')['name'][0])
                         echo'<a class="smaller" href="?groups&block=groups&search'.$pagehrefQuery.'">All</a>';
                     else
-                        echo'&#160;&#160;';
+                        echo'&nbsp;&nbsp;';
                     echo'
                     <input type="text" name="search[name]" value="'.$searchTexts['name'].'" disabled/>
                     <input type="submit" value="Search" disabled />
@@ -71,7 +71,7 @@ echo'
                             </td>
                     		<!--name-->
                             <td><b>'.$group['id'].'</b> ('.$group['name'].')</td>
-                    		<td class="small">'.$group['description'].' &#160;</td>
+                    		<td class="small">'.$group['description'].' &nbsp;</td>
                     		<!--group-is-editor-->
                             <input type="hidden" name="groups['.$group['id'].'][group-is-editor]" value="0" />';
                             
@@ -98,14 +98,14 @@ echo'
                             <div class="smaller" style="text-align:center">';
 
                                 if (empty($request['part']['prev']))
-                                    echo' &#160; '.$terms['prev'].' &#160;';
+                                    echo' &nbsp; '.$terms['prev'].' &nbsp;';
                                 else
-                                    echo' <a href="?groups&block=groups&part='.$request['part']['prev'].$pagehrefQuery.'" class="button">&#160; '.$terms['prev'].' &#160;</a>';
+                                    echo' <a href="?groups&block=groups&part='.$request['part']['prev'].$pagehrefQuery.'" class="button">&nbsp; '.$terms['prev'].' &nbsp;</a>';
 
                                 if (empty($request['part']['next']))
-                                    echo' &#160; '.$terms['next'].' &#160;';
+                                    echo' &nbsp; '.$terms['next'].' &nbsp;';
                                 else
-                                    echo' <a href="?groups&block=groups&part='.$request['part']['next'].$pagehrefQuery.'" class="button">&#160; '.$terms['next'].' &#160;</a>';
+                                    echo' <a href="?groups&block=groups&part='.$request['part']['next'].$pagehrefQuery.'" class="button">&nbsp; '.$terms['next'].' &nbsp;</a>';
                                 # parts
                                 echo'<div style="margin: 3px 0px 3px 0px;height:1px; font:1px;"></div>';
                                 foreach ($request['part']['parts'] as $p) {

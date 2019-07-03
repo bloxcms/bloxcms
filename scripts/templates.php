@@ -7,7 +7,7 @@
     (function(&$tplParams=[], &$titlesOfPages=[])
     {
         # Find all the template files, even unassigned
-        $tplFiles = Files::recursiveGlob(Blox::info('templates', 'dir').'/*.tpl');
+        $tplFiles = Files::glob(Blox::info('templates', 'dir').'/*.tpl');
         if ($tplFiles) {
             sort($tplFiles, SORT_NATURAL);
             $prelength = mb_strlen(Blox::info('templates', 'dir').'/');

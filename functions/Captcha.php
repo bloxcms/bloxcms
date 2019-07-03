@@ -63,8 +63,8 @@ class Captcha
         $imgFileName = strtoupper(base_convert($numOfFiles, 10, 36)).".png";# The file name is made on the base 36 numeral system (0-Z)
         $numOfFiles++;
         file_put_contents($counterFile, $numOfFiles);
-        self::createImage($secretString, "$captchaDir/$imgFileName", $options);
-        return Blox::info('site','url').'/temp/captcha/'.$imgFileName;;
+        self::createImage($secretString, $captchaDir.'/'.$imgFileName, $options);
+        return Blox::info('site','url').'/temp/captcha/'.$imgFileName;
     }
 
 

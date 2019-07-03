@@ -135,5 +135,18 @@ $(function() {
     $('.blox-select-menu li > a[href="#"]').on('click', function(e) {
         e.preventDefault();
     });
+    
+    $('[data-toggle-password]').on('click', function() {
+        $input = $('body').find(
+            $(this).data('toggle-password')
+        );
+        if ($input.attr('type') == 'password') {
+            $input.attr('type', 'text');
+            $(this).addClass('eye-slash-regular');
+        } else {
+            $input.attr('type', 'password');
+            $(this).removeClass('eye-slash-regular');
+        }
+    });
    
 });

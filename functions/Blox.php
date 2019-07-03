@@ -399,20 +399,25 @@ class Blox
                         self::$xCodes[$dst]['shifted-indexes'][$index] = true;
                     }
                 }
-            }   
-
+            }
+            #
             if ($counter2 = count(self::$xCodes[$dst]['adjacents'])) {
                 if ($counter2 < $counter)
                     self::shiftAdjacents($dst);
                 else { # Relatives still left, since they have not found their masters.
                     foreach (self::$xCodes[$dst]['adjacents'] as $index => $aa) {
-                        foreach ($aa as $place => $adjacentCode)
-                            $htm .= ', '.$place.'=&gt;\'<b>'.htmlentities($adjacentCode).'\'</b>';
+                        foreach ($aa as $place => $adjacentCode) {
+                            /*
+                            if ($dst=='Foot' && $place=='after' && $adjacentCode=='jquery-1') # KLUDGE If jquery is in the Head
+                                ;
+                            else
+                            */
+                                $htm .= ', '.$place.'=>"'.htmlentities($adjacentCode).'"';
+                        }
                     }
                     if ($htm) {
                         $htm = substr($htm, 2);
                         self::error(sprintf(self::getTerms('no-file-links'), $dst, $htm));
-                        
                     }
                     return; # Just quit. These codes remain in the old places.
                 }
@@ -536,7 +541,7 @@ class Blox
 		# Authorized user or scripts for visitors
         if (
             self::info('user','id') ||
-            in_array($script, ['login','authenticate','edit','user-info','install','user-activation','password','password-update' ,'registration-denied','maintenance']) ||
+            in_array($script, ['login','authenticate','edit','user-info','install','user-activation','password-restore','password-update' ,'registration-denied','maintenance']) ||
             ('page' == $script && $_SESSION['Blox']['fresh-recs']) # fresh public records
         ) {
             if (file_exists($termsFile = self::$info['cms']['dir'].'/lang/'.self::$info['cms']['lang'].'/scripts/'.$script.'.php')) {
@@ -656,7 +661,7 @@ class Blox
 
 
     /**
-     * Determine page ID on which there is a specified block. Only regular blocks are considered.
+     * Determine the page ID on which there is a specified block. Only regular blocks are considered.
      *
      * @param int $blockId
      * @param int $delegatedAncestorId. Returns ID of the closest delegated ancestor block ID
@@ -665,7 +670,7 @@ class Blox
      *
      */
     public static function getBlockPageId($blockId, &$delegatedAncestorId=null)
-    {  
+    { 
         $blockId = (int)$blockId;
         if (!$blockId)
             return;
@@ -686,18 +691,18 @@ class Blox
             }
             # $delegatedAncestorId - closest delegated parent block ID 
             if (!$delegatedAncestorId && $currBlockId != $blockId) { # The initial block is not processed
-                # Is this block delegated?
-                if ($blockInfo['delegated-id'])
+                if ($blockInfo['delegated-id']) { # Is this block delegated?
                     $delegatedAncestorId = $blockInfo['delegated-id'];
-                # Is this block delegated at least once
-                elseif ($currBlockId) {
+                } elseif ($currBlockId) { # Is this block delegated at least once
+                    #TODO: This code shows delegation for parent block (footer) block within footer, but it's not right.
                     $sql = "SELECT `delegated-id` FROM ".self::info('db','prefix')."blocks WHERE `delegated-id`=? LIMIT 1";
                     $result = Sql::query($sql,[$currBlockId]);
                     if ($row = $result->fetch_assoc()) {
                         $result->free();
-                        if ($row['delegated-id'])
+                        if ($row['delegated-id']) {
                             $delegatedAncestorId = $row['delegated-id'];
-                    }   
+                        }
+                    }
                 }
             }
             $currBlockId = $blockInfo['parent-block-id']; # This is regular ID
@@ -804,13 +809,14 @@ class Blox
         self::$pageId = $pageId;
     }
     public static function getPageId()
-    {   
+    {
         if (!self::$pageId) {
             # Get pageId from pagehref
-            if (isset(self::$pagehref))
+            if (isset(self::$pagehref)) {
                 $url = self::$pagehref;
-            elseif ($_GET['pagehref'])
+            } elseif (isset($_GET['pagehref'])) {
                 $url = Url::decode($_GET['pagehref']);
+            }
 
             if (isset($url)) {
                 if ($url) {
@@ -863,7 +869,7 @@ class Blox
             //'color'=>'#000', 
             'fill'=>'#000', 
             'nofollow'=>false,
-            'style'=>'display:inline-block;opacity:0.6;width:88px;margin:6px;', 
+            'style'=>'display:inline-block;vertical-align:middle;opacity:0.6;width:88px;margin:6px;', 
             'xstyle'=>'',
             'href'=>'http://blox.ru/', 
             'title'=>'Разработка сайтов и продвижение сайтов. Веб-студия Блокс в Набережных Челнах', 
@@ -1090,19 +1096,22 @@ class Blox
                                     $script = 'page';
                                     $pageInfo = Router::getPageInfoById(1); # KLUDGE: It will the superfluous calculation again in page.php: Router::getPageInfoByUrl($pagehref)
                                     if ($pageInfo) { # Regular page exists
-                                        if (self::info('site','human-urls','convert'))
-                                            Router::redirectToHumanUrl($href);
+                                        if (self::info('site','human-urls','convert')) {
+                                            Router::redirectToHumanUrl($href); # Pseudopages too. 
+                                        }
                                     }
-                                } else
+                                } else {
                                     Url::redirect('./','exit');
+                                }
                             } else {
                                 $script = 'page';
                                 $pageId = $matches[2];
                                 if (Str::isInteger($pageId)) {
                                     $pageInfo = Router::getPageInfoById($pageId); # KLUDGE: It will the superfluous calculation again in page.php: Router::getPageInfoByUrl($pagehref)
                                     if ($pageInfo) { # Regular page exists
-                                        if (self::info('site','human-urls','convert'))
-                                            Router::redirectToHumanUrl($href);
+                                        if (self::info('site','human-urls','convert')) {
+                                            Router::redirectToHumanUrl($href); # Pseudopages too. we need urlencode() because of spaces in search request like "?page=62&block=645&search=Baxi ECO4S". No $href must be $phref
+                                        }
                                     } else
                                         $script = 'error-document';
                                 }
@@ -1137,24 +1146,23 @@ class Blox
                 # Is there a custom error page?
                 if ($errorPagePhref = self::info('site','errorpages',$code)) {
                     $script = 'page';
+            		if (preg_match('~^\?page=(\d+)~', $errorPagePhref, $matches)) { # KLUDGE for template param $page
+                        Blox::setPageId($matches[1]); 
+                        $_GET['page'] = $matches[1];
+                    }
                     $_SERVER['REQUEST_URI'] = self::info('site','path').'/'.Router::convert($errorPagePhref);    # $_SERVER['REQUEST_URI'] - NOTTESTED in arbitrary calls
                 }
             }
             # Current page URL
             if ($script == 'page') {
-                /*
-                #ignored-url-params
-                if ($pp = Blox::info('site', 'ignored-url-params')) {
-                    foreach ($pp as $p)
-                        unset($_GET[$p]);
-                }
-                */
-                self::$pagehref = Url::convertToRelative($_SERVER['REQUEST_URI']);
+                self::$pagehref = Url::convertToRelative(
+                    preg_replace('~&pagehref=.*$~u', '', $_SERVER['REQUEST_URI'])
+                    //preg_replace('~&pagehref=.*$~u', '', urldecode($_SERVER['REQUEST_URI'])) #497436375
+                );
             }
             return $script;
         };        
         $script = $getScriptName($href);
-        
         # config.php
         if (file_exists('config.php')) {
             if (in_array($script, ['page','change','block','edit','update'])) { # 'edit' — to create a new record
@@ -1273,16 +1281,28 @@ class Blox
                 # @todo Permission::ask() more strict
                 Permission::addBlockPermits($srcBlockId, $tdd);
                 
-                if ($tdd['params']['dont-output-block'])
-                    return '';
-
+                if ($tdd['params']['dont-output-block']) # DEPRECATED since 14.2.5  Remove
+                    $tdd['params']['template-files'] = [];
+                                
+                if (isset($tdd['params']['template-files'])) {
+                    if ($tdd['params']['template-files']) {
+                        foreach ($tdd['params']['template-files'] as $ext)
+                            $templateFiles[$ext] = true;
+                    } else
+                        return ''; # dont-output-block
+                } else
+                    $templateFiles = ['tdd'=>true,'tpl'=>true,'css'=>true,'js'=>true]; # Not used: 'tplh'=>true, 'md'=>true,'tddh'=>true,'tuh'=>true,'tdh'=>true,'tdph'=>true
+                    
                  # the template was without tdd then became with tdd. Update $blockInfo to get $blockInfo['src-block-id']
                 if (empty($srcBlockId) && $tdd) {
                     $blockInfo = self::getBlockInfo($regularId);
                     $srcBlockId = $blockInfo['src-block-id'];
                 }
 
-                if ($tdd['params']['dont-retrieve-data'])
+                if ($tdd['params']['dont-retrieve-data'])  # DEPRECATED since 14.2.5  Remove
+                    unset($templateFiles['tdd']);
+                
+                if (!$templateFiles['tdd'])
                     unset($tdd);
             }
         } else {
@@ -1372,7 +1392,8 @@ class Blox
                 $xEditButtonTitle = '. '.self::getTerms('no-edit-buttons');
             }
             # Editing query with all requests to the block
-            $filtersQuery = urldecode(Request::convertToQuery(Request::get($regularId))); # $filtersQuery used also in includes/button-edit.php
+            //$filtersQuery = urldecode(Request::convertToQuery(Request::get($regularId))); # $filtersQuery used also in includes/button-edit.php   #497436375
+            $filtersQuery = Request::convertToQuery(Request::get($regularId)); # $filtersQuery used also in includes/button-edit.php
             $editButtonClass .= ' blox-maintain-scroll';
             # New record button 
             if ($allRecsPerms['create']) {
@@ -1669,34 +1690,36 @@ class Blox
             unset($_SESSION['Blox']['udat'][$regularId]);
         if ($dpdat = $_SESSION['Blox']['dpdat'][$regularId])
             unset($_SESSION['Blox']['dpdat'][$regularId]);
+        if ($drdat = $_SESSION['Blox']['drdat'][$regularId])
+            unset($_SESSION['Blox']['drdat'][$regularId]);
             
         # .tplh    
-        if ($templatePrehandlerFile) {
-            (function(&$tdat, &$block, &$blockInfo, &$dat, &$page, &$tab, &$udat, &$dpdat, &$xdat, &$xtab, $templatePrehandlerFile) {
+        if ($templateFiles['tpl'] && $templatePrehandlerFile) {
+            (function(&$tdat, &$block, &$blockInfo, &$dat, &$page, &$tab, &$udat, &$dpdat, &$drdat, &$xdat, &$xtab, $templatePrehandlerFile) {
                 include $templatePrehandlerFile;
-            })($tdat, $block, $blockInfo, $dat, $page, $tab, $udat, $dpdat, $xdat, $xtab, $templatePrehandlerFile);
+            })($tdat, $block, $blockInfo, $dat, $page, $tab, $udat, $dpdat, $drdat, $xdat, $xtab, $templatePrehandlerFile);
             $template->assign('tdat', $tdat);
         }
         
 
         # All assignments
-        $template->assign('tab', $tab); # to single templates too
-        $template->assign('dat', $dat);    # dublicate for single block and single
-        $template->assign('blockInfo', $blockInfo);
-        $template->assign('block', $block);
-        $template->assign('page', $page);        
-        //if (isset($request))
-            //$template->assign('request', $request);
-        if (isset($xtab))
-            $template->assign('xtab', $xtab);
-        if (isset($xdat))
-            $template->assign('xdat', $xdat);
-        if (isset($subscription))
-            $template->assign('subscription', $subscription); # User subscribed
-        if (isset($udat))
-            $template->assign('udat', $udat);
-        if (isset($dpdat))
-            $template->assign('dpdat', $dpdat);
+        if ($templateFiles['tpl']) {
+            $template->assign('tab', $tab); # to single templates too
+            $template->assign('dat', $dat);    # dublicate for single block and single
+            $template->assign('blockInfo', $blockInfo);
+            $template->assign('block', $block);
+            $template->assign('page', $page);
+            if (isset($xtab))
+                $template->assign('xtab', $xtab);
+            if (isset($xdat))
+                $template->assign('xdat', $xdat);
+            if (isset($subscription))
+                $template->assign('subscription', $subscription); # User subscribed
+            if (isset($udat))
+                $template->assign('udat', $udat);
+            if (isset($dpdat))
+                $template->assign('dpdat', $dpdat);
+        }
 
         # Custom template for system script. 
         # Data template variables should not match system template variables. 
@@ -1712,7 +1735,7 @@ class Blox
 
         if (Permission::get('record', $srcBlockId)) {
             $template->assign('edit', $edit);
-            if ($tplFile) {
+            if ($tplFile && $templateFiles['tpl']) {
                 if (file_exists($tplFile)) {
                     # KLUDGE: It is possible not to retrieve block data
                     # Do to show the old template, when the new template is selected 
@@ -1773,7 +1796,7 @@ class Blox
             if ($tdd['params']['nocaching'])
                 Cache::deleteByBlock($regularId);
 		} else { # visitor
-            if (file_exists($tplFile))
+            if ($templateFiles['tpl'] && file_exists($tplFile))
                 $blockHtm = $template->fetch($tplFile);
             # Server caching
             if ($tdd['params']['nocaching'])
@@ -1794,11 +1817,11 @@ class Blox
             $blockHtm = '<!--noindex-->'.$blockHtm.'<!--/noindex-->';        
 
         # Link template's CSS and JS files 
-        if (file_exists(self::info('templates', 'dir').'/'.$tpl.'.css')) {
+        if ($templateFiles['css'] && file_exists(self::info('templates', 'dir').'/'.$tpl.'.css')) {
             $cssUrl = self::info('templates', 'url').'/'.$tpl.'.css';
             self::addToHead($cssUrl);
         }
-        if (file_exists(self::info('templates', 'dir').'/'.$tpl.'.js')) {
+        if ($templateFiles['js'] && file_exists(self::info('templates', 'dir').'/'.$tpl.'.js')) {
             $jsUrl = self::info('templates', 'url').'/'.$tpl.'.js';
             self::addToFoot($jsUrl);
         }
@@ -2065,8 +2088,8 @@ class Blox
                                         else {
                                             self::prompt(sprintf(self::getTerms('auto-assign'), '<b>'.$dat[$field].'</b>', '<b>'.$defaultTpl.'</b>'));
                                             # Assigned
-                                            # If the page opens after the assignment, then reload it again to automatically assign templates in nested blocks
-                                            # See assigm.php too: #Reload...
+                                            # If the page is opened after the assignment, then reload it again to automatically assign templates in nested blocks
+                                            # See assign.php too: #Reload...
                                             Url::redirect($pagehref);
                                         }
                                         # In order not to repeat each cycle
@@ -2217,7 +2240,7 @@ class Blox
  
 
     private static function getEditButtonStyle($regularId, $tddStyle='', $settingsStyle=[])
-    {   
+    {
         $props1 = $props2 = $props3 = [];
         if ($tddStyle) {
             # Default style
@@ -2247,19 +2270,14 @@ class Blox
             foreach ($props as $k=>$v)
                 $style.= ';'.$k.':'.$v;
         }
+//if (131==$regularId)
+//qq($style);
         return trim($style, ';');
     }
  
 
     /**
-     * Get some stadard global data by JSON array of key data
-     *
-     * @param string $keys Pointer to $keys variable in tdd-file.
-     * @return mixed
-     * 
-     * @example Examples of $json as JSON array 
-     *   {"type":"session","keys":["map","city"]} keys: Chain of associative keys of $_SESSION array. Use for type:session. Value of session must be alfanumeric
-     *   {"type":"phref"}
+     * @deprecated since 14.2.5. Use Tdd::getByJson()
      */
     public static function getByJson($json)
     {
@@ -2276,6 +2294,9 @@ class Blox
                         return Url::encode($z); # We should encode this value because it will be used in url: ?edit&block=592&pick[9][eq]=P3BhZ2U9MzUmYmxvY2. The function urlencode() will not work here.
                     else
                         return $z;
+                } elseif ($options['type'] == 'pick') {
+                    if ($options['keys'])
+                        return Arr::getByKeys($_SESSION, $options['keys']);
                 } elseif ($options['type'] == 'session') {
                     if ($options['keys'])
                         return Arr::getByKeys($_SESSION, $options['keys']);

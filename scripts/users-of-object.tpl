@@ -18,10 +18,10 @@ echo'
                 echo'
                 <table  class="hor-separators">
                     <tr class="small center middle">
-                        <td>&#160;</td>
-                        <td>&#160;'.$terms['id'].'</td>
-                        <td>&#160;'.$terms['login'].'</td>
-                    	<td>&#160;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;'.$terms['id'].'</td>
+                        <td>&nbsp;'.$terms['login'].'</td>
+                    	<td>&nbsp;</td>
                     </tr>';
                     foreach ($users as $user) {
                         echo'
@@ -47,9 +47,9 @@ echo'
                             }
                             echo'
                             </td>
-                            <td class="small"><label for="'.$user['id'].'">&#160;'.$user['id'].'</label></td>
-                            <td><label for="'.$user['id'].'"'; if (!$user['user-is-activated'] && !$user['user-is-admin'] && !$user['user-is-editor']) echo' class="gray"'; echo'><b>'.$user['login'].'</b></label>&#160;</td>
-                            <td class="smaller gray">&#160;'.$terms['higher-right_'.$higherRight].'</td>
+                            <td class="small"><label for="'.$user['id'].'">&nbsp;'.$user['id'].'</label></td>
+                            <td><label for="'.$user['id'].'"'; if (!$user['user-is-activated'] && !$user['user-is-admin'] && !$user['user-is-editor']) echo' class="gray"'; echo'><b>'.$user['login'].'</b></label>&nbsp;</td>
+                            <td class="smaller gray">&nbsp;'.$terms['higher-right_'.$higherRight].'</td>
                         </tr>';
                     }
                     echo'

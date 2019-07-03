@@ -77,7 +77,7 @@ class Sql
             $params = self::getParamsAndRewriteSql($sql); # &$sql
         elseif (Blox::info('user','user-is-admin') && self::getParamsAndRewriteSql($sql))
             Blox::prompt(sprintf(Blox::getTerms('double-parameterization'), $sql), true);
-
+//qq($sql); qq($params);
         if (Blox::info('user','user-is-admin') && Blox::info('site', 'log-repeated-sql-queries'))
             self::countQueries($sql, $params);
 
@@ -376,13 +376,14 @@ class Sql
         if (preg_match_all('~\{\{(\d+)\}\}~', $sql, $matches)) {
             if ($matches[1]) {
                 foreach ($matches[1] as $ser) {
+                    $params[] = self::$sqlParams[$ser];
                     if (isset(self::$sqlParams[$ser]))
-                        $params[] = self::$sqlParams[$ser];
+                        ;//$params[] = self::$sqlParams[$ser];
                     else
-                        $lostParams[] = $ser;
+                        ;//$lostParams[] = $ser;
                 }
-                if ($lostParams)
-                    Blox::prompt(sprintf(Blox::getTerms('no-placeholders-data'), '<b>'.implode(', ', $lostParams).'</b>', $sql), true);  
+                //if ($lostParams)
+                    //Blox::prompt(sprintf(Blox::getTerms('no-placeholders-data'), '<b>'.implode(', ', $lostParams).'</b>', $sql), true);  
                 if ($params)  {
                     $sql = preg_replace('~\{\{\d+\}\}~', '?', $sql); 
                     return $params;

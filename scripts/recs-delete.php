@@ -1,8 +1,6 @@
 <?php
 	# Removes recs of the block (deletes nested blocks, pages, files too)
 
-//qq($_POST['recs']);
-//return;
     if ($_GET['xprefix'])
         $xprefix = 'x';
     else
@@ -33,13 +31,26 @@
         Blox::prompt($terms['spec-data-types'],  true);
     }
 
+
+    # Template Data Update Prehandler 
+    $templateDeleteRecsPrehandlerFile = Blox::info('templates', 'dir').'/'.$tpl.'.tdh'; # var name is deliberately lengthened 
+    if (file_exists($templateDeleteRecsPrehandlerFile)) {
+        $_SESSION['Blox']['drdat'][$regularId] = (function($templateDeleteRecsPrehandlerFile) { # not $regularId. Same func is in Blox::getBlockHtm.php
+            include $templateDeleteRecsPrehandlerFile;
+            return $drdat;
+        })($templateDeleteRecsPrehandlerFile);
+        
+    }
+    
+    
+    
     $tbl = Blox::getTbl($tpl, $xprefix);
     $toAddAnchor = false;
 
     # Record Id is passed via delete button 
     if (preg_match("/^\d+$/", $_GET['which'], $matches))
     {
-        if (!Admin::removeRec($tpl, $matches[0], $srcBlockId, $tbl))
+        if (!Admin::deleteRec($tpl, $matches[0], $srcBlockId, $tbl))
             Blox::error(sprintf($terms['failed-to-delete-rec'], $matches[0], $srcBlockId.'('.$tpl.')'));
         unset($_SESSION[$xprefix.'fresh-recs'][$srcBlockId][$matches[0]]);
     }
@@ -70,7 +81,7 @@
                     $sql = "SELECT `rec-id` FROM $tbl WHERE `block-id`=?";
                     if ($result = Sql::query($sql, [$srcBlockId])) {
                         while ($row = $result->fetch_row())
-                            if (!Admin::removeRec($tpl, $row[0], $srcBlockId, $tbl))
+                            if (!Admin::deleteRec($tpl, $row[0], $srcBlockId, $tbl))
                                 Blox::error(sprintf($terms['failed-to-delete-rec'], $row[0], $srcBlockId.'('.$tpl.')'));
                         $result->free();
                     }
@@ -78,13 +89,13 @@
                 unset($_SESSION['Blox']['fresh-recs'][$srcBlockId]);
                 break;
             case 'current':
-                if (!Admin::removeRec($tpl, $recId, $srcBlockId, $tbl))
+                if (!Admin::deleteRec($tpl, $recId, $srcBlockId, $tbl))
                     Blox::error(sprintf($terms['failed-to-delete-rec'], $recId, $srcBlockId.'('.$tpl.')'));
                 unset($_SESSION['Blox']['fresh-recs'][$srcBlockId][$recId]);
                 break;
             case 'selected':
                 foreach ($_POST['recs'] as $recId){
-                    if (!Admin::removeRec($tpl, $recId, $srcBlockId, $tbl))
+                    if (!Admin::deleteRec($tpl, $recId, $srcBlockId, $tbl))
                         Blox::error(sprintf($terms['failed-to-delete-rec'], $recId, $srcBlockId.'('.$tpl.')'));
                     unset($_SESSION['Blox']['fresh-recs'][$srcBlockId][$recId]);
                 }
@@ -113,7 +124,7 @@
                 if ($rangeExists){
                     if ($result = Sql::query($sql, $sqlParams)) {
                         while ($row = $result->fetch_row()) {
-                            if (!Admin::removeRec($tpl, $row[0], $srcBlockId, $tbl))
+                            if (!Admin::deleteRec($tpl, $row[0], $srcBlockId, $tbl))
                                 Blox::error(sprintf($terms['failed-to-delete-rec'], $row[0], $srcBlockId.'('.$tpl.')'));
                             unset($_SESSION[$xprefix.'fresh-recs'][$srcBlockId][$row[0]]);
                         }
@@ -138,7 +149,6 @@
             include $templateDeleteRecsPosthandlerFile;
             return $dpdat;
         })($templateDeleteRecsPosthandlerFile); # send to page.php
-        //$_SESSION['Blox']['dpdat'][$regularId] = $getHandledData($templateDeleteRecsPosthandlerFile); // 
     }
 
     if (Blox::ajaxRequested()) {

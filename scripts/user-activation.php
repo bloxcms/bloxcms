@@ -8,7 +8,7 @@ if ($userInfo['id']) {
     if (Proposition::get('user-is-activated', $userInfo['id'])) {
         $template->assign('userIsActivated', true);
         Blox::setSessUserId($userInfo['id']);
-    	$path = dirname(Url::punyDecode($_SERVER['HTTP_HOST']).$_SERVER['REQUEST_URI']."x");  # $_SERVER['REQUEST_URI'] !!!
+    	$path = dirname(Url::punyDecode($_SERVER['HTTP_HOST']).$_SERVER['REQUEST_URI']."x");  # "x" is fakefile
     	$mdat = sprintf($terms['user-is-activated'], "<b>$path</b>", "<b>$login</b>");
         $from = Blox::info('site','emails','from');
         foreach (Acl::getUsers(['user-is-admin'=>true]) as $adminInfo){

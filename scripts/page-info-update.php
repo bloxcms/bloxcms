@@ -272,7 +272,7 @@ else # Regular page
                             # Find page-datum with the value $_POST['page-info']['id']
                             if ($foundDatumAddress = Tree::get(1, ['block', 'page'], ['page'=>$pageId])) {
                                 # Find all other similar links of block
-                                $sql = 'SELECT dat'.$foundDatumAddress['field'].' FROM `'.Blox::getTbl($foundDatumAddress['tpl']).'` WHERE `block-id`=?';
+                                $sql = 'SELECT dat'.$foundDatumAddress['field'].' FROM '.Blox::getTbl($foundDatumAddress['tpl']).' WHERE `block-id`=?';
                                 if ($result = Sql::query($sql, [$foundDatumAddress['block-id']])) {
                                     while ($row = $result->fetch_row()) {
                                         if ($parentPageId != $row[0])  {# If assigned as a parent, not a sibling
@@ -324,7 +324,6 @@ else # Regular page
 
     $sqlset = substr($sqlset, 1);  # remove initial ','
     $sql = 'UPDATE '.Blox::info('db','prefix').'pages SET '.$sqlset.' WHERE id='.Sql::parameterize($pageId);
-//qq($sql);
     Sql::query($sql);
 	/** 
      * @todo Redo using 'navAliases'

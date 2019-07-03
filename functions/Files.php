@@ -135,25 +135,33 @@ Class Files
 
 
     /**
-     * Recursive analog of glob(), Does not support flag GLOB_BRACE
+     * Recursive analog of glob(). Find pathnames in subfolders too.
+     * Does not support flag GLOB_BRACE (?)
      *
-     * @example recursiveGlob(Blox::info('templates', 'dir').'/*.tpl')
+     * @example Files::glob(Blox::info('templates', 'dir').'/*.tpl')
      * 
      */
+    public static function glob($pattern, $flags=0)
+    {
+        # Files 
+        $files = glob($pattern, $flags) ?: [];
+        # Files in dirs
+        $dirs = glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT); # Get an array of folders to search inside folders
+        foreach ($dirs as $d) { # Looking for files inside folders
+            if ($files2 = self::glob($d.'/'.basename($pattern), $flags))
+                $files = array_merge($files, $files2);
+        }
+        return $files;
+    }
+    /**
+     * @deprecated since v14.2.1
     public static function recursiveGlob($pattern, $flags = 0)
     {
-        if ($files = glob($pattern, $flags)) {
-            # Get an array of folders to search inside folders
-            if ($aa = glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT)) {                
-                # Looking for files inside folders
-                foreach ($aa as $d) {
-                    if ($bb = self::recursiveGlob($d.'/'.basename($pattern)))
-                        $files = array_merge($files, $bb);}
-            }
-            return $files;
-        }
+        return Files::glob($pattern, $flags);
     }
-
+    */
+    
+    
 
     /**
      * equivalent of scandir() PHP5
@@ -285,6 +293,8 @@ Class Files
 
 
     /**
+     * @deprecated Use Files::delete()
+     *
      * Delete the file. In the the future this method will register files for backup.
      * 
      * @param string $fl File path
@@ -315,6 +325,64 @@ Class Files
             return true;
         } else {
             return false;
+        }
+    }
+    
+    
+    
+    /**
+     * Delete a file or an folder.
+     * 
+     * @param string $fl File path
+     * @param mixed $delDirs Array of folders that can be deleted if they become empty. For one folder you can use a string. For all empty folders use the value: true.
+     */
+    public static function delete($fl, $options=[])
+    {
+        if ($options)
+            Arr::formatOptions($options);
+        # Defaults
+        $options += ['delete-empty-dirs'=>false];
+        #
+        if (is_dir($fl)) {
+            $d      = new RecursiveDirectoryIterator($fl, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files  = new RecursiveIteratorIterator($d, RecursiveIteratorIterator::CHILD_FIRST);
+            foreach($files as $f) {
+                if ($f->isDir()) {
+                    if (!rmdir($f->getRealPath()))
+                        return false;
+                } else {
+                    if (!unlink($f->getRealPath()))
+                        return false;
+                }
+            }
+            if (!rmdir($fl))
+                return false;
+            return true;
+        } else { # File
+            if (unlink($fl))
+            {
+                if ($delDirs)
+                {
+                    $dr = dirname($fl);
+                    if ($delDirs === true)
+                        $try = true;
+                    elseif (is_array($delDirs)) {
+                        if (in_array($dr, $delDirs))
+                            $try = true;
+                    }
+                    elseif ($dr != $delDirs) # One dir
+                        $try = true;
+
+                    if ($try) {
+                        # Removes empty dir and its subdirs
+                        if (!self::removeEmptyDir($dr))
+                            ;#self::prompt('Could not delete folder '.$dr, true);
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 

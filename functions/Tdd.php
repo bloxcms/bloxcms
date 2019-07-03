@@ -45,8 +45,7 @@ class Tdd
             return $GLOBALS['Blox']['tdd'][$tpl];
         }               
         # For admin and editor
-        if (Blox::info('user','user-is-admin') && !isset($_GET['templates'])) 
-        {
+        if (Blox::info('user','user-is-admin') && !isset($_GET['templates'])) {
             $tpl = Sql::sanitizeTpl($tpl);
             if (!$tpl)
                 return []; ##return false;
@@ -54,8 +53,7 @@ class Tdd
             $xtbl = Blox::getTbl($tpl,'x');
             # Check whether tdd file was modified
             $newTddFile = Blox::info('templates', 'dir').'/'.$tpl.'.tdd';
-            if (file_exists($newTddFile))
-            {
+            if (file_exists($newTddFile)) {
                 $newTddTime = filemtime($newTddFile);
                 $oldTddFile = 'assigned/'.$tpl.'.tdd';
                 if (Sql::tableExists($tbl))
@@ -63,8 +61,7 @@ class Tdd
                 if (Sql::tableExists($xtbl))
                     $xtblExists = true;
                 # Old file exists
-                if (file_exists($oldTddFile))
-                {
+                if (file_exists($oldTddFile)) {
                     $oldTddTime = filemtime($oldTddFile); # Unix timestamp
                     $tdd = self::getDirectly($oldTddFile, $blockInfo);
                     if ($newTddTime > $oldTddTime)
@@ -219,19 +216,21 @@ class Tdd
             $udat = $_SESSION['Blox']['udat'][$blockInfo['id']];
         if ($_SESSION['Blox']['dpdat'][$blockInfo['id']])
             $dpdat = $_SESSION['Blox']['dpdat'][$blockInfo['id']];
+        if ($_SESSION['Blox']['drdat'][$blockInfo['id']])
+            $drdat = $_SESSION['Blox']['drdat'][$blockInfo['id']];
         # Descriptor's Prehandler
         if (file_exists(Blox::info('templates', 'dir').'/'.$blockInfo['tpl'].'.tddh')) {
-            (function(&$blockInfo, &$ddat, &$udat, &$dpdat) {
+            (function(&$blockInfo, &$ddat, &$udat, &$dpdat, &$drdat) {
                 include Blox::info('templates', 'dir').'/'.$blockInfo['tpl'].'.tddh';
-            })($blockInfo, $ddat, $udat, $dpdat);
+            })($blockInfo, $ddat, $udat, $dpdat, $drdat);
             //$aa($blockInfo, $ddat, $udat, $dpdat);
         }
         # Long unique name: xxxTddFile()
-        return (function($xxxTddFile, &$blockInfo, &$ddat, &$udat, &$dpdat) {
+        return (function($xxxTddFile, &$blockInfo, &$ddat, &$udat, &$dpdat, &$drdat) {
             include $xxxTddFile;
             if ($params['part']['numbering'])
                 $params['part']['numbering'] = mb_strtolower($params['part']['numbering']);
-            foreach (['titles', 'types', 'defaults', 'params', 'captions', 'notes', 'styles', 'mstyles', 'keys', 'options'] as $k) {
+            foreach (['titles', 'types', 'defaults', 'params', 'captions', 'notes', 'styles', 'mstyles', 'tooltips', 'keys', 'options'] as $k) {
                 if (isset($$k))
                     $tdd[$k] = $$k;
                 $bk = 'x'.$k;
@@ -282,8 +281,7 @@ class Tdd
                     $tdd['xfields'] = $xxxFormatFields($xfields);
             }
             return $tdd;
-        })($tddFile, $blockInfo, $ddat, $udat, $dpdat);
-        //return $getTdd($tddFile, $blockInfo, $ddat, $udat, $dpdat);
+        })($tddFile, $blockInfo, $ddat, $udat, $dpdat, $drdat);
     }
 
 
@@ -518,7 +516,7 @@ class Tdd
             }
 
 	    }
-        
+        #
         if ($error) {
             Blox::prompt(sprintf(Blox::getTerms('table-altering-error'), $tbl), true);
             if ($success)
@@ -709,27 +707,23 @@ class Tdd
                     }
                 }
             }
-            
             return $params;
         })($type);
         //$params = $getRawTypeParams($type);
         
         $typeName = key($params); # The first parameter is name
-        
         # Restore full names of params for alternative form of types: block, page, select
         if ($typeName == 'block') {
             if ($params['block'][0] && empty($params['template'][0]))
                 $params['template'][0] = $params['block'][0];
             if ($params['block'][1] && empty($params['option'][0]))
                 $params['option'][0] = $params['block'][1];
-        }
-        if ($typeName == 'page') {
+        } elseif ($typeName == 'page') {
             if ($params['page'][0] && empty($params['template'][0]))
                 $params['template'][0] = $params['page'][0];
             if ($params['page'][1] && empty($params['option'][0]))
                 $params['option'][0] = $params['page'][1];
-        }
-        if ($typeName == 'select') { # select template('cities')  edit(1) parentField(2)
+        } elseif ($typeName == 'select') { # select template('cities')  edit(1) parentField(2)
             # Short form
             if ($params['select'][0] && empty($params['template'][0]))
                 $params['template'][0] = $params['select'][0];     
@@ -810,8 +804,9 @@ class Tdd
      *
      * @param array $data {
      *   @var int $blockId BlockId of current template
-     *   @var int $field Number of the field of varchar type where binding value will be stored.
-     *   @var string $value Binding value that will be saved in the $field
+     *   @var mixed $field Field's number (of varchar type) where binding value will be stored. For composite keys use simple array of fields.
+     *   @var mixed $value Binding value that will be saved in the $field. For composite keys use simple array.
+     *   @var bool $unbind Disallow binding on some conditions
      * }
      * @param string $keys Pointer to $keys variable in tdd-file.
      * @param array $defaults  Pointer to $defaults variable in tdd-file.
@@ -819,16 +814,44 @@ class Tdd
      */
     public static function bind($data, &$keys, &$defaults)
     {
-        if ($data['block-id'] && $data['field'] && isset($data['value'])) {
-            $script = Blox::getScriptName();
-            if ($script == 'edit')
-                $defaults[$data['field']] = $data['value'];
-            elseif ($script == 'page' || $script == 'change')
-                Request::add([$data['block-id']=>['p'=>[$data['field']=>$data['value']]]]);
+        if ($data['block-id'] && $data['field']) {
+            if (!$data['unbind']) {
+                if ($data['block-id'] && $data['field']) { // && isset($data['value'])
+                    if (is_array($data['field']))
+                        $fields = $data['field'];
+                    else
+                        $fields[] = $data['field'];
+                    #
+                    if (isset($data['value'])) { # For empty string
+                        if (is_array($data['value']))
+                            $values = $data['value'];
+                        else
+                            $values[] = $data['value'];
+                    }
+                    $script = Blox::getScriptName();
+                    if ($script == 'edit') {
+                        /*
+                        if ($values) {
+                            foreach ($fields as $i=>$field)
+                                $defaults[$field] = $values[$i];
+                        } else
+                        */if ($pick = Request::get($data['block-id'], 'pick')) { # Request comes with edit button automaticaly
+                            foreach ($fields as $i=>$field)
+                                $defaults[$field] = $pick[$field]['eq'];
+                        }
+                    } elseif (in_array($script, ['page','block','change'])) {
+                        foreach ($fields as $i=>$field)
+                            $p[$field] = $values[$i];
+                        Request::add([$data['block-id']=>['p'=>$p]]);
+                    }
+                }
+            }
             #
             if ($keys)
                 $keys.=' ';
-            $keys.= 'INDEX(dat'.$data['field'].')';
+            foreach ($fields as $field)
+                $s.= ',dat'.$field;
+            $keys.= 'INDEX('.substr($s, 1).')';
         } else {
             Blox::prompt(Blox::getTerms('no-params'), true);
             return false;
@@ -836,6 +859,59 @@ class Tdd
         return true;
     }
 
+
+
+    /**
+     * Get some stadard global data by JSON array of key data
+     *
+     * @param string $json
+     * @return mixed
+     * 
+     * @example Examples of $json as JSON array 
+     *   {"type":"session","keys":["map","city"]} keys: Chain of associative keys of $_SESSION array. Use for type:session. Value of session must be alfanumeric
+     *   {"type":"phref"}
+     */
+    public static function getByJson($json)
+    {
+        if ($json==='')
+            return;
+
+        if (function_exists('json_decode')) {
+            $options = json_decode($json, true);
+            $jsonError = trim(Str::getJsonError());
+            if ($jsonError === '' || $jsonError === 'No error') {
+                if (!$options['type'])
+                    return false;
+                #
+                if ($options['type'] == 'phref') {
+                    $z = Router::getPhref(Blox::getPageHref());
+                    if ($options['encode'])
+                        return Url::encode($z); # We should encode this value because it will be used in url: ?edit&block=592&pick[9][eq]=P3BhZ2U9MzUmYmxvY2. The function urlencode() will not work here.
+                    else
+                        return $z;
+                } elseif ($options['type'] == 'pick') {
+                    if (is_array($options['field'])) {
+                        foreach($options['field'] as $field)
+                            $values[] = $_GET['p'][$field];
+                        return $values;
+                    } else
+                        return $_GET['p'][$options['field']];
+                } elseif ($options['type'] == 'session') {
+                    if ($options['keys'])
+                        return Arr::getByKeys($_SESSION, $options['keys']);
+                }
+            } else {
+                if (Blox::info('user'))
+                    Blox::prompt(Blox::getTerms('json-error').' '.$jsonError, true);
+                return false;                        
+            }
+        } else {
+            if (Blox::info('user'))
+                Blox::prompt(Blox::getTerms('json-decode-not-exists'), true);
+            return false;
+        }   
+    }
+    
 
 
 }

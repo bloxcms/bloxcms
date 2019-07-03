@@ -29,7 +29,8 @@
 
     $tab = Request::getTab($blockInfo, $tdd);
 	$template->assign('tab', $tab);
-    $template->assign('filtersQuery', urldecode(Request::convertToQuery(Request::get($regularId))));
+    //$template->assign('filtersQuery', urldecode(Request::convertToQuery(Request::get($regularId)))); #497436375
+    $template->assign('filtersQuery', Request::convertToQuery(Request::get($regularId)));
     
     include Blox::info('cms','dir')."/includes/buttons-submit.php";
     include Blox::info('cms','dir')."/includes/display.php";

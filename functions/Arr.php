@@ -56,7 +56,7 @@ class Arr
      * @param array $funcParams Second, third, ... params of the function $funcName
      * 
      * @example Arr::walk($arr, 'substr', ['1','3']); // alter $array to get from second up to fourth character from each value 
-     * @todo Remake like Arr::removeEmpty
+     * @todo Remake like Url::arrayToQuery
      */ 
     public static function walk(&$arr, $funcName, $funcParams=[]) 
     { 

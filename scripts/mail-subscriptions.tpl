@@ -28,11 +28,11 @@ echo'
                     <form action="?mail-subscriptions-send&phase=get-recipients'.$pagehrefQuery.'" method="post">
         	        <table  class="hor-separators">
         	            <tr class="small center middle">
-        	            <td>&#160;'.$terms['mail'].'</td>
-        	        	<td>&#160;'.$terms['subscribed-block'].'</td>
-                        <td>&#160;'.$terms['block-is-on-page'].'</td>
-                        <td>&#160;'.$terms['num-of-new-recs'].'</td>
-                        <td>&#160;'.$terms['num-of-subscribers'].'</td>
+        	            <td>&nbsp;'.$terms['mail'].'</td>
+        	        	<td>&nbsp;'.$terms['subscribed-block'].'</td>
+                        <td>&nbsp;'.$terms['block-is-on-page'].'</td>
+                        <td>&nbsp;'.$terms['num-of-new-recs'].'</td>
+                        <td>&nbsp;'.$terms['num-of-subscribers'].'</td>
         	            </tr>';
 
         	    foreach ($subscriptions as $subscription) {
@@ -64,10 +64,10 @@ echo'
                     echo'
                     <br />
                     <table class="small" style="border-collapse:separate; border-spacing:4px;">
-                        <tr><th colspan="2">'.$terms['letter-params'].'<br /><td>&#160;</td>
-                    	<tr><td>'.$terms['letter-subject'].'</td><td><input type="text" name="newsletter-params[subject]" value="'.$newsletterParams['subject'].'" size="40" /></td><td>&#160;</td></tr>
+                        <tr><th colspan="2">'.$terms['letter-params'].'<br /><td>&nbsp;</td>
+                    	<tr><td>'.$terms['letter-subject'].'</td><td><input type="text" name="newsletter-params[subject]" value="'.$newsletterParams['subject'].'" size="40" /></td><td>&nbsp;</td></tr>
                         <tr><td>'.$terms['from_email'].'<span class="red">*</span></td><td><input type="text" name="newsletter-params[email-from]" value="'.$newsletterParams['email-from'].'" size="40" /></td><td><span class="smaller">'.$terms['from_note'].'</span></td></tr>
-                        <tr><td>'.$terms['from_name'].'</td><td><input type="text" name="newsletter-params[name_from]" value="'.$newsletterParams['name_from'].'" size="40" /></td><td>&#160;</td></tr>
+                        <tr><td>'.$terms['from_name'].'</td><td><input type="text" name="newsletter-params[name_from]" value="'.$newsletterParams['name_from'].'" size="40" /></td><td>&nbsp;</td></tr>
                     </table>
                     <br />
                     <input type="checkbox" name="test-sending"  value="1" /> '.$terms['mailing_trial'].' <span class="small gray">('.$terms['mailing-only-to'].' <b>'.Blox::info('user','login').'</b>)</span>

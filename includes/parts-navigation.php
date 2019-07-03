@@ -8,9 +8,9 @@ if ($request['part']['num-of-parts'] > 1) {
     <div class="smaller">';
          # prev
         if (empty($request['part']['prev']))
-            echo' <span class="button">&#160; '.$terms['prev'].' &#160;</span>';
+            echo' <span class="button">&nbsp; '.$terms['prev'].' &nbsp;</span>';
         else
-            echo' <a class="button" href="?'.$script.'&block='.$blockInfo['id'].'&part='.$request['part']['prev'].$pagehrefQuery.'">&#160; '.$terms['prev'].' &#160;</a>';
+            echo' <a class="button" href="?'.$script.'&block='.$blockInfo['id'].'&part='.$request['part']['prev'].$pagehrefQuery.'">&nbsp; '.$terms['prev'].' &nbsp;</a>';
         # by number
         foreach ($request['part']['parts'] as $p){
             if ($p == $request['part']['current']) 
@@ -19,8 +19,8 @@ if ($request['part']['num-of-parts'] > 1) {
                 echo' <a class="button" href="?'.$script.'&block='.$blockInfo['id'].'&part='.$p.$pagehrefQuery.'">'.$p.'</a>';}
         # next
         if (empty($request['part']['next']))
-            echo' <span class="button">&#160; '.$terms['next'].' &#160;</span>';
+            echo' <span class="button">&nbsp; '.$terms['next'].' &nbsp;</span>';
         else
-            echo' <a class="button" href="?'.$script.'&block='.$blockInfo['id'].'&part='.$request['part']['next'].$pagehrefQuery.'">&#160; '.$terms['next'].' &#160;</a>';
+            echo' <a class="button" href="?'.$script.'&block='.$blockInfo['id'].'&part='.$request['part']['next'].$pagehrefQuery.'">&nbsp; '.$terms['next'].' &nbsp;</a>';
     echo'</div>';
 }

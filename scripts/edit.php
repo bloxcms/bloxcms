@@ -4,7 +4,7 @@
      */
     $regularId = Sql::sanitizeInteger($_GET['block']);
     $pagehref = Blox::getPageHref();
-    $pagehrefQuery = '&pagehref='.Url::encode($pagehref);
+    $pagehrefQuery = '&pagehref='.Url::encode($pagehref); # Do not remove pagehref param with empty value, because it is used the code `isset($_GET['pagehref'])`
     $blockInfo = Blox::getBlockInfo($regularId);
     $srcBlockId = $blockInfo['src-block-id'];
     $prefix = Blox::info('db','prefix');
@@ -16,6 +16,8 @@
             Request::add('block='.$regularId.'&single='.$singleRecId);
         $tpl = $blockInfo['tpl'];
         $tdd = Tdd::get($blockInfo);
+        $defaults = Arr::mergeByKey($tdd['defaults'], $_GET['defaults']);
+        #
         if ($tdd['xtypes'])
             $template->assign('xdatExists', true);
 
@@ -118,30 +120,35 @@
                     }
                     $_SESSION['Blox']['edit']['new-rec-time'] = microtime(true);
                     #/
-                    $dat = Dat::insert($blockInfo, $_GET['defaults'], $xprefix, $tdd);
+                    $dat = Dat::insert($blockInfo, $defaults, $xprefix, $tdd);
                     # Do again standart retrieve because of "select" data types
                     Request::add('block='.$regularId.'&single='.$dat['rec']);
                     $tab = Request::getTab($blockInfo, $tdd, $xprefix);
                 }
                 # existing rec editing
     	        else {
-                    # We come from edit window - rec is unknown
+                    # We came from edit window - rec is unknown
                     if ($xprefix) {   
                         #  Retrieve extradata
                         if ($tab = Request::getTab($blockInfo, $tdd, $xprefix))
                             ;
                         else { # No recs yet
-                            $dat = Dat::insert($blockInfo, $_GET['defaults'], $xprefix, $tdd);
-                            # Do again standart retrieve because of "select" data types
-                            Request::add('block='.$regularId.'&single='.$dat['rec']);
+                            $dat = Dat::insert($blockInfo, $defaults, $xprefix, $tdd);
+                            Request::add('block='.$regularId.'&single='.$dat['rec']);# Do again standart retrieve because of "select" data types
                             $tab = Request::getTab($blockInfo, $tdd, $xprefix);
                         }   
                     } else {
                         if ($tab = Request::getTab($blockInfo, $tdd, $xprefix)) {
                             ;
-                        } elseif ($_GET['rec']) { # REMOVE?
-                            Blox::prompt(sprintf($terms['no-rec'], '<b>'.$_GET['rec'].'</b>', '<b>'.$srcBlockId.'</b>'), true);
-                            Url::redirect($pagehref,'exit');
+                        } elseif ($_GET['rec']) {
+                            if ($_GET['rec']==1) {
+                                $dat = Dat::insert($blockInfo, $defaults, '', $tdd);
+                                Request::add('block='.$regularId.'&single=1');# Do again standart retrieve because of "select" data types
+                                $tab = Request::getTab($blockInfo, $tdd);
+                            } else {
+                                Blox::prompt(sprintf($terms['no-rec'], '<b>'.$_GET['rec'].'</b>', '<b>'.$srcBlockId.'</b>'), true);
+                                Url::redirect($pagehref,'exit');
+                            }
                         }
                     }
                               
@@ -157,8 +164,6 @@
                     include Blox::info('cms','dir')."/includes/disable-multirec-filters.php";
                 $tab = Request::getTab($blockInfo, $tdd, $xprefix);
             }
-
-//qq($tab);
 		    # Editors of block
             if ($_GET['rec']) {
     		    if ($tab[0][$userIdField]) {
@@ -248,17 +253,14 @@
                     if ('block' == $typeName) {
                         $idTypeExists = true; 
                         unset($nullableFields[$field]);
-                    }
-                    elseif ('page' == $typeName) {
+                    } elseif ('page' == $typeName) {
                         $idTypeExists = true; 
                         unset($nullableFields[$field]);
-                    }
-                    elseif ('select' == $typeName) {
+                    } elseif ('select' == $typeName) {
                         unset($nullableFields[$field]);
                         $params = $typeDetails['params'];
                         # Data for "select" list
-                        if ($params['template'][0] && $params['edit'][0])
-                        {
+                        if ($params['template'][0] && $params['edit'][0]) {
                             $selectListTpl = Files::normalizeTpl($params['template'][0], $tpl);
                             foreach ($tab as $dat) {
                                 $sql = '';
@@ -362,7 +364,7 @@
             $template->assign('mstyles', $tdd['mstyles']);
             $template->assign('params', $tdd[$xprefix.'params']);
             $template->assign('fields', $tdd[$xprefix.'fields']);
-
+            $template->assign('tooltips', $tdd[$xprefix.'tooltips']);
             # For the visitor that edits its own public rec
 			if (Proposition::get('user-is-subscriber', 'any', $srcBlockId)) {
                 $userIsSubscriber_anyUser_thisBlock = true;
@@ -393,8 +395,11 @@
             $template->assign('textEditorDir', $textEditorDir);
             $template->assign('textEditorUrl', $textEditorUrl); # used in text editor include
         }
-        $template->assign('filtersQuery', urldecode(Request::convertToQuery(Request::get($regularId)))); # This is necessary to create Request::set() in update.php, to use Request::get() in tdd-files.
+        $template->assign('filtersQuery', Request::convertToQuery(Request::get($regularId))); # This is necessary to create Request::set() in update.php, to use Request::get() in tdd-files.
+        if ($blockSettings = unserialize(Blox::getBlockInfo($regularId, 'settings')))
+            $template->assign('blockSettings', $blockSettings);
     }
+
     $template->assign('tab', $tab);
     if (!isset($_GET['add-new-rec'])) {
         $template->assign('dat', $tab[0]);

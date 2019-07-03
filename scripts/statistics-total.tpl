@@ -11,7 +11,7 @@ echo'
         	<tr>
         	<td colspan="2">'.$statTableObjType.'</td>
             <td align="center" colspan="2">'.$terms['num'].'</td>
-            <td>';if ($timeInterval != 'day') echo $terms['details'] ; echo'&#160;</td>
+            <td>';if ($timeInterval != 'day') echo $terms['details'] ; echo'&nbsp;</td>
             </tr>';
             if ($statDat) {
                 foreach ($statDat as $row) {
@@ -22,9 +22,9 @@ echo'
                                 echo $row['title'];
                             else
                                 echo $row['obj'];
-                            echo'&#160;';
+                            echo'&nbsp;';
                         echo'</b></td>
-                        <td>'; if ($row['note']) echo' '.$row['note']; else echo'&#160;'; echo'</td>
+                        <td>'; if ($row['note']) echo' '.$row['note']; else echo'&nbsp;'; echo'</td>
                     	<td align="right">'.$row['sum'].'</td>
                         <td align="left" style="border-left: 1px solid #a44; border-right: 1px dotted #a44; padding:0; vertical-align:middle">';
                             $overloadCode = '';
@@ -44,7 +44,7 @@ echo'
                         <td class="" align="center">'; 
                             if ($timeInterval != 'day') 
                                 echo'<a class="button" href="?statistics-single&obj='.urlencode($row['obj']).'&add='.$row['note'].'&mark='.$row['mark'].$pagehrefQuery.'" title="'.$terms['by-time'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-arrow-right.png" alt="&gt;" /></a>';
-                            echo'&#160;
+                            echo'&nbsp;
                         </td>
                     </tr>';
                 }
@@ -53,7 +53,7 @@ echo'
         	<tr>
             	<td colspan="2" align="right">'.$terms['total-sum'].':</td>
                 <td align="right"><b>'.$totalSum.'</b></td>
-                <td colspan="2">&#160;</td>
+                <td colspan="2">&nbsp;</td>
             </tr>
         </table>
         <br />

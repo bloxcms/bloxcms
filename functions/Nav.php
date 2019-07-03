@@ -39,7 +39,7 @@ class Nav
             $records[0] = [
                 'href' => Router::convert('?page='.$targetPageId),
                 'name' => Router::getPageInfoById($targetPageId)['name'],
-                'altHeadline' => $options['initial-headline'],
+                'alt-headline' => $options['initial-headline'],
             ];
             $numOfItemsField = self::get([$srcBlockId,'fields','num-of-items']);
             foreach ($tab as $dat) {
@@ -347,21 +347,17 @@ class Nav
             Blox::prompt('Not enough data in Nav::updateNumOfItems()', true);
             return;
         }
-
-        if ($nav = self::get([$srcBlockId]))
-        {
+        #
+        if ($nav = self::get([$srcBlockId])) {
             if ($nav['fields']['num-of-items']) {
-                    
                 # Increase max_execution_time
                 ini_set(
                     'max_execution_time', 
                     ini_get('max_execution_time')*10
                 );
-                //qq(ini_get('max_execution_time'));//test
-
                 # Reset all #numOfItems
                 Sql::query(
-                    'UPDATE `'.Blox::getTbl($nav['block-info']['tpl']).'` SET `dat'.$nav['fields']['num-of-items'].'`=0 WHERE `block-id`=?',
+                    'UPDATE '.Blox::getTbl($nav['block-info']['tpl']).' SET `dat'.$nav['fields']['num-of-items'].'`=0 WHERE `block-id`=?',
                     [$srcBlockId]
                 );
                 #
@@ -433,7 +429,7 @@ class Nav
             } else
                 $loopIds[$parentId] = true;
             $numOfItemsCol = 'dat'.$nav['fields']['num-of-items'];
-            $sql = 'UPDATE `'.Blox::getTbl($nav['block-info']['tpl']).'` SET '.$numOfItemsCol.'='.$numOfItemsCol.'+? WHERE `block-id`=? AND `rec-id`=?';
+            $sql = 'UPDATE '.Blox::getTbl($nav['block-info']['tpl']).' SET '.$numOfItemsCol.'='.$numOfItemsCol.'+? WHERE `block-id`=? AND `rec-id`=?';
             Sql::query($sql, [$numOfItems, $srcBlockId, $parentId]);
             self::updateParentNumOfItems($srcBlockId, $parentId, $numOfItems, $loopIds);
         }

@@ -85,7 +85,7 @@ echo'
         $note.= $terms['emails']['note'];
         echo'
         <tr><td colspan="3" class="caption">'.$terms['emails']['caption'].'<p class="note">'.$note.'</p></td></tr>';
-        foreach (['to','from','transport'] as $item) {
+        foreach (['to','from','transport','webmail'] as $item) {
             $value = $oldSettings['emails'][$item];
             if (isset($_GET['invalids']['emails'][$item]))
                 $value = $_GET['invalids']['emails'][$item];

@@ -32,10 +32,12 @@ echo'
                         </td>';
                         foreach ($editingFields as $field) {
                             echo'
-                            <td>&#160;</td>
+                            <td>&nbsp;</td>
                             <td>';
-                                if (substr($dataType, 0, 9) == 'timestamp')
+                                if (substr($dataTypes[$field], 0, 9) == 'timestamp')
                                     echo date('Y-m-d ', strtotime(substr_replace($dat[2], '', 8)));
+                                elseif (substr($dataTypes[$field], 0, 5) == 'block')
+                                    echo $dat['blocks'][$field].'&nbsp;<span class="small">('. Blox::getBlockInfo($dat['blocks'][$field], 'tpl').')</span>';
                                 else
                                     echo Text::truncate(Text::stripTags($dat[$field],'strip-quotes'), 40, 'plain');
                                 echo'

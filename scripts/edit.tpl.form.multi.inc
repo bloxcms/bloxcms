@@ -41,13 +41,13 @@ if (!isset($_GET['add-new-rec'])) {
                 include Blox::info('cms','dir').'/includes/output-multirec-tablehead-fields.php';# Table head (titles of fields)
                 if ($params['sort']['editable']) 
                     echo'<td><div class="gray">sort</div>'.$terms['sort-num'].'</td>';
-                echo'<td class="blox-vert-sep">&#160;</td>';
-                echo'<td>&#160;</td>';
+                echo'<td class="blox-vert-sep">&nbsp;</td>';
+                echo'<td>&nbsp;</td>';
             echo'
             </tr>';
             $newRecRow = '            
             	<td align="center"><button name="button-ok" type="submit" data-blox-overlay-load-icon-target="" value="add-new-rec" title="'.$mterms['create-new-rec'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-new-rec.png" alt="&equiv;" /></button></td>
-                <td>&#160;</td>
+                <td>&nbsp;</td>
                 <td colspan="'.($tdCounter*2+1).'" class="small gray">'.$mterms['create-new-rec'].'</td>
             ';
             
@@ -76,6 +76,7 @@ if (!isset($_GET['add-new-rec'])) {
                         $typeName = $typeDetails['name'];
                         $typeParams = $typeDetails['params'];
                         $style = ($mstyles[$field]) ? ' style="'.$mstyles[$field].'"' : '';
+                        $title = ($notes[$field]) ? ' title="'.Text::truncate(Text::stripTags($notes[$field], 'strip-quotes'), 300, 'plain').'"' : '';
                         $readonly = ($fields[$field]['readonly'])
                             ? ' readonly' 
                             : ''
@@ -89,14 +90,13 @@ if (!isset($_GET['add-new-rec'])) {
                                 echo'<input type="hidden" name="data['.$recId.']['.$field.']" value="'.$dat[$field].'" />';
                         } else {   
                             echo'
-                            <td>&#160;</td>
+                            <td>&nbsp;</td>
                             <td>';
             		            if($typeName == 'bit' or $typeName == 'bool' or (($typeName == 'tinyint') && $typeParams['tinyint'][0] == 1)) {
             		                echo'
             		                <input type="hidden" name="data['.$recId.']['.$field.']" value="0" />
-            		                <input type="checkbox"  name="data['.$recId.']['.$field.']" value="1"';if ($dat[$field]) echo' checked'; echo $readonly.' />';# title="'.$dataTitles[$field].'" - if you put it, then you need to undress and remove quotation marks
-            		            } 
-                                elseif ($typeName == 'file') {
+            		                <input type="checkbox"  name="data['.$recId.']['.$field.']" value="1"';if ($dat[$field]) echo' checked'; echo $readonly.$title.' />';# title="'.$dataTitles[$field].'" - if you put it, then you need to undress and remove quotation marks
+            		            } elseif ($typeName == 'file') {
                                     $style = ($mstyles[$field]) ? ';'.$mstyles[$field].';overflow:hidden' : '';
                                     if ($dat[$field])
                                         $fl = ($typeParams['destination'][0] ?: 'datafiles').'/'.$dat[$field];
@@ -104,7 +104,7 @@ if (!isset($_GET['add-new-rec'])) {
                                         $fl = '';                                
                                     echo'
                                     <div style="float:left'.$style.'">
-                                		<input name="data['.$recId.']['.$field.']" type="file"  size="40"'.$readonly.' /><br>
+                                		<input name="data['.$recId.']['.$field.']" type="file"  size="40"'.$readonly.$title.' /><br>
                                         <div class="explanation">';
                     		                if ($fl)
                     		                    echo'<input  type="checkbox"  name="delete-data['.$recId.']['.$field.']" value="1" id="delete-data-'.$recId.'-'.$field.'" title="'.$mterms['mark-file-to-del'].'" /><span class="red"><label for="delete-data-'.$recId.'-'.$field.'">'.$terms['delete-file'].'</label></span> &nbsp; '; 
@@ -122,26 +122,23 @@ if (!isset($_GET['add-new-rec'])) {
                                             </a>
                                         </div>';
                                     }
-            		            } 
-                                elseif ($typeName == 'block') {
+            		            } elseif ($typeName == 'block') {
                                     include'edit.tpl.block-button.inc'; 
-                                } 
-                                elseif ($typeName == 'page') {   
+                                } elseif ($typeName == 'page') {   
                                     if ($dat[$field]) {
                                         echo'<a href="?page='.$dat[$field].'">'.$dat[$field];
                                         $aa = Router::getPageInfoById($dat[$field]);                            
-                                        if (!(empty($aa['title']) || $aa['title'] == "&nbsp;" || $aa['title'] == "&#160;"))
+                                        if (!(empty($aa['title']) || $aa['title'] == "&nbsp;" || $aa['title'] == "&nbsp;"))
                                             echo' <span class="small">('.Text::truncate(Text::stripTags($aa['name'],'strip-quotes'), 40, 'plain').')</span>';                                            
                                         echo'</a>';
                                     }
-                                } 
-                                elseif ($typeName == 'select') {
+                                } elseif ($typeName == 'select') {
             		                $parentField = &$typeParams['parentfield'][0];
             		                if (empty($readonly))
             		                    if ($parentField && empty($dat[$parentField]))
             		                        $readonly = ' readonly';
             		                echo'
-            		                <select  name="data['.$recId.']['.$field.']" size="1"'.($readonly ? ' disabled' : '').' onchange="submitBySelectListItem('.$field.','.$recId.')">';
+            		                <select  name="data['.$recId.']['.$field.']" size="1"'.($readonly ? ' disabled' : '').' onchange="submitBySelectListItem('.$field.','.$recId.')"'.$title.'>';
                 		                if ($selects[$recId][$field]) {
                 		                    echo'<option value="0">&middot;&middot;&middot;</option>';
                 		                    foreach ($selects[$recId][$field] as $recId2 => $item) {
@@ -157,19 +154,19 @@ if (!isset($_GET['add-new-rec'])) {
                                         if (Permission::ask('record', [$blockInfo['src-block-id'], $recId])['edit']) {//get
             		                        /*edit-rec*/  
             		                        if (in_array('edit', $_SESSION['Blox']['select-lists'][$recId][$field]['controls']) && $dat['selects'][$field]) 
-            		                            echo'&#160;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$dat['selects'][$field].'&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].$pagehrefQuery.'" title="'.$terms['edit-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-edit-rec.png" alt="&equiv;" /></a>';
+            		                            echo'&nbsp;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$dat['selects'][$field].'&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].$pagehrefQuery.'" title="'.$terms['edit-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-edit-rec.png" alt="&equiv;" /></a>';
             		                        /*newRec*/   
             		                        if (in_array('add', $_SESSION['Blox']['select-lists'][$recId][$field]['controls']) && isset($selects[$recId][$field])) 
-            		                            echo'&#160;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec=new&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].'&edit-field='.$field.$pagehrefQuery.'" title="'.$terms['add-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-new-rec.png" alt="+" /></a>';
+            		                            echo'&nbsp;<a class="button button-small" href="?edit&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec=new&direction=right'.$_SESSION['Blox']['select-lists'][$recId][$field]['defaults-queries'].'&edit-field='.$field.$pagehrefQuery.'" title="'.$terms['add-the-item'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-new-rec.png" alt="+" /></a>';
             		                    }
             		                    if (Blox::info('user','user-is-admin') || Blox::info('user','user-is-editor')) {
             		                        /*deleteRec*/
             		                        if (in_array('delete', $_SESSION['Blox']['select-lists'][$recId][$field]['controls'])  && $dat['selects'][$field]) 
-            		                            echo'&#160;<a class="button button-small" href="?recs-delete&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$recId.'&which='.$dat['selects'][$field].'&edit-field=$field&is-pick-values-field='.$pickValuesFields[$field].$pagehrefQuery.'" title="'.$terms['delete-the-item'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-delete-rec.png" alt="&times;" /></a>';
+            		                            echo'&nbsp;<a class="button button-small" href="?recs-delete&block='.$_SESSION['Blox']['select-lists'][$recId][$field]['select-list-block-id'].'&rec='.$recId.'&which='.$dat['selects'][$field].'&edit-field=$field&is-pick-values-field='.$pickValuesFields[$field].$pagehrefQuery.'" title="'.$terms['delete-the-item'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-delete-rec.png" alt="&times;" /></a>';
             		                    }
             		                    if (Blox::info('user','user-is-admin')) {
             		                        /*change*/   
-            		                        echo'&#160;<a class="button button-small" href="?selectlist-block&edit-block='.$blockInfo['id'].'&edit-rec='.$recId.'&edit-tpl='.urlencode($blockInfo['tpl']).'&edit-field='.$field.'&edit-field-title='.urlencode($dataTitles[$field]); 
+            		                        echo'&nbsp;<a class="button button-small" href="?selectlist-block&edit-block='.$blockInfo['id'].'&edit-rec='.$recId.'&edit-tpl='.urlencode($blockInfo['tpl']).'&edit-field='.$field.'&edit-field-title='.urlencode($dataTitles[$field]); 
             		                        if ($parentField) 
             		                            echo'&parent-field='.$parentField.'&parent-list-rec-id='.$dat['selects'][$parentField].'&parent-list-item='.$selects[$recId][$parentField][$dat[$parentField]].'&parent-list-block-id='.$_SESSION['Blox']['select-lists'][$recId][$field]['parent-list-block-id']; 
             		                        echo'&direction=right'.$pagehrefQuery.'" title="'.$terms['change-selectlist-block'].'"><img class="blox-edit-button-img" src="'.Blox::info('cms','url').'/assets/x-button-no-tpl.png" alt="?" /></a>';
@@ -192,15 +189,8 @@ if (!isset($_GET['add-new-rec'])) {
                                     # A list of items stored in the database
             		                $setDataElements = explode(',', $dat[$field]);  # @todo Solve the register problem for "set". Here comes the original case
             		                foreach ($typeParams['set'] as $i => $item) {
-                                        echo'
-                                        <input type="hidden"   name="data['.$recId.']['.$field.']['.$item.']" value="0" title="dat['.$field.']['.$item.']" />
-                                        <span style="white-space: nowrap">
-                                            <input type="checkbox" name="data['.$recId.']['.$field.']['.$item.']" value="1" id="set-'.$recId.'-'.$field.'-'.$i.'"'.$readonly; # title="'.$dataTitles[$field].'"  - if you put it, then you need to undress and remove quotation marks
-                		                    if (in_array($item, $setDataElements)) 
-                		                        echo' checked'; 
-                		                        echo' />';
-                		                    echo'<label for="set-'.$recId.'-'.$field.'-'.$i.'">'.$item.'</label>';# title="'.$dataTitles[$field].'"  - if you put it, then you need to undress and remove quotation marks
-                                        echo'</span>&#160; ';//<br>
+                                        echo'<input type="hidden"   name="data['.$recId.']['.$field.']['.$item.']" value="0" />';
+                                        echo'<label style="white-space: nowrap" title="'.$tooltips[$field][$item].'"><input type="checkbox" name="data['.$recId.']['.$field.']['.$item.']" value="1"'.$readonly.(in_array($item, $setDataElements) ? ' checked' : '').' />'.$item.'</label>&nbsp; ';
             		                }        		                
             		                
             		                /** 
@@ -223,21 +213,23 @@ if (!isset($_GET['add-new-rec'])) {
                 		             *    }
                 		             * 	echo'</select>';
                                      */
-            		            } 
-                                elseif ($typeName == 'enum') {
+            		            } elseif ($typeName == 'enum') {
             		                $quotes = "'\" "; # ok
-            		                echo'<select  name="data['.$recId.']['.$field.']" size="1"'.($readonly ? ' disabled' : '').'>';# title="'.$dataTitles[$field].'"  - if you put it, then you need to undress and remove quotation marks
+                                    $title2 = ($tooltips[$field][$dat[$field]])
+                                        ? ' title="'.$terms['stored-value'].' '.$dat[$field].' '.$tooltips[$field][$dat[$field]].'"'
+                                        : $title
+                                    ;   
+            		                echo'<select  name="data['.$recId.']['.$field.']" size="1"'.($readonly ? ' disabled' : '').$title2.'>';# title="'.$dataTitles[$field].'"  - if you put it, then you need to undress and remove quotation marks
             		                foreach ($typeParams['enum'] as $item){
             		                    $item = trim($item, $quotes);
-            		                    echo'<option ';
+            		                    echo'<option title="'.$tooltips[$field][$item].'" ';
             		                    if ($item==$dat[$field]) echo'selected="selected" ';
             		                    echo'value="'.$item.'">'.$item.'</option>';}
             		            	echo'</select>';
-                                } 
-                                elseif ($typeName == 'tinytext' || $typeName == 'text' || $typeName == 'mediumtext' || $typeName == 'longtext')
-                                    echo Text::truncate(Text::stripTags($dat[$field],'strip-quotes'), 33, 'plain');
+                                } elseif ($typeName == 'tinytext' || $typeName == 'text' || $typeName == 'mediumtext' || $typeName == 'longtext')
+                                    echo'<span'.$title.'>'.Text::truncate(Text::stripTags($dat[$field],'strip-quotes'), 33, 'plain').'</span>';
             		            else
-            		                echo'<input type="text" name="data['.$recId.']['.$field.']" value="'.htmlspecialchars($dat[$field]).'"'.$readonly.$style.' />';
+            		                echo'<input type="text" name="data['.$recId.']['.$field.']" value="'.htmlspecialchars($dat[$field]).'"'.$readonly.$style.$title.' />';
             
                                 # NULL
                                 if ($nullableFields[$field]  && !($fields[$field]['readonly'])) {
@@ -258,7 +250,7 @@ if (!isset($_GET['add-new-rec'])) {
                     if ($params['sort']['editable']) 
                         echo'<td><input type="text" name="data['.$recId.'][sort]" value="'.$dat['sort'].'" style="width:70px"/></td>';
                     echo'
-                    <td>&#160;</td>
+                    <td>&nbsp;</td>
                     <td><a class="button button-delete" href="'.$deleteHref.'" title="'.$mterms['delete-record'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-delete-rec.png" alt="&times;" /></a></td>
                 </tr>';
             }

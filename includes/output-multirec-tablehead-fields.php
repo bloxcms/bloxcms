@@ -29,7 +29,7 @@ foreach ($editingFields as $field) {
             $dt = $terms['page'];
         }
         echo'
-        <td class="blox-vert-sep">&#160;</td>
+        <td class="blox-vert-sep">&nbsp;</td>
         <td'.$st.'><div class="gray">'.$terms['field'].' '.$field.'</div>'.$dt;
             if ($typeName == 'timestamp')
                 echo Admin::tooltip('',$terms['date-time-format']);

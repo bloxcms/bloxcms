@@ -19,13 +19,13 @@ echo'
                 <td><b>'.$terms['field'].'</b></td>
                 <td><b>'.$terms['name'].'</b></td>
                 <td colspan="2"><b>'.$terms['value'].'</b></td>
-                <td>&#160;</td>
+                <td>&nbsp;</td>
             </tr>
             <tr>
-                <td>&#160;</td><td>&#160;</td>
+                <td>&nbsp;</td><td>&nbsp;</td>
                 <td>'.$terms['from'].'</td>
                 <td>'.$terms['to'].'</td>
-                <td>&#160;</td>
+                <td>&nbsp;</td>
             </tr>';
             foreach ($editingFields as $field) {
                 $tDetails = $typesDetails[$field];                    
@@ -49,10 +49,10 @@ echo'
                 echo'
                 <tr>
                 	<td class="field" align="center">'.$field.'.</td>
-                	<td>'.$dataTitles[$field].'&#160;</td>';
+                	<td>'.$dataTitles[$field].'&nbsp;</td>';
                     # Fields for entering data
                     if ($incomparable) {
-                        echo'<td colspan="2">&#160;</td>';
+                        echo'<td colspan="2">&nbsp;</td>';
                     } else {
                         echo'
                         <td><input name="dat['.$field.'][from]" type="text" /></td>
@@ -104,7 +104,7 @@ echo'
                         elseif ($typeName  == 'set')
                             echo $terms['set'];
                         else
-                            echo'&#160;';
+                            echo'&nbsp;';
                         echo'
                     </td>
                 </tr>';

@@ -10,11 +10,11 @@ echo Admin::getEditButton(
     $blockInfo2['id'], 
     ['block-info'=>$blockInfo2, 'pagehref-query'=>$pagehrefQuery]
 );
-echo'&#160;';
+echo'&nbsp;';
 if ($blockInfo2['delegated-id'])
     echo'<span style="color:#900">'.$dat[$field].'</span>';
 else
     echo $dat[$field];
 
 if ($blockInfo2['tpl'])
-    echo'&#160;<span class="small">('.$blockInfo2['tpl'].')</span>';
+    echo'&nbsp;<span class="small">('.$blockInfo2['tpl'].')</span>';

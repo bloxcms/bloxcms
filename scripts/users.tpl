@@ -29,12 +29,12 @@ echo'
                 <td'.(isset($_GET['sort']['email']) ? ' class="selected"' : '').'><a href="?'.Query2::build('sort[email]='.($_GET['sort']['email']=='asc' ? 'desc' : 'asc'), 'sort&part').'" title="'.$terms['sort'].'">'.$terms['email'].'</a></td>
             	<td>'.$terms['name'].'</td>
                 <td>'.$terms['regdate'].'</td>
-                <td class="blox-vert-sep">&#160;</td>
+                <td class="blox-vert-sep">&nbsp;</td>
                 <td>'.$terms['editor'].'</td>
                 <td>'.$terms['editor-of-blocks'].'</td>
                 <td>'.$terms['guest'].'</td>
                 <td>'.$terms['subscriber'].'</td>
-                <td class="blox-vert-sep">&#160;</td>
+                <td class="blox-vert-sep">&nbsp;</td>
                 <td>'.$terms['edit'].'</td>';
                 if ($groupsExist)
                     echo'<td>'.$terms['groupsmembership'].'</td>';
@@ -66,8 +66,8 @@ echo'
                 		<!--login-->
                         <td'.(isset($_GET['sort']['login']) ? ' class="selected"' : '').'><b>'.$user['login'].'</b></td>
                         <td  class="small'.(isset($_GET['sort']['email']) ? ' selected' : '').'">'.$user['email'].'</td>
-        				<td class="small">'.$user['personalname'].' '.$user['familyname'].'&#160;</td>
-                        <td class="small">'.$user['regdate'].'&#160;</td>
+        				<td class="small">'.$user['personalname'].' '.$user['familyname'].'&nbsp;</td>
+                        <td class="small">'.$user['regdate'].'&nbsp;</td>
                         <td>&nbsp;</td>
                 		<!--editor-->
                     	<td align="center">';
@@ -90,7 +90,7 @@ echo'
                             elseif ($user['user-is-editor'] || $user['user-is-admin'])
                                 echo'<span class="smaller gray">'.$terms['all-blocks'].'</span>';
                             else
-                                echo'&#160;';echo'
+                                echo'&nbsp;';echo'
                         </td>
         				<!--guest-->
                         <td align="center">';
@@ -100,14 +100,14 @@ echo'
                             } elseif ($user['user-is-editor'] || $user['user-is-admin']) {
                                 echo'<span class="smaller gray">'.$terms['all-pages'].'</span>';
                             } else
-                                echo'&#160;';echo'
+                                echo'&nbsp;';echo'
                         </td>
         				<!--subscriber-->
                         <td align="center">';
                             if ($user['user-is-subscriber'])
                                 echo' <a class="button" href="?user-objects&formula=user-is-subscriber&selected-user-id='.$user['id'].$pagehrefQuery.'" title="'.$terms['list-of-subscribed-blocks'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-editable-block.png" alt="B" /></a>';
                             else
-                                echo'&#160;';echo'
+                                echo'&nbsp;';echo'
                         </td>
                         <td>&nbsp;</td>
                         <!--user params-->
@@ -134,14 +134,14 @@ echo'
                         echo'<br />
                         <div class="smaller" style="text-align:center">';
                             if (empty($request['part']['prev']))
-                                echo' &#160; '.$terms['prev'].' &#160;';
+                                echo' &nbsp; '.$terms['prev'].' &nbsp;';
                             else
-                                echo' <a href="?'.Query2::build('part='.$request['part']['prev']).'" class="button">&#160; '.$terms['prev'].' &#160;</a>';
+                                echo' <a href="?'.Query2::build('part='.$request['part']['prev']).'" class="button">&nbsp; '.$terms['prev'].' &nbsp;</a>';
 
                             if (empty($request['part']['next']))
-                                echo' &#160; '.$terms['next'].' &#160;';
+                                echo' &nbsp; '.$terms['next'].' &nbsp;';
                             else
-                                echo' <a href="?'.Query2::build('part='.$request['part']['next']).'" class="button">&#160; '.$terms['next'].' &#160;</a>';
+                                echo' <a href="?'.Query2::build('part='.$request['part']['next']).'" class="button">&nbsp; '.$terms['next'].' &nbsp;</a>';
                             echo'
                             <div style="margin: 3px 0px 3px 0px;height:1px; font:1px;"></div>';
                             foreach ($request['part']['parts'] as $p) {

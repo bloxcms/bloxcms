@@ -19,4 +19,5 @@ return [
 'pseudopages-update-error' => 'Произошла ошибка при обновлении таблицы pseudopages запросом: %s',
 'search-mark' => 'Ищите в HTML-коде странички метку: #conversionError',
 'should-be-relative-parametric-url' => 'Некорректный аргумент Router::convert(%s) — должен стоять относительный параметрический URL',
+'breadcrumbs-not-determined' => 'Не удалось определить хлебные крошки. Попробуйте обновить ЧПУ ссылки через пункт меню "Команды".', // The breadcrumbs are not determined. Try updating human URLs in the Commands.
 ];

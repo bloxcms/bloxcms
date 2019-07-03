@@ -8,7 +8,7 @@ Query2::remove('pagehref');
 $filtersQuery = Query2::build();
 echo'
 <div class="blox-bar">
-    <div class="blox-menubar">'.$logoIcon.'<span class="bold">'.$terms[$xprefix.'bar-title'].Admin::tooltip("editing-window.htm", $terms['editing-help']).'&#160;</span></div>
+    <div class="blox-menubar">'.$logoIcon.'<span class="bold">'.$terms[$xprefix.'bar-title'].Admin::tooltip("editing-window.htm", $terms['editing-help']).'&nbsp;</span></div>
     <div class="blox-menubar">
         <ul id="blox-dropdown-menu">';
             if (Permission::ask('record', [$blockInfo['src-block-id']])['']['edit']) {
@@ -18,8 +18,10 @@ echo'
                     echo'<li class="blox-menu-item"><a href="#" class="blox-menu-link"><span>'.$terms['menu_block'].'</span></a>                    
                     <ul class="blox-submenu">';
                         if (Blox::info('user','user-is-admin')) {
-                            if ($delegatedContainerParams['id'] && $delegatedContainerParams['block-page-id'] != Blox::getPageId())
-                                $hasDelegatedAncestor = true;
+                            if (
+                                $delegatedContainerParams['id'] && 
+                                $delegatedContainerParams['block-page-id'] != Blox::getPageId()
+                            )   $hasDelegatedAncestor = true;
                             #
                             if ($blockInfo['tpl']) {
                                 $aa = $terms['tpl-changing'];

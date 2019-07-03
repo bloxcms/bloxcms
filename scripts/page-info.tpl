@@ -138,10 +138,10 @@ echo'
                             echo'
                             <div class="note">'.$terms['address-of-any-kind'].'</div>
                             <input type="hidden" name="page-info[parent-page-is-adopted]" value="0" />
-                            <label>&#160;
+                            <label>&nbsp;
                                 <input type="checkbox" name="page-info[parent-page-is-adopted]" value="1"'.($pageOldInfo['parent-page-is-adopted'] ? ' checked' : '').' />'.$terms['assign-manualy'].'
                             </label>
-                            <label>&#160;
+                            <label>&nbsp;
                                 <input type="checkbox" disabled name="page-info[change-parent-page-for-all-siblings]" value="1" /><span>'.$terms['change-parent-page-for-all-siblings'].'</span>
                             </label>
                             ';

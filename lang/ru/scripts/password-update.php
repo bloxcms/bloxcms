@@ -11,6 +11,7 @@ return [
 'invalid-password' => 'Некорректный пароль',
 'different-passwords' => 'Пароли различаются',
 'sql-fail' => 'Ошибка при обновлении пароля',
+'password-changed' => 'Пароль успешно изменен',
 //'submit' => 'Отправить',
 'submit-and-return' => '', # i.e. do not show
 ];

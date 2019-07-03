@@ -4,7 +4,7 @@
 /**
  * Doc: http://bloxcms.net/documentation/class-query.htm
  * @todo
- *      This method becomes useless in mode human URLs mode. Do the reverse conversion in parametric href
+ *      This method becomes useless in human URLs mode. Do the reverse conversion in parametric href
  */
 
 class Query
@@ -75,7 +75,7 @@ class Query
             return self::$queries;
         else {
             if (is_array($param))                     
-                $param = Url::arrayToQuery($param);
+                $param = substr(Url::arrayToQuery($param), 1);
             $param = preg_replace('~[=].*~u', '', $param); # Remove all after the sign '='                
             $param = preg_replace( '~([^\[]+)(.*$)~u', '[$1]$2', $param); # dress the name of the parameter in square brackets
             if ($param)
@@ -167,14 +167,21 @@ class Query
             if ($block_)
                 $query .= '&block='.$block_;
             if ($queries) {
-                Arr::orderByKey($queries); # sort     
-                Arr::walk($queries, 'urlencode'); # The function "urlencode()" replaces spaces " " by "+" in values
+                Arr::orderByKey($queries); # sort
+                ##Arr::walk($queries, 'urlencode'); #497436375 # The function "urlencode()" replaces spaces " " by "+" in values
+                $query.= Url::arrayToQuery($queries);
+                /* #497436375
                 if ($aa = urldecode(http_build_query($queries))) # The function "urlencode()" replaces spaces "+" by "%2B", [ by %5B, ] by %5D in a whole query 
                     $query .= '&'.$aa;
+                */
+                    
             }
             if ($sort_)
+                $query.= Url::arrayToQuery(['sort'=>$sort_]);
+                /* #497436375
                 if ($aa = urldecode(http_build_query(['sort'=>$sort_])))
                     $query .= '&'.$aa;
+                */
             if ($part_)
                 $query .= '&part='.$part_;
             if ($single_)

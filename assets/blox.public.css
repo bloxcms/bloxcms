@@ -103,3 +103,5 @@ td.blox-vert-sep {background:url(vert-sep.gif) repeat-y center !important; width
 @-webkit-keyframes blox-overlay-load-icon-rotate {0 {-webkit-transform:rotate(0deg)} 100% {-webkit-transform:rotate(360deg)}}
 @keyframes blox-overlay-load-icon-rotate {0 {transform:rotate(0deg)} 100% {transform:rotate(360deg)}}
 
+[data-toggle-password] {background:url(eye-regular.svg) no-repeat center; display:inline-block; vertical-align:middle; margin-left:3px; width:17px; height:14px; opacity:0.7}
+[data-toggle-password].eye-slash-regular {background-image:url(eye-slash-regular.svg); opacity:0.5}

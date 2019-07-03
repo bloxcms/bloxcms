@@ -30,6 +30,7 @@ if ($_POST['favicon']['delete-file']) {
         'application/x-icon' == $_FILES['favicon']['type']['file-name'] ||
         'image/png'          == $_FILES['favicon']['type']['file-name']
     ) {
+        $oldFaviconFile = Blox::info('site','dir').'/datafiles/'.$oldSettings['favicon']['file-name'];
         Files::unLink($oldFaviconFile); # TODO: Remove in advance when a successful upload, but for that Upload::uploadFiles() should report error messages
         $uploadedFiles = Upload::uploadFiles(Upload::format($_FILES), Blox::info('site','dir').'/datafiles');
         if ($uploadedFiles['favicon']['file-name']) {

@@ -6,8 +6,8 @@
     else
         Url::redirect($pagehref);    
 
-    //if ($tddFiles = Files::recursiveGlob('assigned/*.tdd')) { Not all files will be aged
-    if ($tddFiles = Files::recursiveGlob('templates/*.tdd')) {
+    //if ($tddFiles = Files::glob('assigned/*.tdd')) { Not all files will be aged
+    if ($tddFiles = Files::glob('templates/*.tdd')) {
         clearstatcache(); # procedure - no return
         foreach ($tddFiles as $tddFile) {
             if (!touch($tddFile)) {

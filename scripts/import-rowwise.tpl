@@ -7,7 +7,7 @@ echo'
     <div id="backToEdit">';
         if (empty($_GET['phase']))  
             echo'<a class="button" href="'.$backUrl.'" title="'.$terms['back-to-edit'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-arrow-left.png" alt="&lt;" /></a>';
-        echo'&#160;
+        echo'&nbsp;
     </div>
     <div class="heading" style="margin-bottom:5px">';
         if ('file-uploaded-and-unzipped' == $_GET['phase'] || 'file-uploaded' == $_GET['phase'] || 'block-data-deleted' == $_GET['phase'])
@@ -125,17 +125,17 @@ echo'
                     <tr>
                         <td>'.$terms['add-recid-column'].'<label for="add-recid-column2"></label></td>
                         <td><input type="checkbox" name="add-recid-column" value="1" id="add-recid-column2"';if($_SESSION['Blox']['import-rowwise']['add-recid-column']) echo' checked';echo' /></td>
-                        <td class="small">'.$terms['add-recid-column-note'].'&#160;</td>
+                        <td class="small">'.$terms['add-recid-column-note'].'&nbsp;</td>
                     </tr>
                     <tr>
                         <td>'.$terms['fields-terminated'].'</td>
                         <td><input type="text" name="csv-terminated" value="'; if($_SESSION['Blox']['import-rowwise']['csv-terminated']) echo $_SESSION['Blox']['import-rowwise']['csv-terminated']; else echo';';echo'" size="2"  /></td>
-                        <td class="small">'.$terms['fields-terminated-note'].'&#160;</td>
+                        <td class="small">'.$terms['fields-terminated-note'].'&nbsp;</td>
                     </tr>
                     <tr>
                         <td>'.$terms['fields-enclosed'].'</td>
                         <td><input type="text" name="csv-enclosed" value="';if($_SESSION['Blox']['import-rowwise']['csv-enclosed']) echo $_SESSION['Blox']['import-rowwise']['csv-enclosed']; echo'" size="2"  /></td>
-                        <td class="small">'.$terms['fields-not-enclosed'].'&#160;</td>
+                        <td class="small">'.$terms['fields-not-enclosed'].'&nbsp;</td>
                     </tr>
                     <tr>
                         <td>'.$terms['fields-escaped'].'</td>

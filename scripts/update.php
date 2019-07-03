@@ -4,7 +4,6 @@
     Request::set(); # This is necessary to use Request::get() in tdd-files.
     $regularId = Sql::sanitizeInteger($_GET['block']);
     $recId = Sql::sanitizeInteger($_GET['rec']);
-
     # Transition from edit window in multi-record mode. "Select" list item is selected
     if (empty($recId) && $_POST['select-list-submit-rec']) {
         $recId = $_POST['select-list-submit-rec'];
@@ -164,7 +163,7 @@
                 if ($_SESSION['Blox']['new-rec-id'] == $recId) { 
                     unset($_SESSION['Blox']['new-rec-id']); # for multi-record mode
                     $tbl = Blox::getTbl($tpl, $xprefix);
-                    if (!Admin::removeRec($tpl, $recId, $srcBlockId, $tbl))
+                    if (!Admin::deleteRec($tpl, $recId, $srcBlockId, $tbl))
                         Blox::error(sprintf($terms['failed-to-remove-rec'], $recId, $srcBlockId.'('.$tpl.')'));
                 }
                 return;
@@ -190,7 +189,6 @@
                 return;
 
             ############### POST ###############
-//qq($_POST);
             # formatPostData
             # For data of "set" type: dat[3][element1] --> dat[3] = 'element1','element2','element3' 
             foreach ($dat as $field => $value) {

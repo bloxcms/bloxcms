@@ -266,27 +266,19 @@ class Upload
         }
 
         $convertedFileName = self::getConvertedFileName($tbl, $oldData, $wdata, $col, $tmpSrcFile, $srcFileName, $typeParams, $dstDir);
-
         if ($convertedFileName) {
-            #the result is already written to the datafiles folder
-            return $convertedFileName;
-        } elseif (false === $convertedFileName)
+            return $convertedFileName; #the result is already written to the datafiles folder
+        } elseif (false === $convertedFileName) {
             return false; # An error occurred while processing image
-        else {
-            # SIMILAR: below
-            # Use one of the template text fields as the file name (for SEO)
-            if ($typeParams['renamefilebyfield'][0] && empty($typeParams['sourcefield'][0]) && $oldData['dat'.$typeParams['renamefilebyfield'][0]]) {
-                $nameLength = $typeParams['renamefilebyfield'][1] ? $typeParams['renamefilebyfield'][1] : 120;
-                # at 130, 135 the picture is not displayed!
-                if ($aa = Text::truncate(Text::stripTags($oldData['dat'.$typeParams['renamefilebyfield'][0]],'strip-quotes'), $nameLength, ['plain'])) {
-                    $aa = preg_replace("~\.+$~u", '', $aa); # Remove dots in the end
-                    if ($suffix = Str::getStringAfterMark($srcFileName, '.', true)){
-                        $bb = $aa.'.'.$suffix;
-                        Blox::prompt(sprintf($terms['file-renamed'], '<b>'.$srcFileName.'</b>', '<b>'.$bb.'</b>'));
-                        $srcFileName = $bb;
-                    }
-                }
+        } else {
+            if ($root = Upload::reduceRootByField('', $typeParams['renamefilebyfield'], $oldData)) {
+                $suffix = Str::getStringAfterMark($srcFileName, '.', true);
+                $srcFileName = $root;
+                if ($suffix)
+                    $srcFileName.= '.'.$suffix;
+                #Blox::prompt(sprintf($terms['file-renamed'], '<b>'.$srcFileName.'</b>', '<b>'.$bb.'</b>'));
             }
+            #
             Files::makeDirIfNotExists($dstDir);
             if ($renamedFileName = self::reduceFileName($srcFileName, $dstDir, $typeParams)) {
                 if (isset($_GET['insert-data-from-file-batches'])) {
@@ -299,7 +291,7 @@ class Upload
                         chmod($dstDir.'/'.$renamedFileName, 0644);
                         return $renamedFileName;
                     } else
-                        Blox::error('Function updateDataFiles.php. Cannot copy file', true);
+                        Blox::error('Method Upload::getPlacedFileName - Cannot copy file', true);
                 }
             }
         }
@@ -311,14 +303,13 @@ class Upload
     *   Replace self::calculateDimensions by $img->bestFit() and do all object-wise without calculating width and height.
     *   or do with http://image.intervention.io/
     * 
-    * 
     * Matches the file to the descriptor settings
     * If the file had to be converted, a new file is created immediately at the destination $convertedFileName.
     */
     private static function getConvertedFileName($tbl, $oldData, $wdata, $col, $tmpSrcFile, $srcFileName, $typeParams, $dstDir)
     {   #TODO If you upload a file with the same name, size, and date, use the old one, and do not upload this one
 
-        # KLUDGE. The SimpleImage class is used, in which the size analysis is already incorporated, but while the analysis is carried out in the old way, through f-Yu calculateDimensions().
+        # KLUDGE. The SimpleImage class is used, in which the size analysis is already incorporated, but while the analysis is carried out in the old way, by calculateDimensions().
         # TODO: Trim an image using PHP and GD  http://stackoverflow.com/questions/1669683/crop-whitespace-from-image-in-php ,   http://zavaboy.com/2007/10/06/trim_an_image_using_php_and_gd , 
         
         if (empty($typeParams))
@@ -482,7 +473,7 @@ class Upload
                                 }
 
                                 if (empty($stampOptions['stretch'])) {
-                                    $stampOptions['scale'] = isset($typeParams['stamp'][2]) ? $typeParams['stamp'][2] : 50;
+                                    $stampOptions['scale'] = isset($typeParams['stamp'][2]) ? $typeParams['stamp'][2] : 40;
                                     $stampOptions['indents']['horizontal'] = isset($typeParams['stamp'][3]) ? $typeParams['stamp'][3] : 0;
                                     $stampOptions['indents']['vertical'] = isset($typeParams['stamp'][4]) ? $typeParams['stamp'][4] : 0;
                                 }
@@ -577,21 +568,7 @@ class Upload
                         }
                     }
                     #/stamp ///////////////////////////////////////////////////////////////////////////////////
-
-                    # SIMILAR: above
-                    # Use one of the template text fields as the file name (for SEO)
-                    if (
-                        $typeParams['renamefilebyfield'][0] && 
-                        !$typeParams['sourcefield'][0] && 
-                        $oldData['dat'.$typeParams['renamefilebyfield'][0]]
-                    ) {
-                        $nameLength = $typeParams['renamefilebyfield'][1] ? $typeParams['renamefilebyfield'][1] : 120;
-                        if ($aa = Text::truncate(Text::stripTags($oldData['dat'.$typeParams['renamefilebyfield'][0]],'strip-quotes'), $nameLength, ['plain'])) {
-                            Blox::prompt(sprintf($terms['file-renamed'], '<b>'.$root.$suffix.'</b>', '<b>'.$aa.$suffix.'</b>'));
-                            $root = $aa;
-                        }
-                    }
-
+                    $root = Upload::reduceRootByField($root, $typeParams['renamefilebyfield'], $oldData);
                     if ($toFit) {
                         $xImg = new \claviska\SimpleImage();
                         # fit mode Background
@@ -643,10 +620,13 @@ class Upload
     * @param int $maxWidth Limit width
     * @param int $maxHeight Limit height
     *
-    * @return bool True if $width and $height are changed
+    * @return bool True if $width or $height are changed
     */
     private static function calculateDimensions(&$width, &$height, $maxwidth, $maxheight, $option='')
     {
+        $w2  = $width;
+        $h2 = $height;
+
         if (!$maxwidth && !$maxheight)
             return false;
         if ($maxwidth && $maxheight) {
@@ -662,7 +642,11 @@ class Upload
 
         $width  = round($width);
         $height = round($height);
-        return true;
+
+        if ($w2 == $width && $h2 == $height)
+            return false;
+        else
+            return true;
     }
 
 
@@ -770,5 +754,25 @@ class Upload
         return $reducedFilename;
     }
 
-
+    # renamefilebyfield # Use one of text fields as the file name (for SEO)
+    private static function reduceRootByField($root, $renameParams, $oldData) {
+        $root2 = $root;
+        if (isset($renameParams)) {
+            $namefield = null;
+            if ($filename = $oldData['dat'.$renameParams[0]])
+                $namefield = $renameParams[0];
+            elseif ($filename = $oldData['dat'.$renameParams[2]]) # Additional safety filename
+                $namefield = $renameParams[2];
+            #
+            if ($namefield) {
+                $nameLength = $renameParams[1] ? $renameParams[1] : 120;
+                if ($aa = trim(Text::truncate(Text::stripTags($filename, 'strip-quotes'), $nameLength, ['plain']))) {
+                    #Blox::prompt(sprintf($terms['file-renamed'], '<b>'.$root.'.'.$suffix.'</b>', '<b>'.$aa.'.'.$suffix.'</b>'));
+                    $aa = preg_replace("~\.+$~u", '', $aa); # Remove dots in the end
+                    $root2 = $aa;
+                }
+            }
+        }
+        return $root2;
+    }
 } #/class Upload

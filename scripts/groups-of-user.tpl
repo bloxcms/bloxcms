@@ -37,7 +37,7 @@ echo'
                         </label>
                     </td>
                 	<td class="small'.($group['activated'] ? '' : ' gray').'" align="center">'.($group['activated'] ? $terms['activated'] : $terms['unactivated']).'</td>
-            		<td class="small'.($group['activated'] ? '' : ' gray').'">'.$group['description'].' &#160;</td>
+            		<td class="small'.($group['activated'] ? '' : ' gray').'">'.$group['description'].' &nbsp;</td>
                     </tr>';
                 }
                 /** 
@@ -49,14 +49,14 @@ echo'
                         <div class="smaller" style="text-align:center">';
 
                             if (empty($request['part']['prev']))
-                                echo' &#160; '.$terms['prev'].' &#160;';
+                                echo' &nbsp; '.$terms['prev'].' &nbsp;';
                             else
-                                echo' <a href="?groups&block=groups&part='.$request['part']['prev'].$pagehrefQuery.'" class="button">&#160; '.$terms['prev'].' &#160;</a>';
+                                echo' <a href="?groups&block=groups&part='.$request['part']['prev'].$pagehrefQuery.'" class="button">&nbsp; '.$terms['prev'].' &nbsp;</a>';
 
                             if (empty($request['part']['next']))
-                                echo' &#160; '.$terms['next'].' &#160;';
+                                echo' &nbsp; '.$terms['next'].' &nbsp;';
                             else
-                                echo' <a href="?groups&block=groups&part='.$request['part']['next'].$pagehrefQuery.'" class="button">&#160; '.$terms['next'].' &#160;</a>';
+                                echo' <a href="?groups&block=groups&part='.$request['part']['next'].$pagehrefQuery.'" class="button">&nbsp; '.$terms['next'].' &nbsp;</a>';
 
                             //echo'<br /><br />';
 

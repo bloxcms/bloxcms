@@ -1,4 +1,9 @@
 <?php
+    /**
+     * @todo Updates and remotehosts stopped working!   2018-12-26
+     * @todo Get rid of sessions
+     * @todo Add user's login in all updates, assignments and deletes
+     */
 
     if (!(Blox::info('user','user-is-admin') || Blox::info('user','user-is-editor'))) 
         Blox::execute('?error-document&code=403');

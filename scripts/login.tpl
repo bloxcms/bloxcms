@@ -12,8 +12,10 @@ $pagehrefQuery = '&pagehref='.Blox::getPageHref(true);
             <tr><td><?=$terms['login']?> </td><td><input name="data[login]" value="<?=$data['login']?>" type="text"></td>
                 <td rowspan="2" style="vertical-align:middle; color:red; font-size: 11px;"><?=$errors['auth']?></td>
             </tr>
-            <tr><td><?=$terms['password']?> </td><td><input name="data[password]" value="<?=$data['password']?>" type="password"></td></tr>
+            <tr><td><?=$terms['password']?> </td><td><input name="data[password]" value="<?=$data['password']?>" type="password" id="toggle-password"><span data-toggle-password="#toggle-password"></span>
+            </td></tr>
             <?php
+            //&nbsp;<span style="font-size:17px; line-height:17px">&#128065;</span>
             if ($errors) { # If there's error we begin to use captcha
             echo'
             <tr><td style="vertical-align:middle">'.$terms['captcha'].'</td>
@@ -32,7 +34,7 @@ $pagehrefQuery = '&pagehref='.Blox::getPageHref(true);
     <td class="blox-vert-sep">&nbsp;</td>
     <td class="warnings">
         <p><?=($allowOuterRegistration) ? '<a class="button" rel="nofollow" href="'.Blox::info('site','url').'/?user-info&selected-user-id=new'.$pagehrefQuery.'">'.$terms['registration'].'</a><br><br>' : ''?></p>
-        <p><a class="button" rel="nofollow" href="<?=Blox::info('site','url') ?>/?password&login=<?=$data['login'].$pagehrefQuery ?>"><?=$terms['forgot-password']?></a></p>
+        <p><a class="button" rel="nofollow" href="<?=Blox::info('site','url') ?>/?password-restore&login=<?=$data['login'].$pagehrefQuery ?>"><?=$terms['forgot-password']?></a></p>
     </td>
     </tr>
     </table>

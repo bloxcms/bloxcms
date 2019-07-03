@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="<?=Blox::info('site','lang')?>">
 <head><?php
-if ($z = Blox::info('site','extra-codes','head')) // !Blox::info('user','user-is-admin') && !Blox::info('user','user-is-editor') && 
-    echo"\n".$z;
+$authenticated = false;
+if (Blox::info('user','user-is-admin') || Blox::info('user','user-is-editor')) {
+    $authenticated = true;
+} else {
+    if ($headExtraCode = Blox::info('site','extra-codes','head'))
+        echo"\n".$headExtraCode;
+}
 if (Blox::info('site','base-url') !== false)
     echo"\n".'<base href="'.Blox::info('site','base-url').'" />';?>
 <?php if ($pageInfo['title']) {
@@ -67,8 +72,10 @@ echo $outerBlockHtm;
 if ($barHtm && $barIsFixed)
     echo"\n".'<div id="blox-bar-fixed">'.$barHtm.'</div>';##<div id="blox-slide-bar">QQ</div>
 Blox::outputXcode('Foot');
-if ($z = Blox::info('site','extra-codes','foot')) // !Blox::info('user','user-is-admin') && !Blox::info('user','user-is-editor') && 
-    echo"\n".$z;
+if (!$authenticated) {
+    if ($footExtraCode = Blox::info('site','extra-codes','foot'))
+        echo"\n".$footExtraCode;
+}
 echo'
 </body>
 </html>';

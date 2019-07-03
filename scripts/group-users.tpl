@@ -37,10 +37,10 @@ echo'
                             # @todo After transfer 'activated' to the table "users, replace this code by the underlying one as in groups-of-user
                             echo'
                         	<td class="small'.($activatedUsers[$userId] ? '' : ' gray').'" align="center">'; if (!$adminUsers[$userId]) echo $activatedUsers[$userId] ? $terms['activated'] : $terms['unactivated']; echo'</td>
-                    		<td class="small'.($activatedUsers[$userId] ? '' : ' gray').'">'.$user['personalname'].' '.$user['familyname'].'&#160;</td>';
+                    		<td class="small'.($activatedUsers[$userId] ? '' : ' gray').'">'.$user['personalname'].' '.$user['familyname'].'&nbsp;</td>';
                             /**    	
                         	<td class="small'.($user['activated'] ? '' : ' gray').'">'.($user['activated'] ? $terms['activated'] : $terms['unactivated']).'</td>
-                    		<td class="small'.($user['activated'] ? '' : ' gray').'">'.$user['description'].' &#160;</td>
+                    		<td class="small'.($user['activated'] ? '' : ' gray').'">'.$user['description'].' &nbsp;</td>
                             */
                             echo'
                         </tr>';

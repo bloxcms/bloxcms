@@ -31,15 +31,16 @@ class Tree
             $tpl = $blockInfo['tpl'];
             $tdd = Tdd::get($blockInfo);
             # List of fields to retrieve data
-            
             if ($typesDetails = Tdd::getTypesDetails($tdd['types'], $refTypes, 'only-name')) {
                 $fieldNamesList = '';
-                foreach ($typesDetails as $field => $aa)
+                foreach ($typesDetails as $field => $aa) {
+                    if ($aa['name'] == 'block' && $tdd['fields'][$field]['none'] && $tdd['params']['multi-record'])
+                        continue; # In multi-record mode do not show inactivated('none') blocks
                     $fieldNamesList .= ', dat'.$field;
+                }
             }
 
-            if ($fieldNamesList)
-            {
+            if ($fieldNamesList) {
                 $fieldNamesList = '`rec-id`'.$fieldNamesList;
                 $tbl = Blox::getTbl($tpl);
                 $sql = 'SELECT '.$fieldNamesList.' FROM '.$tbl.' WHERE `block-id`=? ORDER BY sort';
@@ -117,6 +118,11 @@ class Tree
                 
                 if ($blockInfo['tpl'])
                     $htm .= ' ('.$blockInfo['tpl'].')';
+                
+                if ($z = $blockInfo['settings'])
+                    if (unserialize($z)['block-caching']['cache'])
+                        $htm .= ' <span class="red">'.Blox::getTerms('cached').'</span>';
+                ;
                 if ($blockInfo['ref-data']['blocks']) # Sublist
                     $htm .= self::getBlocksHtm($blockInfo['ref-data']['blocks']);
             $htm .= '</li>';

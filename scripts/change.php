@@ -74,7 +74,6 @@
             </script>
         ');
     }
-            
     # description
     if ($tpl) 
         if ($tdd = Tdd::get(['tpl'=>$tpl])) { # Because $tpl !=  $blockInfo['tpl']
@@ -91,15 +90,16 @@
     $template->assign('folder',$folder);
     
     $folderDir = Blox::info('templates', 'dir').($folder ? '/'.$folder : '');
+        
     # Get all current folders with tpls
     if ($dd = glob($folderDir.'/*' , GLOB_ONLYDIR)) {
         foreach ($dd as $d) {
-            if ($bb = glob($d.'/*.tpl'))
+            if ($bb = Files::glob($d.'/*.tpl'))
                 $tplFolders[] = Str::getStringAfterMark($d, '/', true);
         }
     }
     $template->assign('tplFolders', $tplFolders); # Current folders with tpls
-    # RESERVED. Get tree of tpls # Files::recursiveGlob($folderDir.'/*.tpl')
+    # RESERVED. Get tree of tpls # Files::glob($folderDir.'/*.tpl')
     $template->assign('tpls', Files::readBaseNames($folderDir, 'tpl')); # Current tpls
     $template->assign('regularId', $regularId);
     include Blox::info('cms','dir')."/includes/display-page.php";

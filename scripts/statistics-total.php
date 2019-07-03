@@ -125,7 +125,7 @@
         if ('pages' == $statisticsSubject)
             ;
         elseif ('referers' == $statisticsSubject)
-            $thisHostAndUri = dirname($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."x");    #$_SERVER['REQUEST_URI']!!
+            $thisHostAndUri = dirname($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."x"); # "x" is fakefile
         elseif ('remotehosts' == $statisticsSubject) {
             $remotehostsCounter = 0;
             $maxExecutionTime = ini_get('max_execution_time');

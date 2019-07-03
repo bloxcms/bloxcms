@@ -13,7 +13,7 @@ echo'
             foreach ($tplParams as $tpl => $params) {
                 echo'
                 <tr>
-                <td'; if($params['assigned-to-delegated']) echo' style="color:#900"'; echo'>'.$tpl.'&#160;</td>
+                <td'; if($params['assigned-to-delegated']) echo' style="color:#900"'; echo'>'.$tpl.'&nbsp;</td>
                 <td class="small" style="padding-left:5px;">';
                     if ($params['assigned']) {
                         if ($params['tpl-exists']) {
@@ -28,7 +28,7 @@ echo'
                         $listOfPages .= '| <a href="?page='.$blockPageId.'&bound-block='.$blockId.'#bound-block'.$blockId.'" target="_blank" title="'.$blockPageId.' ('.$titlesOfPages[$blockPageId].'). '.$terms['block'].' '.$blockId.'">'.$blockPageId.'</a> ';
                     if ($listOfPages)
                         echo'<div class="smaller grayer">'.substr($listOfPages, 1).'</div>';
-                    if (empty($params['description']) && empty($listOfPages)) echo'&#160;';
+                    if (empty($params['description']) && empty($listOfPages)) echo'&nbsp;';
                     echo'
                 </td>
                 </tr>';

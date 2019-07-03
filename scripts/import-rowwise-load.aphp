@@ -8,7 +8,7 @@
  * Do not rename to .php. It is necessary to deactivate
  * NEW http://www.securitylab.ru/analytics/407323.php
  */
-    $tbl = Blox::getTbl(Sql::sanitizeTpl($_GET['tpl']));
+    $tbl = Blox::getTbl(Sql::sanitizeTpl(urldecode($_GET['tpl'])));
     # LOAD DATA LOCAL INFILE
     $sql = "LOAD DATA LOCAL INFILE '".base64_decode($_GET['renamed-file'])."' IGNORE INTO TABLE ".$tbl;
     /**

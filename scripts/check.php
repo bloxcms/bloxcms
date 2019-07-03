@@ -1,7 +1,5 @@
 <?php
-
     # Check assigned template
-    
     if (!Blox::info('user','user-is-admin'))
         Blox::execute('?error-document&code=403');
     $pagehref = Blox::getPageHref();
@@ -61,7 +59,6 @@
     {
         $tpl = $_GET['tpl'];
         $changeUrl = Blox::info('site','url').'/?change&block='.$regularId;//.'&tpl='.$tpl; # tpl comes from changebar
-
         # For the outer block this check is not needed
         if (empty($blockInfo['parent-block-id'])) {
             Url::redirect($changeUrl.'&'.Query2::build().$pagehrefQuery);
@@ -190,9 +187,10 @@
                             $sql = 'SELECT * FROM '.$tbl.' WHERE `block-id`=?';
                             if ($result = Sql::query($sql, [$srcBlockId])) {
                                 while ($row = $result->fetch_row()) {
-                                    array_pop($row); # Remove last element [block-id]
+                                    $blockId = array_pop($row); # Remove last element [block-id]
                                     $row = ['rec'=>$row[0]] + $row; # Substitute '0' by assoc 'rec'
                                     unset($row[0]);
+                                    $row['block'] = $blockId;
                                     $tab[] = $row;
                                 }
                                 $result->free();

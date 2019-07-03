@@ -188,20 +188,28 @@ echo'
                         <li><a href="?update-human-urls'.$pagehrefQuery.'" title="'.$terms['update-human-urls-title'].'">'.$terms['update-human-urls-label'].'</a></li>
                         <li><a href="?update-sitemap-xml'.$pagehrefQuery.'">'.$terms['update-sitemap-xml'].'</a></li>';
                         if (Blox::info('site', 'caching'))
-                        echo'<li><a href="?update-page-caches'.$pagehrefQuery.'">'.$terms['update-page-caches'].'</a></li>';
-                        if (Blox::info('user','user-is-admin')) echo'
-                        <li><a href="?db-refresh'.$pagehrefQuery.'" title="'.$terms['db-refresh-title'].'">'.$terms['db-refresh-label'].'</a></li>';
+                            echo'<li><a href="?update-page-caches'.$pagehrefQuery.'">'.$terms['update-page-caches'].'</a></li>';
+                        if (Blox::info('user','user-is-admin')) {
+                            if (file_exists('cached-blocks'))
+                                echo'<li><a href="?cached-blocks-deleting'.$pagehrefQuery.'" title="'.$terms['cached-blocks-deleting-title'].'">'.$terms['cached-blocks-deleting-label'].'</a></li>';
+                            echo'<li><a href="?db-refresh'.$pagehrefQuery.'" title="'.$terms['db-refresh-title'].'">'.$terms['db-refresh-label'].'</a></li>';
+                        }
                     }
                     echo'
                 </ul>
             </li>';
+            # Doc
             $contents_href = 'http://bloxcms.net/documentation/_default.htm?version='.Blox::getVersion();
             echo'
             <li class="blox-menu-item"><a href="#" class="blox-menu-link"><span>'.$terms['help'].'</span></a>
                 <ul class="blox-submenu">
                     <li><a href="'.$contents_href.'" target="_blank" class="blox-tooltip" rel="nofollow" title="<center>'.$terms['cms'].'&nbsp;<br>&nbsp;&nbsp;<b>Blox CMS</b> '.$terms['version'].' '.Blox::getVersion().'</center>">'.$terms['contents'].'</a></li>
                 </ul>
-            </li>
+            </li>';
+            # webmail
+            if ($z = Blox::info('site','emails', 'webmail'))
+                echo'<li class="blox-menu-item"><a href="'.$z.'" target="_blank" class="blox-menu-link"><span>'.$terms['webmail'].'</span></a>';
+            echo'
         </ul>       
     </div>
 </div>';

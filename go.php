@@ -1,5 +1,5 @@
 <?php
-$bloxversion = '14.1.3'; # When upgrading to a new version, change it in documentation pages/_default.htm
+$bloxversion = '14.2.5'; # When upgrading to a new version, change it in documentation pages/_default.htm
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_WARNING);
 # ini_set ('display_errors', '1');
@@ -67,14 +67,24 @@ ini_set('default_charset', 'UTF-8');
     session_start();
     # session_write_close();  TODO: Fix the AJAX Requests that Make PHP Take Too Long to Respond   http://www.phpclasses.org/blog/post/277-Fix-the-AJAX-Requests-that-Make-PHP-Take-Too-Long-to-Respond.html
 
+    /*
+    #497436375
     $_SERVER['HTTP_REFERER'] = urldecode($_SERVER['HTTP_REFERER']);
-    $_SERVER['REQUEST_URI']  = urldecode($_SERVER['REQUEST_URI']);
+    $_SERVER['REQUEST_URI']  = urldecode($_SERVER['REQUEST_URI']); # urldecode() at the final stage in the tpl.
+    */
 
     $urlComponents = [];
     $urlComponents['path'] = str_replace('\\', '/', substr_replace($_SERVER['SCRIPT_NAME'], '', -10));
-    $urlComponents['href'] = substr($_SERVER['REQUEST_URI'], strlen($urlComponents['path']) + 1);
-
-    #Caching. Move this as high as possible. There is no class here. # Fast way (if href is unique) #fastway
+    $getHref = function($path) {
+        $h = substr($_SERVER['REQUEST_URI'], strlen($path) + 1);
+        if ($h[0] == '%') { #KLUDGE: non latin hhref #497436375
+            $h = urldecode($h);
+            $_SERVER['REQUEST_URI'] = $path.'/'.$h; # This should solve all problems #497436375 with urldecode instead of "urldecode($_SERVER['REQUEST_URI'])". #TODO: Remove all other #497436375 codes. No! There is product code in e-shops
+        }
+        return $h;
+    };
+    $urlComponents['href'] = $getHref($urlComponents['path']);
+    
     if ($GLOBALS['caching'] && !$_SESSION['Blox']['sess-user-id'] && !isset($_GET['login']) && !isset($_GET['authenticate'])) {
         (function($str) {
             if ($str) {
@@ -122,14 +132,18 @@ ini_set('default_charset', 'UTF-8');
     require_once $GLOBALS['bloxdir'].'/vendor/autoload.php';
     # DB
     Sql::setDb($GLOBALS['dbhost'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GLOBALS['dbname']);
-
     # mysql strict mode enabling
     # Error: Unknown system variable 'STRICT_TRANS_TABLES'
     # Sql::query('SET sql_mode = NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES');            
         
-    Blox::setVersion($GLOBALS['bloxversion']); 
-    unset($GLOBALS['bloxversion']);
-
+    Blox::setVersion($GLOBALS['bloxversion']);
+    # 'db'=>'prefix' must be assigned before call of the 'Store' class
+    Blox::addInfo(['db' => [
+        'host'  => $GLOBALS['dbhost'], 
+        'user'  => $GLOBALS['dbuser'], 
+        'name'  => $GLOBALS['dbname'], 
+        'prefix' => ($GLOBALS['prefix'] ? mb_strtolower($GLOBALS['prefix']) : '')
+    ]]);
     #ignored-url-params
     if ($siteSettings = Store::get('site-settings')) {
         if ($siteSettings['ignored-url-params']) {
@@ -224,19 +238,10 @@ ini_set('default_charset', 'UTF-8');
     $siteUrl = $urlComponents['scheme'].'://'.$_SERVER['HTTP_HOST'].$urlComponents['path'];
     $siteDir = str_replace('\\', '/', dirname($indexFile ?: $_SERVER['SCRIPT_FILENAME']));
 
-
-
-
     if (!isset($urlComponents['href']))
-        $urlComponents['href'] = substr($_SERVER['REQUEST_URI'], strlen($urlComponents['path']) + 1);
+        $urlComponents['href'] = $getHref($urlComponents['path']);
 
     Blox::addInfo([
-        'db'  => [
-            'host'  => $GLOBALS['dbhost'], 
-            'user'  => $GLOBALS['dbuser'],
-            'name'  => $GLOBALS['dbname'],
-            'prefix' => mb_strtolower($GLOBALS['prefix']),
-        ],
         'cms' => [
             'dir'       => $GLOBALS['bloxdir'],
             'lang'      => $GLOBALS['cmslang'],
@@ -258,17 +263,19 @@ ini_set('default_charset', 'UTF-8');
             'url' => $GLOBALS['templatesurl'] ?: $siteUrl.'/templates',
         ],
     ]);
+    
+    unset($GLOBALS['bloxversion']);
     unset($GLOBALS['dbhost']); 
     unset($GLOBALS['dbuser']); 
     unset($GLOBALS['dbpass']);
     unset($GLOBALS['dbname']);
+    unset($GLOBALS['prefix']);
     unset($GLOBALS['baseurl']);
     unset($GLOBALS['bloxurl']);
     unset($GLOBALS['nocache']);
     unset($GLOBALS['caching']);
     unset($GLOBALS['cmslang']);
     unset($GLOBALS['lang']);
-    unset($GLOBALS['prefix']);   
     unset($GLOBALS['templater']); 
     unset($GLOBALS['templatesdir']);
     unset($GLOBALS['templatesurl']);
@@ -410,7 +417,7 @@ ini_set('default_charset', 'UTF-8');
 /**
  * Debug function
  */
-function qq($obj)
+function qq($obj=null)
 {
     if (!Blox::info('site','blox-errors','on'))
         return;

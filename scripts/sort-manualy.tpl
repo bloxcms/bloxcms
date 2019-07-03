@@ -25,7 +25,7 @@ echo'
             <thead>
                 <tr class="small top">
                     <td style="vertical-align:middle; text-align:center">&uArr;&dArr;</td>
-                    <td class="blox-vert-sep">&#160;</td>
+                    <td class="blox-vert-sep">&nbsp;</td>
                     <td align="center" class="gray">'.$terms['rec-id'].'</td>';
                     include Blox::info('cms','dir').'/includes/output-multirec-tablehead-fields.php';# Fields titles
                     echo'
@@ -36,18 +36,20 @@ echo'
                     echo'
                     <tr id="'.$dat['rec'].'">
                         <td style="vertical-align:middle"><label class="handle"><div class="drag-handle"></div></label></td>
-                        <td>&#160;</td>
+                        <td>&nbsp;</td>
                         <td align="center">'.$dat['rec'].'</td>';
                         foreach ($editingFields as $field) {
                             echo'
-                            <td>&#160;</td>
+                            <td>&nbsp;</td>
                             <td>';
                                 if (substr($dataTypes[$field], 0, 9) == 'timestamp')
                                     echo date('Y-m-d ', strtotime(substr_replace($dat[2], '', 8)));
+                                elseif (substr($dataTypes[$field], 0, 5) == 'block')
+                                    echo $dat['blocks'][$field].'&nbsp;<span class="small">('. Blox::getBlockInfo($dat['blocks'][$field], 'tpl').')</span>';
                                 else
                                     echo Text::truncate(Text::stripTags(trim($dat[$field]),'strip-quotes'), 40, 'plain');                                
                                 echo'
-                                &#160;
+                                &nbsp;
                             </td>';
                         }
                         echo'

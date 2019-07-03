@@ -24,8 +24,8 @@ foreach ($_POST['edit-button-style'] as $option=>$value) {
 
 #block-caching
 if (!($oldSettings['block-caching'] == $newSettings['block-caching']))
-    unset($newSettings['block-caching']['cached']);
-if (!$newSettings['block-caching']['cache']) {
+    unset($newSettings['block-caching']['cached']); # 'cached' - is realy cached
+if (!$newSettings['block-caching']['cache']) {      # 'cache' - to be cached
     unset($newSettings['block-caching']['cached']);
     #unlink('cached-blocks/'.$regularId.'.htm'); # How to avoid empty dependency?
 }

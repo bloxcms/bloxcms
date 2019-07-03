@@ -11,5 +11,5 @@ return [
 # uploadFiles
 '3d-params-not-allowed' => 'Закачка файлов с именами переменных формы в виде массивов третьего порядка не предусмотрена',
 # getPlacedFileName(), getConvertedFileName()
-'file-renamed' => 'Файл %s был переименован в %s',
+#'file-renamed' => 'Файл %s был переименован в %s',
 ];
