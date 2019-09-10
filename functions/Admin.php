@@ -701,7 +701,7 @@ class Admin
         } elseif ('file' == mb_strtolower(substr($type, 0, 4))) {
     		$type = "VARCHAR(332) NOT NULL DEFAULT ''";
         } elseif ('block' == mb_strtolower(substr($type, 0, 5))) {
-            $type = 'MEDIUMINT UNSIGNED NOT NULL'; # NOT NULL in install.php 
+            $type = 'MEDIUMINT UNSIGNED'; #  don't use NOT NULL or add defaulr value. See below
             if ($isTab)
                 $type .= ' NOT NULL DEFAULT 0';
         } elseif ('select' == mb_strtolower(substr($type, 0, 6))) {

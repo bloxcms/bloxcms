@@ -26,7 +26,7 @@ class Auth
         if (!$factors['login'])
             return false;
         #
-        if (false === mb_strpos($_SERVER['HTTP_REFERER'], Blox::info('site','url')))
+        if ($_SERVER['HTTP_REFERER'] && false === mb_strpos($_SERVER['HTTP_REFERER'], Blox::info('site','url')))
             return false;
         #
         $ip = self::getIp();

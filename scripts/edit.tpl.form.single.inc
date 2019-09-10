@@ -571,13 +571,13 @@ if ($toChunk) {
         independent file upload widgets with their own dropZone. https://github.com/blueimp/jquery-file-upload/wiki/multiple-file-upload-widgets-on-the-same-page
         http://stackoverflow.com/questions/26822869/jquery-file-upload-multiple-input-file-in-one-form
     */
-    //Blox::addToHead('//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js');
-    Blox::addToHead(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/vendor/jquery.ui.widget.js');# The jQuery UI widget factory, can be omitted if jQuery UI is already included
-    Blox::addToHead(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.iframe-transport.js');#The Iframe Transport is required for browsers without support for XHR file uploads
-    Blox::addToHead(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.fileupload.js');# The basic File Upload plugin
-    Blox::addToHead(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.fileupload-process.js');
-    Blox::addToHead(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.fileupload-validate.js');# The File Upload validation plugin 
-    ##Blox::addToHead('//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js');# Bootstrap JS is not required, but included for the responsive demo navigation    
+    //Blox::addToFoot('//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js');
+    Blox::addToFoot(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/vendor/jquery.ui.widget.js');# The jQuery UI widget factory, can be omitted if jQuery UI is already included
+    Blox::addToFoot(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.iframe-transport.js');#The Iframe Transport is required for browsers without support for XHR file uploads
+    Blox::addToFoot(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.fileupload.js');# The basic File Upload plugin
+    Blox::addToFoot(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.fileupload-process.js');
+    Blox::addToFoot(Blox::info('cms','url').'/vendor/blueimp/jQuery-File-Upload/js/jquery.fileupload-validate.js');# The File Upload validation plugin 
+    ##Blox::addToFoot('//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js');# Bootstrap JS is not required, but included for the responsive demo navigation    
 }
 
 

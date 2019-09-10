@@ -219,7 +219,7 @@
             INDEX (alias)
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8';
         Sql::query($sql);
-        Sql::query('INSERT '.$prefix.'pages (id, `outer-block-id`) VALUES (1, 1)');
+        Sql::query('INSERT INTO '.$prefix.'pages (id, `outer-block-id`) VALUES (1, 1)');
         
         $sql = 'CREATE TABLE '.$prefix.'pseudopages (
             `key` VARCHAR(99),
@@ -249,9 +249,9 @@
             `settings` BLOB
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8';
         Sql::query($sql);
-        Sql::query('INSERT '.$prefix.'blocks (id) VALUES (1)');
+        Sql::query('INSERT INTO '.$prefix.'blocks (id) VALUES (1)');
         Sql::query('CREATE TABLE '.$prefix.'users (
-            id int(6) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            id int(6) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
             login VARCHAR(24),
             password VARCHAR(255) NOT NULL default \'\',
             email VARCHAR(99) NOT NULL default \'\',
@@ -262,7 +262,7 @@
             visitdate date,
             notes VARCHAR(24) NOT NULL default \'\'
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8');
-        Sql::query('INSERT '.$prefix.'users (id, login, password) VALUES (1, \'admin\', \''.password_hash('admin', PASSWORD_DEFAULT).'\')');
+        Sql::query('INSERT INTO '.$prefix.'users (id, login, password) VALUES (1, \'admin\', \''.password_hash('admin', PASSWORD_DEFAULT).'\')');
         Sql::query('CREATE TABLE '.$prefix.'authattempts (
             type VARCHAR(64),
             value VARCHAR(64),

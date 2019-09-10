@@ -279,44 +279,38 @@ ini_set('default_charset', 'UTF-8');
     unset($GLOBALS['templater']); 
     unset($GLOBALS['templatesdir']);
     unset($GLOBALS['templatesurl']);
-    
-    
-
-
-
     # Global current user settings
     if ($sessUserId = Blox::getSessUserId()) {
         # Admin automatically has the rights ['user-is-editor', 'user-is-activated']
         # All formulas ['user-is-admin', 'user-is-editor', 'user-is-activated', 'user-dont-see-edit-buttons','user-sees-block-boundaries', 'user-as-visitor'];
-        $info = Acl::getUsers(['user-id'=>$sessUserId])[0];
-        unset($info['password']);
+        $zz = Acl::getUsers(['user-id'=>$sessUserId])[0];
+        unset($zz['password']);
         if (Proposition::get('user-is-admin', $sessUserId)) { 
+            $info = $zz;
             $info['user-is-admin'] = true;
             $info['user-is-activated'] = true;
             $info['user-is-editor'] = true;}
-        else {
-            foreach (['user-is-editor', 'user-is-activated'] as $formula)
+        elseif (Proposition::get('user-is-activated', $sessUserId)) { 
+            $info = $zz;
+            $info['user-is-activated'] = true;
+        }
+        #
+        if ($info['user-is-activated']) {
+            foreach (['user-is-editor', 'bar-is-fixed', 'user-sees-block-boundaries', 'user-as-visitor'] as $formula)
                 if (Proposition::get($formula, $sessUserId))
                     $info[$formula] = true;
-        }
-
-        foreach (['bar-is-fixed', 'user-sees-block-boundaries', 'user-as-visitor'] as $formula)
-            if (Proposition::get($formula, $sessUserId))
-                $info[$formula] = true;
-
-        # groups of the user
-        if (!$info['user-is-admin']) {
-            foreach (Acl::getGroups(['user-id'=>$sessUserId, 'group-activated'=>true]) as $groupInfo) {
-                //$info['groups'][$groupInfo['id']] = $groupInfo;
-                $info['groups'][] = $groupInfo;
-                # user-is-editor via any group
-                if (!$info['user-is-editor']) {
-                    if (Proposition::get('group-is-editor', $groupInfo['id']))
-                        $info['user-is-editor'] = true;
+            # groups of the user
+            if (!$info['user-is-admin']) {
+                foreach (Acl::getGroups(['user-id'=>$sessUserId, 'group-activated'=>true]) as $groupInfo) {
+                    $info['groups'][] = $groupInfo;
+                    if (!$info['user-is-editor']) { # user-is-editor via any group
+                        if (Proposition::get('group-is-editor', $groupInfo['id']))
+                            $info['user-is-editor'] = true;
+                    }
                 }
             }
+            Blox::addInfo(['user'=>$info]);
         }
-        Blox::addInfo(['user'=>$info]);
     }
 
     #Caching. Second attempt to get cache file. First one is above (#fastway)

@@ -226,7 +226,7 @@ if (!isset($_GET['add-new-rec'])) {
             		                    if ($item==$dat[$field]) echo'selected="selected" ';
             		                    echo'value="'.$item.'">'.$item.'</option>';}
             		            	echo'</select>';
-                                } elseif ($typeName == 'tinytext' || $typeName == 'text' || $typeName == 'mediumtext' || $typeName == 'longtext')
+                                } elseif (($typeName == 'tinytext' || $typeName == 'text' || $typeName == 'mediumtext' || $typeName == 'longtext') && strlen($dat[$field]) > 200)
                                     echo'<span'.$title.'>'.Text::truncate(Text::stripTags($dat[$field],'strip-quotes'), 33, 'plain').'</span>';
             		            else
             		                echo'<input type="text" name="data['.$recId.']['.$field.']" value="'.htmlspecialchars($dat[$field]).'"'.$readonly.$style.$title.' />';

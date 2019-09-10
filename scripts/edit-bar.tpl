@@ -130,9 +130,10 @@ echo'
                 else
                     $_SESSION['Blox']['confirm-recs-to-del'] = '';
                 #
-                if ($idTypeExists && !Blox::info('user','user-is-admin'))
+                if ($idTypeExists && !Blox::info('user','user-is-admin')) {
     			    echo'<li class="blox-menu-item"><span class="blox-menu-link"><span>'.$terms['delete'].'</span></span>';
-                else {  
+                    Blox::prompt($terms['delete-id-type-exists'],true);
+                } else {  
         			echo'
                     <li class="blox-menu-item"><a href="#" class="blox-menu-link"><span>'.$terms['delete'].'</span></a>
                         <ul class="blox-submenu">';
