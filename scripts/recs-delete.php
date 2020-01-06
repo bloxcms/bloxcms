@@ -138,6 +138,8 @@
     if (!Blox::ajaxRequested()) {
         if (isset($_GET['edit-field']))
             Url::redirect($_SERVER['HTTP_REFERER'].'&mode=delete&edit-field='.$_GET['edit-field']);
+        elseif ($_GET['mode']=='one-from-multi')
+            Url::redirect($_SERVER['HTTP_REFERER']);
         else
             Url::redirect($pagehref);
     }

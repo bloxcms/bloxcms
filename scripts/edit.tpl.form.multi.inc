@@ -66,7 +66,7 @@ if (!isset($_GET['add-new-rec'])) {
             {
                 $recId = $dat['rec'];
                 $editHref   = $editHrefBase.'&rec='.$recId;
-                $deleteHref = $deleteHrefBase.'&rec='.$recId.'&which='.$recId;
+                $deleteHref = $deleteHrefBase.'&rec='.$recId.'&which='.$recId.'&mode=one-from-multi';
                 echo'
                 <tr>
                 	<td align="center">'.$recId.' <a class="button" href="'.$editHref.'" title="'.$mterms['edit-rec-separately'].'"><img src="'.Blox::info('cms','url').'/assets/x-button-edit-rec.png" alt="&equiv;" /></a></td>';//'.$recId.'
@@ -226,10 +226,22 @@ if (!isset($_GET['add-new-rec'])) {
             		                    if ($item==$dat[$field]) echo'selected="selected" ';
             		                    echo'value="'.$item.'">'.$item.'</option>';}
             		            	echo'</select>';
-                                } elseif (($typeName == 'tinytext' || $typeName == 'text' || $typeName == 'mediumtext' || $typeName == 'longtext') && strlen($dat[$field]) > 200)
-                                    echo'<span'.$title.'>'.Text::truncate(Text::stripTags($dat[$field],'strip-quotes'), 33, 'plain').'</span>';
-            		            else
+                                } elseif (($typeName == 'tinytext' || $typeName == 'text' || $typeName == 'mediumtext' || $typeName == 'longtext')) {
+                                        $str = Text::stripTags($dat[$field],'strip-quotes');
+                                        $twidth = 200;
+                                        if ($mstyles[$field]) {
+                                            if (preg_match('~width\s*:\s*(.*?)\s*(;|$)~', $mstyles[$field], $m))
+                                                $twidth = str_replace('px', '', $m[1]);
+                                        }
+                                        $ratio = $twidth/strlen($str); # px/symbols = 6.8 average ratio
+                                        if ($ratio < 6.8) {
+                                            $style = ' style="overflow:hidden; width:'.$twidth.'px"';
+                                            echo'<div'.$style.$title.'>'.Text::truncate($str, round($twidth/6), 'plain').'</div>';
+                                        } else # same as "} else {"
+                                            echo'<input type="text" name="data['.$recId.']['.$field.']" value="'.htmlspecialchars($dat[$field]).'"'.$readonly.$style.$title.' />';
+            		            } else {
             		                echo'<input type="text" name="data['.$recId.']['.$field.']" value="'.htmlspecialchars($dat[$field]).'"'.$readonly.$style.$title.' />';
+                                }
             
                                 # NULL
                                 if ($nullableFields[$field]  && !($fields[$field]['readonly'])) {

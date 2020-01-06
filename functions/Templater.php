@@ -24,7 +24,7 @@ class Templater
         foreach ($this->vars as $i => $value)
             $$i = $value;
         ob_start();
-        $this->convertPath($tplFile);                        
+        $this->convertPath($tplFile);
         require $tplFile;
         $output = ob_get_clean();
         return $output;

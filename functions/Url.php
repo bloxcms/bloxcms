@@ -128,12 +128,20 @@ class Url
         );
     }
 
-
+    /**
+     * It is slow method!
+     * Use only for external links
+     */
 	public static function exists($url)
     {
+        ##return true; #KLUDGE because get_headers() became slow on some servers
+        
         $exists = function($url) {
             $result = false;
-            if ($headers = @get_headers($url)) {
+ 
+            /* Variant 1 by get_headers. get_headers is very slow on some servers (5 sec)
+            //ini_get('allow_url_fopen')
+            if ($headers = get_headers($url)) {
                 if (strpos($headers[0], '200 OK') !== false) {
                     unset($headers[0]);
                     foreach ($headers as $h) { # Check for Invalid file
@@ -145,6 +153,53 @@ class Url
                     }
                 } // elseif (strpos($headers[0], '404 Not Found') !== false) {;}
             }
+            */
+
+            # Variant 2 by curl. Most fast variant if server gives problem with get_headers()
+                if (function_exists('curl_init')) {
+                    $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_NOBODY, true);
+                    $result = curl_exec($curl);
+                    if ($result !== false) {
+                        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                        if ($statusCode == 200) 
+                            return true;
+                        elseif (Blox::info('user','user-is-admin')) {
+                            Blox::prompt(sprintf(Blox::getTerms('url-not-exists'), '<b>'.$url.'</b>'), true);
+                        }
+                    }
+                } else {
+                    Blox::prompt(Blox::getTerms('curl-not-exists'), true);
+                    return true;
+                }
+            
+            /* Variant 3 by fsockopen. Most slow variant
+                // From https://stackoverflow.com/questions/1122845/what-is-the-fastest-way-to-determine-if-a-url-exists-in-php
+                $url_data = parse_url ($url);
+                if (!$url_data) return FALSE;
+
+               $errno="";
+               $errstr="";
+               $fp=0;
+
+               $fp=fsockopen($url_data['host'],80,$errno,$errstr,30);
+
+               if($fp===0) return FALSE;
+               $path ='';
+               if  (isset( $url_data['path'])) $path .=  $url_data['path'];
+               if  (isset( $url_data['query'])) $path .=  '?' .$url_data['query'];
+
+               $out="GET /$path HTTP/1.1\r\n";
+               $out.="Host: {$url_data['host']}\r\n";
+               $out.="Connection: Close\r\n\r\n";
+
+               fwrite($fp,$out);
+               $content=fgets($fp);
+               $code=trim(substr($content,9,4)); //get http code
+               fclose($fp);
+               // if http code is 2xx or 3xx url should work
+               $result = ($code == 200) ? TRUE : FALSE;
+            */
             return $result;
         };
         #
@@ -155,69 +210,11 @@ class Url
                 return true;
             else
                 return false;
-        } elseif ($exists($url))
+        } if (substr($url, 0, 4) === 'http' && $exists($url)) {
             return true;
-        else
+        } else
             return false;
-        /** 
-        $headers
-        OK
-            [0] => HTTP/1.1 200 OK
-            [1] => Date: Mon, 25 Dec 2017 11:27:59 GMT
-            [2] => Server: Apache
-            [3] => Last-Modified: Wed, 13 Dec 2017 17:07:23 GMT
-            [4] => ETag: "2b3c3-5603bcd0daac9"
-            [5] => Accept-Ranges: bytes
-            [6] => Content-Length: 177091
-            [7] => Connection: close
-            [8] => Content-Type: image/jpeg
-        Not exists
-            [0] => HTTP/1.1 404 Not Found
-            [1] => Date: Mon, 25 Dec 2017 11:29:39 GMT
-            [2] => Server: Apache
-            [3] => Content-Length: 2931
-            [4] => Connection: close
-            [5] => Content-Type: text/html;charset=UTF-8
-        Invalid image file
-            [0] => HTTP/1.1 200 OK
-            [1] => Server: nginx
-            [2] => Date: Mon, 25 Dec 2017 11:26:24 GMT
-            [3] => Content-Type: image/jpeg
-            [4] => Content-Length: 0
-            [5] => Last-Modified: Fri, 13 Nov 2015 06:01:07 GMT
-            [6] => Connection: close
-            [7] => ETag: "56457ca3-0"
-            [8] => Expires: Thu, 31 Dec 2037 23:55:55 GMT
-            [9] => Cache-Control: max-age=315360000
-            [10] => Strict-Transport-Security: max-age=15768000
-            [11] => Accept-Ranges: bytes
-        */
 
-        /* Variant 2 by curl
-        $urlExists = function($url) {
-            if (function_exists('curl_init')) {
-                $curl = curl_init($url);
-                curl_setopt($curl, CURLOPT_NOBODY, true);
-                $result = curl_exec($curl);
-                if ($result !== false) {
-                    $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);  
-                    if ($statusCode <> 404) 
-                        return true;
-                }
-            }
-        };
-        if (self::info('user','user-is-admin') && !$urlExists($href))
-            self::prompt(sprintf($terms['url-not-exists'], '<b>'.$code.'</b>', $dst), true);
-        */
-        
-        /* Variant 3 by fsockopen
-            https://toster.ru/q/228549
-            https://www.it-rem.ru/headers-curl-vs-get_headers-vs-fsockopen.html
-        */
-        /*
-        There was a problem with resolving of public DNS 8.8.8.8 (Google) for get_headers() and curl_exec() on the web-server.
-        Problem was solved by changing independent providers: 1.1.1.1 (CloudFlare) and 91.239.100.100 (uncensoreddns.org).
-        */
     }
     
 

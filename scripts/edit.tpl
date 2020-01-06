@@ -20,7 +20,7 @@ if (!isset($_GET['add-new-rec'])) {
                 echo $params['heading'];
             else {
                 echo $terms['block'].' <b>'.$blockInfo['id'].'</b>. ';    
-                if (isset($_GET['rec'])) # Edit single record
+                if (isset($getRecId)) # Edit single record
                     echo sprintf($terms['single-editing']['headline'], '<b'.$markedStyle.'>'.$dat['rec'].'</b>');
                 else
                     echo $terms['multi-editing']['headline'];
@@ -29,9 +29,9 @@ if (!isset($_GET['add-new-rec'])) {
         echo'
     </div>';
 
-    $markedStyle = ($_GET['rec']=='new') ? ' class="blox-marked-yellow"' : '';
+    $markedStyle = ($getRecId=='new') ? ' class="blox-marked-yellow"' : '';
     # public
-    if (!Blox::info('user','id') && $params['public']['editing-allowed'] && ($_GET['rec'] || $_GET['rec']=='new')) {
+    if (!Blox::info('user','id') && $params['public']['editing-allowed'] && ($getRecId || $getRecId=='new')) {
         if ($params['multi-record'])
             echo'<div>'.$terms['record'].' <b'.$markedStyle.'>'.$dat['rec'].'</b></div>';
         $onlyPublic = true; # see below
@@ -42,7 +42,7 @@ if (!isset($_GET['add-new-rec'])) {
         <td style="padding-left:0">
             <div class="small">';
                 if ($params['heading']) {
-                    if (isset($_GET['rec']))
+                    if (isset($getRecId))
                         echo'<div>'.$terms['record'].' <b>'.$dat['rec'].'</b></div>';
                     echo'<div>'.$terms['block'].' <b>'.$blockInfo['id'].'</b></div>';
                 }
@@ -121,7 +121,7 @@ if ($noTddTypes) {
     $nonHiddenableTypes = ['bit','block','bool','enum','file','longtext','mediumtext','page','select','set','text']; # Add? 'blob','tinyblob','mediumblob','longblob'
     #$hiddenableTypes = ['bigint','date','datetime','decimal','double','float','int','mediumint','smallint ','time','timestamp','tinyint','varchar','year'];
     
-    if (isset($_GET['rec']) || $xprefix) # Edit single record
+    if (isset($getRecId) || $xprefix) # Edit single record
         include Blox::info('cms','dir').'/scripts/edit.tpl.form.single.inc';
     else # Multiedit
         include Blox::info('cms','dir').'/scripts/edit.tpl.form.multi.inc';

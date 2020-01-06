@@ -1,5 +1,5 @@
 <?php
-$bloxversion = '14.2.5'; # When upgrading to a new version, change it in documentation pages/_default.htm
+$bloxversion = '14.2.6'; # When upgrading to a new version, change it in documentation pages/_default.htm
 
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_WARNING);
 # ini_set ('display_errors', '1');

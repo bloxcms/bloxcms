@@ -5,8 +5,7 @@
         Url::redirect($pagehref,'exit');
     }
 
-    $from = Blox::info('site','emails','from') 
-        ?: $from = Acl::getUsers(['user-is-admin'=>true])[0]['email']; # Message to the first admin
+    $from = Blox::info('site','emails','from') ?: $from = Acl::getUsers(['user-is-admin'=>true])[0]['email']; # Message to the first admin
     $sentCounter = 0;        
     $notSentCounter = 0;
     # All users

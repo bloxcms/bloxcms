@@ -9,13 +9,20 @@
     $srcBlockId = $blockInfo['src-block-id'];
     $prefix = Blox::info('db','prefix');
 
-
     if ($blockInfo['tpl']) {
         Request::set(); # Place this above Tdd::get() for $defaults=Request::get()
-        if ($singleRecId = Sql::sanitizeInteger($_GET['rec'])) # Apply "single" request because the date format will be converted in geTab()
-            Request::add('block='.$regularId.'&single='.$singleRecId);
         $tpl = $blockInfo['tpl'];
         $tdd = Tdd::get($blockInfo);
+        if ($_GET['rec']) {
+            if ('new'==$_GET['rec'] || Str::isInteger($_GET['rec']))
+                $getRecId = $_GET['rec']; # Apply "single" request because the date format will be converted in geTab()
+        }
+        if (!$getRecId && !$tdd[$xprefix.'params']['multi-record'])
+            $getRecId = 1;
+        if (isset($getRecId)) {
+            $template->assign('getRecId', $getRecId);
+            Request::add('block='.$regularId.'&single='.$getRecId);
+        }
         $defaults = Arr::mergeByKey($tdd['defaults'], $_GET['defaults']);
         #
         if ($tdd['xtypes'])
@@ -36,18 +43,18 @@
     # public  !user-is-editor-of-records
     # KLUDGE: permissions
     # BUG: $tab[0]['rec'] IS NOT DEFINED! SEE BELOW FOR $tab
-    if ($_GET['rec']) {
+    if ($getRecId) {
         if (!Permission::ask('record', [$srcBlockId])['']['edit']) {//get
             if ($tdd[$xprefix.'params']['public']) {
                 if ($tdd[$xprefix.'params']['public']['editing-allowed'] && $_SESSION['Blox']['fresh-recs'][$srcBlockId][$tab[0]['rec']]) # Fresh public rec
                     Permission::add('record', [$srcBlockId, $tab[0]['rec']], ['edit'=>true]);
-                elseif ($_GET['rec']=='new')
+                elseif ($getRecId=='new')
                     Permission::add('record', [$srcBlockId, ''], ['create'=>true]);
             }
         }
     }
 
-    if ($tdd['params']['public']['editing-allowed'] && ($_GET['rec'] || $_GET['rec']=='new'))
+    if ($tdd['params']['public']['editing-allowed'] && ($getRecId || $getRecId=='new'))
         ; 
     elseif (Permission::get('record', $srcBlockId)) #KLUDGE: more specific permissions will be given below
         ;
@@ -107,10 +114,9 @@
             $settings = Store::get($xprefix.'editSettings'.$srcBlockId);
             $template->assign('settings', $settings);
 
-           	if ($_GET['rec'])
-           	{
+           	if ($getRecId) {
                 # Create new rec 
-    	        if ($_GET['rec']=='new') {
+    	        if ($getRecId=='new') {
                     # KLUDGE: Sometimes  appeares duplicating spurious request "?edit&...&rec=new..." with appended url param "&_=1504001421310" where value is the time. The reasons are not found.
                     if ($_SESSION['Blox']['edit']['new-rec-time'] && Blox::ajaxRequested()) {
                         if (microtime(true) - $_SESSION['Blox']['edit']['new-rec-time'] < 100) {
@@ -140,13 +146,13 @@
                     } else {
                         if ($tab = Request::getTab($blockInfo, $tdd, $xprefix)) {
                             ;
-                        } elseif ($_GET['rec']) {
-                            if ($_GET['rec']==1) {
+                        } elseif ($getRecId) {
+                            if ($getRecId==1) {
                                 $dat = Dat::insert($blockInfo, $defaults, '', $tdd);
                                 Request::add('block='.$regularId.'&single=1');# Do again standart retrieve because of "select" data types
                                 $tab = Request::getTab($blockInfo, $tdd);
                             } else {
-                                Blox::prompt(sprintf($terms['no-rec'], '<b>'.$_GET['rec'].'</b>', '<b>'.$srcBlockId.'</b>'), true);
+                                Blox::prompt(sprintf($terms['no-rec'], '<b>'.$getRecId.'</b>', '<b>'.$srcBlockId.'</b>'), true);
                                 Url::redirect($pagehref,'exit');
                             }
                         }
@@ -165,7 +171,7 @@
                 $tab = Request::getTab($blockInfo, $tdd, $xprefix);
             }
 		    # Editors of block
-            if ($_GET['rec']) {
+            if ($getRecId) {
     		    if ($tab[0][$userIdField]) {
     		        $sql = "SELECT * FROM ".$prefix."users WHERE id=?";
     		        if ($result = Sql::query($sql, [$tab[0][$userIdField]])) {
@@ -174,7 +180,7 @@
                         $result->free();
                     }
 
-                    if ($_GET['rec']=='new') {
+                    if ($getRecId=='new') {
                         if (!Permission::ask('record', $srcBlockId)['']['create']) //get
                             Blox::execute('?error-document&code=403');
                     } elseif (!Permission::ask('record', [$srcBlockId, $tab[0]['rec']], ['dat'=>$tab[0], 'tdd'=>$tdd])['edit']) { //get
@@ -202,7 +208,7 @@
                 }
                 unset($_SESSION['Blox']['select-lists']);
                 $captions = $tdd[$xprefix.'captions'];
-                if ($_GET['rec']) {
+                if ($getRecId) {
                     # Return to edit fields after adding or deleting a record in the "select" list of this field
                     if ($_GET['direction'] == 'left' && $_GET['edit-field']) {
                         if ($dependedSelectFields = Admin::getDependedSelectFields($typesDetails, $_GET['edit-field']))
@@ -213,22 +219,22 @@
                             $tab[0][$_GET['edit-field']] = '';
                         elseif ($_GET['mode'] == 'add')
                             $tab[0][$_GET['edit-field']] = $_GET['edit-value'];
-                        Dat::update(['src-block-id'=>$srcBlockId,'tpl'=>$tpl], $tab[0], ['rec'=>$_GET['rec']], $xprefix);
+                        Dat::update(['src-block-id'=>$srcBlockId,'tpl'=>$tpl], $tab[0], ['rec'=>$getRecId], $xprefix);
                     }
                 }
 
                 # Redirect from multi to single for block with 0 or 1 records
-                if (!isset($_GET['rec'])) {
-                    $recId2 = '';
+                if (!isset($getRecId)) {
+                    $getRecId2 = '';
                     if (!Request::get($regularId, 'pick')) {
                         if (!$tab)
-                            $recId2 = 'new';
+                            $getRecId2 = 'new';
                         /** Temporarily closed due to obscurity of the interface
                         elseif (count($tab)==1)
-                            $recId2 = $tab[0]['rec'];
+                            $getRecId2 = $tab[0]['rec'];
                         */
                     }
-                    if ($recId2) {
+                    if ($getRecId2) {
                         # Check if we go from single to multi
                         $prevHref2 = preg_replace(
                             '~&rec=\d+~', '', 
@@ -238,7 +244,7 @@
                         #
                         if ($prevHref2 != $currHref) { # Not going from single to multi
                             Query2::capture();
-                            Url::redirect('?'.Query2::build('rec='.$recId2),'exit');
+                            Url::redirect('?'.Query2::build('rec='.$getRecId2),'exit');
                         }
                     }
                 }
@@ -344,7 +350,7 @@
                     # Single mode and there are text data
                     elseif ($typeName == 'tinytext' || $typeName == 'text' || $typeName == 'mediumtext' || $typeName == 'longtext') {                        
                         unset($nullableFields[$field]); # TEXT does not support default values, it's implicitly DEFAULT NULL. So do not change anything.
-                        if (isset($_GET['rec']))
+                        if (isset($getRecId))
                             $useTextEditor = true;
                     }
                     $typeFieldsOrder[$field] = true; # Temporary array to calculate array $editingFields
@@ -380,7 +386,7 @@
                 Url::redirect(Blox::info('site','url').'/?import-rowwise&block='.$regularId.$pagehrefQuery,'exit');
         }
 
-        if (!isset($_GET['add-new-rec']) && $useTextEditor && $_GET['rec']) {
+        if (!isset($_GET['add-new-rec']) && $useTextEditor && $getRecId) {
             # Is there alternative text editor?
             if (file_exists('text-editor/text-editor-link.php')) {
                 $textEditorDir = 'text-editor';
@@ -406,7 +412,7 @@
     }
     $template->assign('blockInfo', $blockInfo);
     # Edit select-data without leaving the edit window
-    if ($_GET['rec']) {
+    if ($getRecId) {
         if ($_GET['direction'] == 'right') {
             if ($aa = Str::getStringBeforeMark($_SERVER['HTTP_REFERER'], '&direction')) # Remove the tail to avoid duplication
                 $_SESSION['Blox']['edit-referrers'][] = $aa;

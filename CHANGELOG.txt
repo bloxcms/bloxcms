@@ -1,4 +1,9 @@
 
+		Добавлен метод Acl::getFromEmail()
+14.2.6
+		Метод Url::exists() пока не используется из-за медленной работы get_headers() на некоторых серверах. Упрощен также Upload::fileExists().
+		В файле includes/display-page.php  изменен способ вычисления $pageIsHiddenAndDenied
+		В запрос ?recs-delete добавлен параметр  mode=one-from-multi для возврата в окно редактирования при удалении одной записи из многозаписного режима 
 14.2.5
 		Метод Blox::getByJson() переименован в Tdd::getByJson().
 		Добавлен $params['template-files']

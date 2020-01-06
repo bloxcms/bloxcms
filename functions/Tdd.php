@@ -66,7 +66,6 @@ class Tdd
                     $tdd = self::getDirectly($oldTddFile, $blockInfo);
                     if ($newTddTime > $oldTddTime)
                         $newTdd = self::getDirectly($newTddFile, $blockInfo);
-                    
                     # tab 
                     if ($tblExists) {
                         if ($newTddTime > $oldTddTime) { # Tdd edited. Do not use '!='
@@ -114,8 +113,7 @@ class Tdd
                         $replaceTddFile = true;
                     }                                                     
                 }
-
-
+                
                 if ($replaceTddFile) {
                     self::replaceTddFile($newTddFile, $oldTddFile, $newTddTime);
                     $tdd = self::getDirectly($oldTddFile, $blockInfo);
@@ -161,6 +159,7 @@ class Tdd
                 }
             }
         }
+
         #EXPERIMENTAL
         # Run tdd-file only once
         if ($tdd['params']['run-tdd-once'] && !$GLOBALS['Blox']['tdd'][$tpl])

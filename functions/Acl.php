@@ -173,6 +173,44 @@ class Acl
         $sql2 .= ' ORDER BY name';
         return Sql::select($sql2,$sqlParams);
     }
+
+
+
+    /**
+     * When you send letters, it is desirable to specify also a "from" box
+     * @param string $to email address. Two formats: john@doe.com, John Doe <john@doe.com>
+     * @todo from format: John Doe <john@doe.com> in params or from users
+     */
+    public static function getFromEmail($to)
+    {
+        if (preg_match('~<(.*?)>~us', $to, $matches)) # John Doe <john@doe.com>
+            $to = $matches[1];
+        if (!$to)
+            return false;
+        # global from
+        if ($from = Blox::info('site','emails','from')) {
+            if (preg_match('~<(.*?)>~us', $from, $matches)) # John Doe <john@doe.com>
+                $from = $matches[1];
+            if ($to == $from)
+                $from = '';
+            else
+                return $from;
+        } 
+        # from admin or editor
+        if (!$from) {
+            foreach (['user-is-admin', 'user-is-editor'] as $usertype) {
+                $users = Acl::getUsers([$usertype=>true]); 
+                foreach ($users as $userInfo) {
+                    if ($to <> $userInfo['email']) {
+                        $from = $userInfo['email'];
+                        return $from;
+                        //break 2;
+                    }
+                }
+            }
+        }
+    }
+    
     
     /*
     # $user - ID or login

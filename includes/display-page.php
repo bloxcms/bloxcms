@@ -4,18 +4,15 @@
      */
     $template->assign('terms', $terms);
     $pageInfo = Router::getCurrentPageInfo() ?: Router::getPageInfoById($pageId); # Only to get $pageInfo['outer-block-id'] # If its Unregistered pseudopage  Router::getPageInfoById() will be used
-    if ($pageInfo['page-is-hidden']) {
-        if (Blox::info('user','user-is-admin') || Blox::info('user','user-is-editor'))
-            Permission::add('page', [$pageId], ['see'=>true]);
-    }
+    Permission::add('page', [$pageId], ['see'=>true]); # allow for all by default
     $outerBlockHtm = Blox::getBlockHtm($pageInfo['outer-block-id']); # must be above "Cache headers" because of Blox::info('site','nocache')
-    
     if ($pageInfo['page-is-hidden']) {
         $template->assign('pageIsHidden', true);
-        $userSeesHiddenPage = Permission::ask('page', [$pageId]); # + editors of blocks
-        if (!$userSeesHiddenPage)
-            $pageIsHiddenAndDenied = true;
+        if (!(Blox::info('user','user-is-admin') || Blox::info('user','user-is-editor')))
+            Permission::add('page', [$pageId], ['see'=>false]);
     }
+    if (!Permission::ask('page', [$pageId])['see'])
+        $pageIsHiddenAndDenied = true;
     
     #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     # "Cache headers"
@@ -155,8 +152,7 @@
 			$recordPermission ||
 			$userIsEditorOfAnyBlock ||
 			$userIdFieldExists ||
-            $userIsSubscriberOfAnyBlock ||
-            $userSeesHiddenPage
+            $userIsSubscriberOfAnyBlock //|| $userSeesHiddenPage
 		) $isMainBarVisible = true;
 	}
 

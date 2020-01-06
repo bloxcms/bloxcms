@@ -342,10 +342,12 @@ class Blox
         else { # Add tags for paths to the css or js file
             $terms = self::getTerms();
             $url = Url::convertToAbsolute($code) ?: $code;
-            # Check if file exists
+            /**
+             * Check if file exists. It is slow method on some servers
             if (self::info('user','user-is-admin'))
                 if (!Url::exists($url))
                     self::prompt(sprintf($terms['url-not-exists'], '<b>'.$code.'</b>', $dst), true);
+            */
             $queryFreeCode = Str::getStringBeforeMark($code, '?') ?: $code;
             if (mb_strtolower(substr($queryFreeCode, -4)) == '.css')
                 $code2 = '<link href="'.$url.'" rel="stylesheet" />';

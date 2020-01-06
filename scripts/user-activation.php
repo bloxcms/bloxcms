@@ -10,12 +10,11 @@ if ($userInfo['id']) {
         Blox::setSessUserId($userInfo['id']);
     	$path = dirname(Url::punyDecode($_SERVER['HTTP_HOST']).$_SERVER['REQUEST_URI']."x");  # "x" is fakefile
     	$mdat = sprintf($terms['user-is-activated'], "<b>$path</b>", "<b>$login</b>");
-        $from = Blox::info('site','emails','from');
         foreach (Acl::getUsers(['user-is-admin'=>true]) as $adminInfo){
             $noAdminEmail = false;
             if ($adminInfo['email']) {
             	$data = [
-            		'from'=> $from,
+            		'from'=> Acl::getFromEmail($adminInfo['email']),
             		'to'=> $adminInfo['email'],					
             		'subject'=> $terms['bar-title'].' '.$login,
             		'htm'=> $mdat,

@@ -239,14 +239,16 @@ class Upload
         return true; #v.13.0.13  KLUDGE
     }
 
-
-    # file or URL Exists and Valid
+    /**
+     * DEPRECATED?
+     * file or URL Exists and Valid
+     */
     public static function fileExists($fl)
     {
         $r = false;
         if (file_exists($fl))
             $r = true;
-        elseif (Url::exists($fl))
+        elseif (Url::exists($fl)) # It is slow method on some servers
             $r = true;
         return $r;
     }
@@ -749,8 +751,10 @@ class Upload
         
         $root = Files::uniquizeFilename($dstDir, $root, $suffix);
         $reducedFilename = $root.'.'.$suffix;
+        /** Too annoying
         if ($fileName != $reducedFilename)
             Blox::prompt(sprintf(Blox::getTerms('file-is-renamed'), '<b>'.$fileName.'</b>', '<b>'.$reducedFilename.'</b>'));
+        */
         return $reducedFilename;
     }
 

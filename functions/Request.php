@@ -1036,7 +1036,7 @@ class Request
             if (!isEmpty(self::get($regularId,'part','limit')) && !self::get($regularId,'single')) # for savings: !self::get($regularId,'single')
                 $sql .= self::getPartSql($regularId, $tbl, $tddParams, $selectFromSqls);
         }
-//if (143==$regularId)
+//if (645==$regularId)
 //qq($sql);
         return $sql;
     }
@@ -1552,7 +1552,7 @@ class Request
     }
     
 
-    private static function getSearchSqls($regularId, $tbl, $tddParams, $isTab, $selectDataParams)
+    public static function getSearchSqls($regularId, $tbl, $tddParams, $isTab, $selectDataParams=null)
     {
         # @return  " || LOWER(...)"
         $getFieldsSql = function($regularId, $tbl, $tddParams, $isTab, $selectDataParams, $field, $word, $minus=false) 

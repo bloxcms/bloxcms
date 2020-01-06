@@ -49,7 +49,18 @@ if (!$userInfo) {
         if (false === Sql::query($sql, $sqlValues))
             $errors[] = $terms['sql-fail'];
         else {
-            if (!Blox::info('user'))
+            if ($to = Blox::info('user','email')) {
+            	$data = [
+            		'to'=> $to,
+            		'subject'=> $terms['heading'],
+            		'htm'=> sprintf($terms['password-updated'], Blox::info('site','url'), '<b>'.$userInfo['login'].'</b>', '<b>'.$data['new-password'].'</b>'),
+            	];
+                if ($from = Acl::getFromEmail($to))
+                    $data['from'] = $from;
+            	Email::send($data);
+        	}
+            #
+            if (!Blox::info('user')) # If user is not authed then auth him
                 Auth::get(['login'=>$userInfo['login'],'password'=>$data['new-password']]);
             Url::redirect(Blox::getPageHref());
         }

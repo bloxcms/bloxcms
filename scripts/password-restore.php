@@ -23,17 +23,6 @@ if (isset($_GET['login'])) {
     if ($usersInfo)
     {
         # Use Editors's Email As FromEmail
-        $adminInfo = Acl::getUsers(['user-is-admin'=>true])[0];
-        $fromUserInfo = Acl::getUsers(['user-is-editor'=>true])[0];
-        if (empty($fromUserInfo['email']))
-            $fromUserInfo = $adminInfo;
-
-
-        if ($from2 = Blox::info('site','emails','from'))
-            ;
-        else
-            $from2 = $fromUserInfo['email'];
-            
         foreach ($usersInfo as $userInfo)
         {   
             $url = Blox::info('site','url').'/';
@@ -54,7 +43,7 @@ if (isset($_GET['login'])) {
                 if (empty($props)) # Not activated           
                     $mdat .= '<br>'.$terms['error-message4'];
             }
-                
+            $from2 = Acl::getFromEmail($userInfo['email']);
             if ($userInfo['email']) {
             	$data = [
             		'from'=> $from2,

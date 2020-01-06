@@ -12,6 +12,8 @@ return [
 'different-passwords' => 'Пароли различаются',
 'sql-fail' => 'Ошибка при обновлении пароля',
 'password-changed' => 'Пароль успешно изменен',
+'alien-login'=>'Логин пользователя не тот',
+'password-updated'=>'Вы обновили пароль на сайте %s.<br>Логин: %s<br>Новый пароль: %s',
 //'submit' => 'Отправить',
 'submit-and-return' => '', # i.e. do not show
 ];
